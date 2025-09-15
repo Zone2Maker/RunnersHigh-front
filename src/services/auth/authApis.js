@@ -24,7 +24,6 @@ export const signinRequest = async (data) => {
   }
 };
 
-
 //getPrincipal
 export const getPrincipalRequest = async () => {
   try {
