@@ -1,6 +1,6 @@
 import { instance } from "../services/instance";
 
-export const joinOAuth2UserRequest = async (data) => {
+export const joinOAuth2UserReq = async (data) => {
   try {
     const response = await instance.post("/oauth2/join", data);
     return response;
@@ -9,7 +9,7 @@ export const joinOAuth2UserRequest = async (data) => {
   }
 };
 
-export const mergeOAuth2UserRequest = async (data) => {
+export const mergeOAuth2UserReq = async (data) => {
   try {
     const response = await instance.post("/oauth2/merge", data);
     return response;

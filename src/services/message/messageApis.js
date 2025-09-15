@@ -1,6 +1,6 @@
 import { instance } from "../services/instance";
 
-export const getMessageListRequest = async (crewId, cursorMessageId, size) => {
+export const getMessageListReq = async (crewId, cursorMessageId, size) => {
   try {
     const response = await instance.get("/crew", {
       params: {
