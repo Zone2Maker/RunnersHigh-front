@@ -2,7 +2,7 @@ import { instance } from "../services/instance";
 
 export const addLikeReq = async (data) => {
   try {
-    const response = await instance.post("/like", data);
+    const response = await instance.post("/feed/like", data);
     return response;
   } catch (error) {
     return error.response;
@@ -11,7 +11,7 @@ export const addLikeReq = async (data) => {
 
 export const removeLikeReq = async (data) => {
   try {
-    const response = await instance.post("/unlike", data);
+    const response = await instance.post("/feed/unlike", data);
     return response;
   } catch (error) {
     return error.response;
