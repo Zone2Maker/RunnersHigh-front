@@ -12,7 +12,7 @@ export const navContainer = css`
   max-width: 600px;
   margin: 0 auto;
   
-  height: 90px;
+  height: 80px;
   background-color: #f8f8f8;
   border: none;
   
@@ -27,6 +27,7 @@ export const navItem = css`
   flex-direction: column;
   align-items: center;
   gap: 4px; /* 아이콘과 텍스트 사이 간격 */
+  margin-top: 8px;
   
   color: #555;
   font-size: 14px;
