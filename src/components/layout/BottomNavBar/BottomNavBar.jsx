@@ -1,6 +1,6 @@
-import React from "react";
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
+
 import {
   IoHomeOutline,
   IoPeopleOutline,
@@ -15,7 +15,7 @@ function BottomNavBar() {
 
   return (
     <nav css={s.navContainer}>
-      //현재 경로(pathname)에 따라 active 스타일을 적용
+      {/* 현재 경로(pathname)에 따라 active 스타일을 적용 */}
       <div
         css={[s.navItem, pathname === "/" && s.activeNavItem]}
         onClick={() => navigate("/")}

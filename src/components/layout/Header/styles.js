@@ -6,7 +6,7 @@ export const container = css`
 
   width: 100%;
   height: 80px;
-  background-color: #fff;
+  background-color: transparent;
 
   text-align: center;
   line-height: 80px;
