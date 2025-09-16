@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 
 export const container = css`
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   background-color: #efefef;
   /* background-color: #0d47a1; */
   display: flex;
@@ -16,14 +16,15 @@ export const container = css`
   box-sizing: border-box;
   cursor: pointer;
   transition: all 0.2s ease;
+  z-index: 10;
 
   &:hover {
     transform: translateY(-3px);
   }
 
   & > svg {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     color: #0d47a1;
     /* color: #efefef; */
   }
@@ -31,11 +32,11 @@ export const container = css`
 
 export const notiDot = css`
   position: absolute;
-  width: 13px;
-  height: 13px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
   background-color: #fc4747ff;
   box-shadow: 0 3px 3px 0 rgba(143, 143, 143, 0.25);
-  top: 2px;
-  right: 0;
+  top: 1px;
+  right: -1px;
 `;
