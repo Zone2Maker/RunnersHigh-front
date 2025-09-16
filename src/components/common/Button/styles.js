@@ -1,8 +1,7 @@
 import { css } from "@emotion/react";
 
 export const button = css`
-  /* 버튼을 담고있는 div가 flex여야 함 */
-  flex-grow: 1;
+  width: 100%;
   padding: 12px;
   border-radius: 10px;
   border: none;
