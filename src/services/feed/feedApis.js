@@ -11,15 +11,11 @@ export const addFeedReq = async (data) => {
 };
 
 // 피드 목록 조회
-export const getFeedListReq = async (
-  userId = null,
-  cursorFeedId = 0,
-  size = 12
-) => {
+export const getFeedListReq = async (userId, cursorFeedId, size) => {
   try {
     const response = await instance.get("/feed", {
       // 해당 값들은 파라미터로 받음
-      params: { userId, cursorFeedId, size },
+      params: { userId: userId, cursorFeedId: cursorFeedId, size: size },
     });
     return response;
   } catch (error) {
@@ -28,14 +24,10 @@ export const getFeedListReq = async (
 };
 
 // 내가 좋아요한 피드 목록 조회
-export const getILikedFeedListReq = async (
-  userId = null,
-  cursorFeedId = 0,
-  size = 12
-) => {
+export const getILikedFeedListReq = async (userId, cursorFeedId, size) => {
   try {
     const response = await instance.get("/feed/liked", {
-      params: { userId, cursorFeedId, size },
+      params: { userId: userId, cursorFeedId: cursorFeedId, size: size },
     });
     return response;
   } catch (error) {

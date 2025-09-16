@@ -9,11 +9,11 @@ export const addCrewReq = async (data) => {
   }
 };
 
-export const getCrewListReq = async (page, size, search, region) => {
+export const getCrewListReq = async (cursorCrewId, size, search, region) => {
   try {
     const response = await instance.get("/crew", {
       params: {
-        page: page,
+        cursorCrewId: cursorCrewId,
         size: size,
         search: search,
         region: region,
@@ -44,10 +44,10 @@ export const getWeeklyTopCrewsReq = async () => {
 };
 
 export const joinCrewReq = async (data) => {
-    try {
-        const response = await instance.post("/crew/join", data);
-        return response;
-    } catch (error) {
-        return error.response;
-    }
-}
+  try {
+    const response = await instance.post("/crew/join", data);
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};
