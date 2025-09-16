@@ -15,6 +15,7 @@ const Modal = ({ children, onClose }) => {
     }
   };
 
+  
   return (
     // 모달 바깥 영역 클릭 시 onClose 함수 호출
     <div css={s.backdrop} ref={modalBackground} onClick={handleBackdropClick}>
