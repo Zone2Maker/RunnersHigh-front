@@ -11,6 +11,7 @@ function App() {
       <BrowserRouter>
         <MainRouter />
       </BrowserRouter>
+      {/* 로그인 상태일 때 채팅 버튼 나타낼 곳 */}
     </QueryClientProvider>
   );
 }
