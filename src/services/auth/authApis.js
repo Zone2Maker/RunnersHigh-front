@@ -5,7 +5,7 @@ import { instance } from "../instance/instance";
 
 
 //회원가입
-export const signupRequest = async (data) => {
+export const signupReq = async (data) => {
   try {
     const response = await instance.post("/auth/join", data);
     return response;
@@ -15,7 +15,7 @@ export const signupRequest = async (data) => {
 };
 
 //로그인
-export const signinRequest = async (data) => {
+export const signinReq = async (data) => {
   try {
     const response = await instance.post("/auth/login", data);
     return response;
@@ -25,7 +25,7 @@ export const signinRequest = async (data) => {
 };
 
 //getPrincipal
-export const getPrincipalRequest = async () => {
+export const getPrincipalReq = async () => {
   try {
     const response = await instance.get("/principal"); 
     return response;
