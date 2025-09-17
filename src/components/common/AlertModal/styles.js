@@ -1,5 +1,4 @@
-import { css } from '@emotion/react';
-
+import { css } from "@emotion/react";
 
 // 모달 전체를 덮는 반투명 배경
 export const backdrop = css`
@@ -20,30 +19,21 @@ export const modalContent = css`
   position: relative;
   width: 90%;
   max-width: 420px;
-  height: 85%;
+  height: 30%;
   max-height: 700px;
   background-color: white;
   border-radius: 24px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
   display: flex;
+  gap: 20px;
   flex-direction: column;
-  overflow: hidden; /* 자식 요소가 border-radius를 넘지 않도록 */
-`;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 
-// 나가기 버튼
-export const leaveButton = css`
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 10;
+  > strong {
+    font-size: 17px;
+  }
 `;
 
 // 닫기 버튼 (X)
