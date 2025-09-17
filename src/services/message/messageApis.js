@@ -2,9 +2,8 @@ import { instance } from "../services/instance";
 
 export const getMessageListReq = async (crewId, cursorMessageId, size) => {
   try {
-    const response = await instance.get("/crew", {
+    const response = await instance.get(`/crew/${crewId}/messages`, {
       params: {
-        crewId: crewId,
         cursorMessageId: cursorMessageId,
         size: size,
       },
