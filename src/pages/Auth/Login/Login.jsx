@@ -8,47 +8,44 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  //로그인 입력값 유효성 검사
-  const loginOnClickHandler = () => {
+  // 로그인 입력값 유효성 검사
+  const loginOnClickHandler = (e) => {
+    e.preventDefault();
     console.log(email, password);
 
-    if(email.trim().length === 0 || password.trim().length === 0) {
-        alert("이메일 또는 비밀번호를 입력해주세요.")
-        return;
+    if (email.trim().length === 0 || password.trim().length === 0) {
+      alert("이메일 또는 비밀번호를 입력해주세요.");
+      return;
     } else {
-        //로그인 API 요청 보내기
-        //로그인 성공 시 accessToken 가져오기
-        loginReq({
-            email: email,
-            password: password,
-        })
-        .then((response) => {
-        console.log(response.data);
-        if (response.data.status === "success") {
-          alert(response.data.message);
-
-          //accessToken 가져오기
-          const accessToken = response.data.data;
-          localStorage.setItem("accessToken", accessToken)   
-          window.location.href= "/"     
-        } else if(response.data.status === "failed") {  
-          alert(response.data.message);
-          return;
-        }
+      // 로그인 API 요청 보내기
+      loginReq({
+        email: email,
+        password: password,
       })
-      .catch((error) => {      //서버에러
-        alert("문제가 발생했습니다.")
-        return;
-    })
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.status === "success") {
+            alert(response.data.message);
 
-  }
+            // accessToken 가져오기
+            const accessToken = response.data.data;
+            localStorage.setItem("accessToken", accessToken);
+            window.location.href = "/";
+          } else if (response.data.status === "failed") {
+            alert(response.data.message);
+            return;
+          }
+        })
+        .catch((error) => {
+          alert("문제가 발생했습니다.");
+          return;
+        });
+    }
+  };
 
 
-  // TODO: 로그인 로직 구현
   return (
     <div css={s.pageContainer}>
-      <header css={s.header}>LOGO</header>
-
       <main css={s.formContainer}>
         <h1 css={s.title}>Log in</h1>
         <form>
@@ -86,5 +83,7 @@ function Login() {
     </div>
   );
 }
+
+
 
 export default Login;

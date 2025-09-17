@@ -8,14 +8,14 @@ export const pageContainer = css`
   height: 100%;
 `;
 
-export const header = css`
-  background-color: #0d47a1;
-  color: white;
-  padding: 16px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-`;
+// export const header = css`
+//   background-color: #eee;
+//   color: white;
+//   padding: 16px;
+//   font-size: 1.5rem;
+//   font-weight: bold;
+//   text-align: center;
+// `;
 
 export const formContainer = css`
   padding: 40px 20px;
