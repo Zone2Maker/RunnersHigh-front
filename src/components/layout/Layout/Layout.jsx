@@ -11,7 +11,7 @@ import { usePrincipalState } from "../../../stores/usePrincipalState";
 function Layout() {
   const accessToken = localStorage.getItem("accessToken");
   const { login, logout } = usePrincipalState();
-  const { data, isLoading} = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["getPrincipal"],
     queryFn: getPrincipalReq,
     enabled: !!accessToken,
@@ -34,7 +34,9 @@ function Layout() {
       ) : (
         <>
           <Header />
-          <Outlet />
+          <main css={s.mainContainer}>
+            <Outlet />
+          </main>
           <BottomNavBar />
         </>
       )}
