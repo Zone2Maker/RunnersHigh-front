@@ -8,14 +8,7 @@ export const pageContainer = css`
   height: 100%;
 `;
 
-// export const header = css`
-//   background-color: #eee;
-//   color: white;
-//   padding: 16px;
-//   font-size: 1.5rem;
-//   font-weight: bold;
-//   text-align: center;
-// `;
+//헤더 - 공통컴포넌트 사용
 
 export const formContainer = css`
   padding: 40px 20px;

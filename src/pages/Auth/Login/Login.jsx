@@ -3,6 +3,7 @@ import { useState } from "react";
 import * as s from "./styles";
 import AuthInput from "../../../components/common/AuthInput/AuthInput";
 import BottomNavBar from "../../../components/layout/BottomNavBar/BottomNavBar";
+import { loginReq } from "../../../services/auth/AuthApis";
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -42,7 +43,6 @@ function Login() {
         });
     }
   };
-
 
   return (
     <div css={s.pageContainer}>
