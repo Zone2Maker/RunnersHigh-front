@@ -1,89 +1,55 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from "react";
+import { FcGoogle } from "react-icons/fc";
+import LoginForm from "./LoginForm/LoginForm";
 import * as s from "./styles";
-import AuthInput from "../../../components/common/AuthInput/AuthInput";
+import { SiNaver } from "react-icons/si";
+import { RiKakaoTalkFill } from "react-icons/ri";
 import BottomNavBar from "../../../components/layout/BottomNavBar/BottomNavBar";
-import { loginReq } from "../../../services/auth/AuthApis";
-import InputBox from "../../../components/common/InputBox/InputBox";
+import Header from "../../../components/layout/Header/Header";
+import ChatButton from "../../../components/layout/ChatButton/ChatButton";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  // 로그인 입력값 유효성 검사
-  const loginOnClickHandler = (e) => {
-    e.preventDefault();
-    console.log(email, password);
-
-    if (email.trim().length === 0 || password.trim().length === 0) {
-      alert("이메일 또는 비밀번호를 입력해주세요.");
-      return;
-    } else {
-      // 로그인 API 요청 보내기
-      loginReq({
-        email: email,
-        password: password,
-      })
-        .then((response) => {
-          console.log(response.data);
-          if (response.data.status === "success") {
-            alert(response.data.message);
-
-            // accessToken 가져오기
-            const accessToken = response.data.data;
-            localStorage.setItem("accessToken", accessToken);
-            window.location.href = "/";
-          } else if (response.data.status === "failed") {
-            alert(response.data.message);
-            return;
-          }
-        })
-        .catch((error) => {
-          alert("문제가 발생했습니다.");
-          return;
-        });
-    }
-  };
-
+  const [unReadCnt, setUnReadCnt] = useState(0);
+  const openChat = () => console.log("채팅방 열림");
   return (
     <div css={s.pageContainer}>
       <main css={s.formContainer}>
         <h1 css={s.title}>Log in</h1>
-        <form>
-          <InputBox>
-            <AuthInput
-              type="email"
-              placeholder="이메일"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <AuthInput
-              type="password"
-              placeholder="패스워드"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </InputBox>
-          <button type="submit" css={s.loginButton} onClick={loginOnClickHandler}>로그인</button>
-        </form>
+
+        <LoginForm />
 
         <div css={s.linksContainer}>
-          <a href="#signup">회원가입</a>
+          <Link to="/auth/join">회원가입</Link>
           <span>|</span>
-          <a href="#find-password">비밀번호 찾기</a>
+          <a href="">비밀번호 찾기</a>
         </div>
-        
+
         <section css={s.socialSection}>
-          <button css={[s.socialButton, s.google]}>G</button>
-          <button css={[s.socialButton, s.kakao]}> </button>
-          <button css={[s.socialButton, s.naver]}>N</button>
+          <a
+            href="http://localhost:8080/oauth2/authorization/google"
+            css={[s.socialButton, s.google]}
+          >
+            <FcGoogle size={25} css={s.google} />
+          </a>
+          <a
+            href="http://localhost:8080/oauth2/authorization/kakao"
+            css={[s.socialButton, s.kakao]}
+          >
+            <RiKakaoTalkFill size={25} css={s.kakao} />
+          </a>
+          <a
+            href="http://localhost:8080/oauth2/authorization/naver"
+            css={[s.socialButton, s.naver]}
+          >
+            <SiNaver size={25} css={s.naver} />
+          </a>
         </section>
       </main>
-      
+      <ChatButton unReadCnt={unReadCnt} openChat={openChat} />
     </div>
   );
 }
-
-
 
 export default Login;
