@@ -18,7 +18,7 @@ function Login() {
     } else {
         //로그인 API 요청 보내기
         //로그인 성공 시 accessToken 가져오기
-        loginreq({
+        loginReq({
             email: email,
             password: password,
         })
