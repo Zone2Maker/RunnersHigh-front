@@ -34,6 +34,12 @@ export const modalContent = css`
   > strong {
     font-size: 17px;
   }
+
+  > span,
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
 `;
 
 // 닫기 버튼 (X)
