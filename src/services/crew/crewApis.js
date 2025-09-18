@@ -34,9 +34,14 @@ export const getCrewByCrewReq = async (crewId) => {
   }
 };
 
-export const getWeeklyTopCrewsReq = async () => {
+export const getWeeklyTopCrewsReq = async (startDate, endDate) => {
   try {
-    const response = await instance.get("/crew/weekly-top");
+    const response = await instance.get("/crew/weekly-top", {
+      params: {
+        startDate,
+        endDate,
+      },
+    });
     return response;
   } catch (error) {
     return error.response;

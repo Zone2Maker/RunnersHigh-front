@@ -46,9 +46,11 @@ export const getFeedDetailReq = async (feedId) => {
 };
 
 // 주간 인기 피드 top 8 조회
-export const getWeeklyTopFeedReq = async () => {
+export const getWeeklyTopFeedReq = async (startDate, endDate) => {
   try {
-    const response = await instance.get("/feed/weekly-top");
+    const response = await instance.get("/feed/weekly-top", {
+      params: { startDate, endDate },
+    });
     return response;
   } catch (error) {
     return error.response;
