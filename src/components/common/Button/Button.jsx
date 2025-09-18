@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 
-function Button({ onClick, children }) {
+function Button({ onClick, isDisabled, children }) {
   return (
-    <button onClick={onClick} css={s.button}>
+    <button onClick={onClick} css={s.button} disabled={isDisabled}>
       {children}
     </button>
   );

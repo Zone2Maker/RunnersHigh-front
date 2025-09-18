@@ -9,4 +9,13 @@ export const button = css`
   color: #efefef;
   font-size: 18px;
   box-sizing: border-box;
+
+  &:hover {
+    background-color: #333;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
 `;
