@@ -1,15 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect, useState } from "react";
 import * as s from "./styles";
 import { useNavigate } from "react-router-dom";
-import {
-  getLastWeek,
-  getLastWeekStartAndEnd,
-  getThisWeekStartAndEnd,
-} from "../../../utils/dateUtils";
+import { getThisWeekStartAndEnd } from "../../../utils/dateUtils";
 import { useQuery } from "@tanstack/react-query";
 import { getWeeklyTopCrewsReq } from "../../../services/crew/crewApis";
-import { GoPeople } from "react-icons/go";
 import { CiMedal } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 
