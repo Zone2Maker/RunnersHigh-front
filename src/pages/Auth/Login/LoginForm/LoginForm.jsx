@@ -29,7 +29,7 @@ function LoginForm() {
     try {
       const response = await loginReq({ email, password });
 
-      if (response.status === 200) {
+      if (response.status === "success") {
         localStorage.setItem("accessToken", response.data.data);
         navigate("/");
       }
