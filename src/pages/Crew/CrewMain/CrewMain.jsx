@@ -4,14 +4,24 @@ import CrewContainer from "./CrewContainer/CrewContainer";
 import * as s from "./styles";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { GoPlus } from "react-icons/go";
+import { useState } from "react";
 
 function CrewMain() {
+  const [searchValue, setSearchValue] = useState("");
+  const [searchProp, setSearchProp] = useState("");
   return (
     <div css={s.container}>
       <div css={s.header}>
-        <div css={s.inputBox}>
+        <div
+          css={s.inputBox}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+        >
           <input type="text" />
-          <FaCircleArrowUp size={"30px"} />
+          <FaCircleArrowUp
+            size={"30px"}
+            onClick={() => (setSearchProp(searchValue))}
+          />
         </div>
         <div css={s.clickBox}>
           <span>
@@ -24,7 +34,7 @@ function CrewMain() {
           </span>
         </div>
       </div>
-      <CrewContainer />
+      <CrewContainer searchProp={searchProp}/>
     </div>
   );
 }

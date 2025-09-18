@@ -8,6 +8,7 @@ export const card = css`
   border-radius: 36px;
   overflow: hidden;
   box-shadow: 0px 5px 8px -5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
 `;
 
 export const imgBox = css`

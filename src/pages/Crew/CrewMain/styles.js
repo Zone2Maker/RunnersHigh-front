@@ -41,6 +41,7 @@ export const inputBox = css`
 
   > svg {
     color: #7f7f7f;
+    cursor: pointer;
   }
 `;
 
@@ -58,5 +59,6 @@ export const clickBox = css`
     color: #595959;
     padding: 5px;
     box-sizing: border-box;
+    cursor: pointer;
   }
 `;
