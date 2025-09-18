@@ -79,7 +79,7 @@ export const crewItem = (rank) => css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0; // 아이템 위아래로 여백을 줘서 공간 확보
+  padding: 15px 0; // 아이템 위아래로 여백을 줘서 공간 확보
   border-bottom: 1px solid #f0f0f0; // 얇은 구분선 추가
   font-weight: 500;
   color: #333;

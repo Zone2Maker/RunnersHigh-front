@@ -42,9 +42,14 @@ export const getWeeklyTopCrewsReq = async (startDate, endDate) => {
         endDate,
       },
     });
+    if (response.data.status === "failed") {
+      throw new Error(response.data.message);
+    }
+
     return response;
   } catch (error) {
-    return error.response;
+    console.log(error);
+    throw error; // 리액트 쿼리가 isError를 true로 만듦
   }
 };
 

@@ -12,7 +12,6 @@ function Home() {
       <WeeklyTopFeed />
       <WeeklyTopCrew />
       <Banner />
-      <div css={s.footer}></div>
     </div>
   );
 }

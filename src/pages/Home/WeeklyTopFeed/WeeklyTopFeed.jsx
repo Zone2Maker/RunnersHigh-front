@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect, useState } from "react";
 import * as s from "./styles";
 import { FiCamera } from "react-icons/fi";
 import { FaFireAlt } from "react-icons/fa";
