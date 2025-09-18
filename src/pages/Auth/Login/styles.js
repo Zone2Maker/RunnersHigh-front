@@ -1,50 +1,63 @@
 import { css } from "@emotion/react";
 
-export const mainContainer = css`
-  flex-grow: 1;
-  padding: 80px 20px;
+export const container = css`
+  width: 100%;
+  height: calc(100vh - 120px);
   display: flex;
   flex-direction: column;
-  align-items: center;         
+  justify-content: center;
+  align-items: center;
+  padding: 0 80px;
+  box-sizing: border-box;
+`;
+
+export const formContainer = css`
+  width: 100%;
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 export const title = css`
+  margin: 0;
+  padding: 0;
   text-align: center;
-  font-size: 2.2rem;
+  font-size: 46px;
   font-weight: 600;
-  margin-top: 150px;
-  margin-bottom: 60px;
+  margin-bottom: 24px;
 `;
 
-export const linksContainer = css`
+export const joinButton = css`
+  width: 100%;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 15px;
-  margin-top: 20px;
+  margin-top: 10px;
   margin-right: 10px;
-  font-size: 0.8rem;
+  font-size: 14px;
 
   a {
     color: #888;
     text-decoration: none;
-  }
 
-  span {
-    color: #ccc;
+    &:hover {
+      font-weight: 600;
+    }
   }
 `;
 
 export const socialSection = css`
+  width: 100%;
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-top: 40px;
+  gap: 46px;
+  margin-top: 15px;
 `;
 
 export const socialButton = css`
-  width: 50px;
-  height: 50px;
+  width: 53px;
+  height: 53px;
   border-radius: 50%;
   border: 1px solid #eee;
   background-color: white;
@@ -53,16 +66,25 @@ export const socialButton = css`
   align-items: center;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  color: white;
+
+  & > svg {
+    font-size: 30px;
+  }
 `;
 
 export const google = css`
-background-color: #F2F2F2;
-`
+  background-color: #f2f2f2;
+`;
 
 export const kakao = css`
-  background-color: #FEE500;
+  background-color: #fee500;
 `;
 
 export const naver = css`
-  background-color: #03C75A;
+  background-color: #03c75a;
+
+  & > svg {
+    font-size: 22px;
+  }
 `;
