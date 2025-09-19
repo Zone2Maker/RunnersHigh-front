@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 function Login() {
   return (
     <div css={s.container}>
-      {/* <div css={s.formContainer}> */}
       <h1 css={s.title}>Log in</h1>
 
       <LoginForm />
@@ -38,7 +37,6 @@ function Login() {
           <SiNaver css={s.naver} />
         </a>
       </div>
-      {/* </div> */}
     </div>
   );
 }

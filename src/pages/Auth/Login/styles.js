@@ -11,14 +11,6 @@ export const container = css`
   box-sizing: border-box;
 `;
 
-export const formContainer = css`
-  width: 100%;
-  margin: auto 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
 export const title = css`
   margin: 0;
   padding: 0;
