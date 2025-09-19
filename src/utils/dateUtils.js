@@ -61,3 +61,10 @@ export const getThisWeekStartAndEnd = (date) => {
 
   return { start, end };
 };
+
+// xxxx년 xx월 xx일 형식으로 바꿔주는 함수
+export const formatDate = (date) => {
+  const momentDate = moment(date);
+
+  return momentDate.format("YYYY년 MM월 DD일");
+};
