@@ -30,6 +30,8 @@ export const contentBox = css`
   gap: 5px;
   padding: 10px;
   box-sizing: border-box;
+  word-break: keep-all;
+  word-wrap: break-word;
 
   > span {
     display: flex;
@@ -46,8 +48,9 @@ export const contentBox = css`
   > div {
     display: flex;
     justify-content: space-between;
-    margin-left: 10px;
+    padding-left: 10px;
     font-size: 14px;
+    box-sizing: border-box;
 
     > p {
       margin: 0;
@@ -67,8 +70,100 @@ export const contentBox = css`
   }
 
   > p {
-    margin: 5px 0px 10px 10px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 5px 0px 10px 10px;
     font-size: 13px;
     color: #707070;
+  }
+`;
+
+export const cardDetail = css`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 50px 30px 30px 30px;
+  box-sizing: border-box;
+`;
+
+export const cardDetailImgBox = css`
+  width: 100%;
+  height: 195.8px;
+  border-radius: 20px;
+  overflow: hidden;
+
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
+export const cardDetailContentBox = css`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 15px 5px 20px 15px;
+  box-sizing: border-box;
+  word-break: keep-all;
+  word-wrap: break-word;
+
+  > span {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    font-size: 12px;
+    color: #8b8b8b;
+
+    > svg {
+      color: #515151ff;
+    }
+  }
+
+  > div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+
+    > p {
+      margin: 0;
+    }
+
+    > div {
+      display: flex;
+      align-items: center;
+      margin: 0;
+      gap: 3px;
+      color: #4c4c4c;
+      font-size: 18px;
+
+      > span:first-of-type {
+        color: #b6b6b6;
+      }
+    }
+  }
+
+  > p {
+    box-sizing: border-box;
+    margin: 0;
+    padding-top: 10px;
+    font-size: 15px;
+    color: #707070;
+  }
+`;
+
+export const cardDetailBtnBox = css`
+  text-align: center;
+  > button {
+    outline: none;
+    border: none;
+    border-radius: 40px;
+    font-size: 20px;
+    padding: 15px 70px;
+    background-color: #d9d9d9;
+    cursor: pointer;
   }
 `;

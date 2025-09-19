@@ -3,7 +3,6 @@ import { css } from "@emotion/react";
 export const container = css`
   width: 100%;
   height: 100%;
-  position: relative;
   margin-top: 143px;
 `;
 
@@ -69,9 +68,9 @@ export const dropdownBox = css`
   background: #fff;
   border-radius: 20px 0px 0px 20px;
   border: 1px solid #f0f0f0;
-  position: absolute;
-  top: -15px;
-  right: 10px;
+  position: fixed;
+  top: 185px;
+  right: 483.5px;
   width: 150px;
   height: 400px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.3);

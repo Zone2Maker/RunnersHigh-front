@@ -7,7 +7,7 @@ import { getCrewListReq } from "../../../../services/crew/crewApis";
 import AlertModal from "../../../../components/common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
 
-function CrewContainer({ searchProp, regionProp }) {
+function CrewContainer({  searchProp, regionProp }) {
   //refetch 문제 고민(중복된 값 crewList..)
   const size = 12;
   const [search, setSearch] = useState(null);
@@ -100,9 +100,7 @@ function CrewContainer({ searchProp, regionProp }) {
           crewList.map((crew) =>
             crew.crewStatus === "ACTIVE" ? (
               <CrewCard key={crew.crewId} crew={crew} isLoading={isLoading} />
-            ) : (
-              <></>
-            )
+            ) : null
           )
         ) : (
           <div css={s.empty}>

@@ -30,7 +30,7 @@ function CrewMain() {
     "세종",
     "제주",
   ];
-  const [isOpen, setIsOpen] = useState("");
+  const [isDropDownOpen, setIsDropDownOpen] = useState("");
 
   const searchOnClickHandler = () => {
     setSearchProp(searchValue);
@@ -38,12 +38,12 @@ function CrewMain() {
   };
 
   const dropdownOnClickHandler = () => {
-    setIsOpen(!isOpen);
+    setIsDropDownOpen(!isDropDownOpen);
   };
 
   const regionOnClickHandler = (region) => {
     setRegionProp(region);
-    setIsOpen(!isOpen);
+    setIsDropDownOpen(!isDropDownOpen);
   };
   return (
     <div css={s.container}>
@@ -70,7 +70,7 @@ function CrewMain() {
       <ul
         css={[
           s.dropdownBox,
-          isOpen && {
+          isDropDownOpen && {
             opacity: "1",
             visibility: "visible",
             transform: "translateY(0)",
