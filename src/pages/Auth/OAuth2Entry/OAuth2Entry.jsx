@@ -47,7 +47,7 @@ function OAuth2Entry() {
   const closeModal = () => {
     setIsModalOpen(false);
     if (modalContent.includes("회원가입 되었습니다.")) {
-      window.location.href = "/auth/login";
+      window.location.href = "/login";
     }
   };
 
@@ -88,10 +88,9 @@ function OAuth2Entry() {
             ) : (
               <BiSolidMessageSquareError
                 size={60}
-                style={{ color: "#2edf63" }}
+                style={{ color: "#2bd65e" }}
               />
             )}
-
             <span>{modalContent}</span>
           </div>
         </AlertModal>

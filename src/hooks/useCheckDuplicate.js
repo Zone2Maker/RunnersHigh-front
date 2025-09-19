@@ -7,7 +7,7 @@ export const useCheckDuplicate = () => {
   const [isAvailable, setIsAvailable] = useState(null);
   const [message, setMessage] = useState("");
 
-  const reset = async () => {
+  const reset = () => {
     setIsLoading(false);
     setIsAvailable(true);
     setMessage("");
