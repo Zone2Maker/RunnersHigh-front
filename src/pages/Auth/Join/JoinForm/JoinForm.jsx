@@ -7,122 +7,165 @@ import Button from "../../../../components/common/Button/Button";
 import { useCheckDuplicate } from "../../../../hooks/useCheckDuplicate";
 import { useNavigate } from "react-router-dom";
 import { joinReq } from "../../../../services/auth/AuthApis";
-import { checkUserExistReq } from "../../../../services/user/userApis";
 import AlertModal from "../../../../components/common/AlertModal/AlertModal";
+import { BiSolidMessageSquareError } from "react-icons/bi";
 
 function JoinForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isDisabled, setIsDisabled] = useState(true);
-  //   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState({
-    email: "",
-    password: "",
-  });
+  const [errorMessage, setErrorMessage] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState("");
+  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
+  const {
+    isLoading: isChecking,
+    isAvailable: isEmailAvailable,
+    message: apiMessage,
+    checkExist,
+    reset,
+  } = useCheckDuplicate();
+
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  const pwRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
 
   // 에러 메시지 조건 설정
   // 이메일, 비밀번호 형식 체크
   useEffect(() => {
-    setIsDisabled(false);
-    setErrorMessage({});
+    const newErrors = {};
 
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const pwRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
-
-    if (!emailRegex.test(email) && email.length > 0) {
-      setErrorMessage((prev) => ({
-        ...prev,
-        email: "올바르지 않은 이메일 형식입니다.",
-      }));
-      setIsDisabled(true);
+    if (email.length > 0) {
+      if (!emailRegex.test(email)) {
+        newErrors.email = "이메일 형식에 맞게 입력해주세요.";
+      }
     }
 
-    if (!pwRegex.test(password) && password.length > 0) {
-      setErrorMessage((prev) => ({
-        ...prev,
-        password: "비밀번호는 영문/숫자/특수기호 조합 8자리 이상이어야 합니다.",
-      }));
-      setIsDisabled(true);
+    if (password.length > 0) {
+      if (!pwRegex.test(password)) {
+        newErrors.password =
+          "비밀번호는 영문/숫자/특수기호 조합 8자리 이상이어야 합니다.";
+      }
     }
+
+    setErrorMessage(newErrors);
   }, [email, password]);
 
+  const emailOnBlurHandler = async (e) => {
+    const email = e.target.value;
+
+    // 이메일이 비어있지 않고, 형식에 맞을 때 검사
+    if (email && emailRegex.test(email)) {
+      checkExist("email", email);
+    } else {
+      reset();
+    }
+  };
+
   // 회원가입 버튼 클릭 시
-  const joinOnClickHandler = () => {
-    // 1. 입력값 유효성 검사
+  const joinOnClickHandler = async () => {
+    setModalContent("");
+    setIsError(false);
+
+    // 입력값 유효성 검사
     if (errorMessage.email || errorMessage.password || !email || !password) {
-      alert("이메일과 비밀번호를 올바르게 입력해주세요.");
+      setModalContent("이메일과 비밀번호를 올바르게 입력해주세요.");
+      setIsModalOpen(true);
       return;
     }
 
-    // 2. 이메일 중복 검사
-    checkUserExistReq(email, null)
-      .then((resp) => {
-        // 중복 이메일이 아니라면
-        if (resp.data.status === "success") {
-          // 회원가입 진행
-          joinReq({
-            email: email,
-            password: password,
-          })
-            .then((response) => {
-              console.log(response.data);
-              if (response.data.status === "success") {
-                alert(response.data.message);
-                navigate("/auth/login");
-              } else if (response.data.status === "failed") {
-                alert(response.data.message);
-                //요청은 성공 but 아이디/이메일 중복 확인에 걸렸을 때
-              }
-            })
-            .catch((error) => {
-              //요청 에러가 아닌 서버 에러
-              alert("문제가 발생했습니다. 다시 시도해주세요.");
-              return;
-            });
-        } else if (resp.data.status === "failed") {
-          alert("이미 사용중인 이메일입니다.");
-          return;
-          //   <AlertModal>
-          //     <div>사용중인 이메일</div>
-          //   </AlertModal>;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
+    if (isEmailAvailable !== true) {
+      setModalContent("이미 사용중인 이메일입니다.");
+      setIsModalOpen(true);
+      return;
+    }
+
+    try {
+      const joinResp = await joinReq({ email: email, password: password });
+
+      if (joinResp.data.status === "success") {
+        setModalContent("회원가입 되었습니다. 로그인을 진행해주세요.");
+        setIsModalOpen(true);
         setEmail("");
         setPassword("");
-        return;
-      });
+      } else if (joinResp.data.status === "failed") {
+        setIsError(true);
+        setModalContent(joinResp.data.message);
+        setIsModalOpen(true);
+      }
+    } catch (error) {
+      setIsError(true);
+      setModalContent(error.message || "오류가 발생했습니다.");
+      setIsModalOpen(true);
+    }
   };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    if (modalContent.includes("회원가입 되었습니다.")) {
+      navigate("/login");
+    }
+  };
+
+  // 버튼 비활성화 조건
+  const isDisabled =
+    isChecking ||
+    email.length === 0 ||
+    password.length === 0 ||
+    Object.keys(errorMessage).length > 0 ||
+    isEmailAvailable === false;
 
   return (
     <div css={s.joinForm}>
-      <InputBox>
-        <AuthInput
-          type="email"
-          placeholder="이메일"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <AuthInput
-          type="password"
-          placeholder="패스워드"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </InputBox>
-      {errorMessage.email ? <p css={s.error}>{errorMessage.email}</p> : <></>}
-      {errorMessage.password ? (
-        <p css={s.error}>{errorMessage.password}</p>
-      ) : (
-        <></>
-      )}
+      <div css={s.inputGroup}>
+        <InputBox>
+          <AuthInput
+            type="email"
+            placeholder="이메일"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onBlur={emailOnBlurHandler}
+          />
+          <AuthInput
+            type="password"
+            placeholder="패스워드"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </InputBox>
+      </div>
+      <div css={s.messageBox}>
+        {/* 정규식 에러 메시지 */}
+        {errorMessage.email && <p css={s.error}>{errorMessage.email}</p>}
+        {errorMessage.password && !errorMessage.email && (
+          <p css={s.error}>{errorMessage.password}</p>
+        )}
+        {/* 정규식 에러 없을 때만 중복 체크 */}
+        {!errorMessage.email && !errorMessage.password && apiMessage && (
+          <p css={isEmailAvailable ? s.check : s.error}>{apiMessage}</p>
+        )}
+      </div>
       <Button onClick={joinOnClickHandler} isDisabled={isDisabled}>
         회원가입
       </Button>
+      {isModalOpen && (
+        <AlertModal onClose={closeModal}>
+          <div css={s.alertContent}>
+            {isError ? (
+              <BiSolidMessageSquareError
+                size={60}
+                style={{ color: "#ff4d4d" }}
+              />
+            ) : (
+              <BiSolidMessageSquareError
+                size={60}
+                style={{ color: "#2bd65e" }}
+              />
+            )}
+
+            <span>{modalContent}</span>
+          </div>
+        </AlertModal>
+      )}
     </div>
   );
 }

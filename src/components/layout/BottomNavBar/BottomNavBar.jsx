@@ -50,8 +50,8 @@ function BottomNavBar() {
         </div>
       ) : (
         <div
-          css={[s.navItem, pathname === "/auth/login" && s.activeNavItem]}
-          onClick={() => navigate("/auth/login")}
+          css={[s.navItem, pathname === "/login" && s.activeNavItem]}
+          onClick={() => navigate("/login")}
         >
           <IoLogInOutline size={24} />
           <span>로그인</span>
