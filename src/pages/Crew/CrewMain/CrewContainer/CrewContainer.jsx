@@ -7,24 +7,18 @@ import { getCrewListReq } from "../../../../services/crew/crewApis";
 import AlertModal from "../../../../components/common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
 
-function CrewContainer({  searchProp, regionProp }) {
-  //refetch 문제 고민(중복된 값 crewList..)
+function CrewContainer({ searchProp, regionProp }) {
   const size = 12;
   const [search, setSearch] = useState(null);
   const [region, setRegion] = useState(null);
   const [crewList, setCrewList] = useState([]);
   const observerTarget = useRef(null);
-  /**
-   * data => crewList
-   * boolean hasNextPage
-   * fetchNextPage => 다음 페이지 요청
-   * **pageParam == nextCursorCrewId
-   */
+
   const { data, isError, isLoading, hasNextPage, fetchNextPage } =
     useInfiniteQuery({
-      queryKey: ["fetchList", size, search, region], //파라미터 명시 필요
+      queryKey: ["fetchList", size, search, region],
       queryFn: ({ pageParam = null, queryKey }) => {
-        const [, size, search, region] = queryKey; //배열
+        const [, size, search, region] = queryKey;
         return getCrewListReq(pageParam, size, search, region);
       },
       getNextPageParam: (lastPage) =>
@@ -32,7 +26,6 @@ function CrewContainer({  searchProp, regionProp }) {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       refetchOnMount: false,
-      //==data?.pages[마지막 페이지 index]?.data?.data?.nextCursorCrewId
     });
 
   useEffect(() => {
@@ -52,19 +45,14 @@ function CrewContainer({  searchProp, regionProp }) {
   }, [regionProp]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || isError) return;
 
-    if (isError) {
-      //모달
-      return;
-    }
-    console.log(data);
     const crewList = data?.pages[data.pages.length - 1]?.data?.data?.crewList;
     setCrewList((prev) => [...prev, ...crewList]);
   }, [data, isError, isLoading]);
 
   useEffect(() => {
-    if (!observerTarget.current) return; //DOM 아직 없으면?
+    if (!observerTarget.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -72,7 +60,7 @@ function CrewContainer({  searchProp, regionProp }) {
           fetchNextPage();
         }
       },
-      { threshold: 0.01 } //10%만 보여도 감지
+      { threshold: 0.01 }
     );
 
     observer.observe(observerTarget.current);

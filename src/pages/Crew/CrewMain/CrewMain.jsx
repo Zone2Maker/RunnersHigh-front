@@ -3,7 +3,6 @@ import { FaCircleArrowUp, FaPlus } from "react-icons/fa6";
 import CrewContainer from "./CrewContainer/CrewContainer";
 import * as s from "./styles";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { GoPlus } from "react-icons/go";
 import { useState } from "react";
 
 function CrewMain() {

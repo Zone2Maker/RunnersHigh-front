@@ -5,20 +5,22 @@ import { IoPersonOutline } from "react-icons/io5";
 import { useState } from "react";
 import PromptModal from "../../../../components/common/PromptModal/PromptModal";
 import { getCrewByCrewReq } from "../../../../services/crew/crewApis";
-import { useNavigate } from "react-router-dom";
+import AlertModal from "../../../../components/common/AlertModal/AlertModal";
+import { BiSolidMessageSquareError } from "react-icons/bi";
 
 function CrewCard({ crew, isLoading }) {
   const isFull = crew.currentMembers === crew.maxMembers;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [crewDetail, setCrewDetail] = useState({});
-  // const navigate = useNavigate();
+  const [errorMassage, setErrorMessage] = useState("");
 
   const handleOpenModal = () => {
     getCrewByCrewReq(crew.crewId).then((reponse) => {
       if (reponse.data.status === "failed") {
-        //모달
-        return;
+        setErrorMessage(reponse.data.message);
+        console.log(reponse.data.message);
       }
+
       setCrewDetail(reponse.data.data);
       setIsModalOpen(true);
     });
@@ -64,34 +66,45 @@ function CrewCard({ crew, isLoading }) {
               )}
             </div>
           </div>
-          {isModalOpen && (
-            <PromptModal onClose={() => setIsModalOpen(false)}>
-              <div css={s.cardDetail}>
-                <div>
-                  <div css={s.cardDetailImgBox}>
-                    <img src={crewDetail.crewImgUrl} alt="crewImg" />
-                  </div>
-                  <div css={s.cardDetailContentBox}>
-                    <span>
-                      <FaMapMarkerAlt size={"11px"} />
-                      {crewDetail.crewRegion}
-                    </span>
-                    <div>
-                      <p>{crewDetail.crewName}</p>
-                      <div>
-                        <IoPersonOutline size={"16px"} />
-                        <span>{crewDetail.currentMembers}</span>/
-                        <span>{crewDetail.maxMembers}</span>
-                      </div>
+          {errorMassage ? (
+            <AlertModal onClose={() => (window.location.href = "/crew")}>
+              <BiSolidMessageSquareError
+                size={"60px"}
+                style={{ color: "#ff4d4d" }}
+              />
+              <strong>{errorMassage}</strong>
+              <p>다시 시도해주세요.</p>
+            </AlertModal>
+          ) : (
+            isModalOpen && (
+              <PromptModal onClose={() => setIsModalOpen(false)}>
+                <div css={s.cardDetail}>
+                  <div>
+                    <div css={s.cardDetailImgBox}>
+                      <img src={crewDetail.crewImgUrl} alt="crewImg" />
                     </div>
-                    <p>{crewDetail.crewDetail}</p>
+                    <div css={s.cardDetailContentBox}>
+                      <span>
+                        <FaMapMarkerAlt size={"11px"} />
+                        {crewDetail.crewRegion}
+                      </span>
+                      <div>
+                        <p>{crewDetail.crewName}</p>
+                        <div>
+                          <IoPersonOutline size={"16px"} />
+                          <span>{crewDetail.currentMembers}</span>/
+                          <span>{crewDetail.maxMembers}</span>
+                        </div>
+                      </div>
+                      <p>{crewDetail.crewDetail}</p>
+                    </div>
+                  </div>
+                  <div css={s.cardDetailBtnBox}>
+                    <button>참여하기</button>
                   </div>
                 </div>
-                <div css={s.cardDetailBtnBox}>
-                  <button>참여하기</button>
-                </div>
-              </div>
-            </PromptModal>
+              </PromptModal>
+            )
           )}
         </>
       )}
