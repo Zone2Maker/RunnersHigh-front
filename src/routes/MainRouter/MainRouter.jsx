@@ -4,17 +4,20 @@ import AuthRouter from "../AuthRouter/AuthRouter";
 import CrewRouter from "../CrewRouter/CrewRouter";
 import FeedRouter from "../FeedRouter/FeedRouter";
 import Home from "../../pages/Home/Home";
+import ProfileRouter from "../ProfileRouter/ProfileRouter";
 
 function MainRouter() {
   return (
     <>
       <Routes>
+        {/* 최상위 라우트들, path에 "/"로 시작 */}
         <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
+          {/* index 사용시 기본 경로와 같다 */}
+          <Route index element={<Home />} />
           <Route path="/auth/*" element={<AuthRouter />} />
           <Route path="/crew/*" element={<CrewRouter />} />
           <Route path="/feed/*" element={<FeedRouter />} />
-          <Route path="/profile" />
+          <Route path="/profile/*" element={<ProfileRouter />} />
         </Route>
       </Routes>
     </>
