@@ -7,8 +7,13 @@ export const useCheckDuplicate = () => {
   const [isAvailable, setIsAvailable] = useState(null);
   const [message, setMessage] = useState("");
 
+  const reset = async () => {
+    setIsLoading(false);
+    setIsAvailable(true);
+    setMessage("");
+  };
+
   const checkExist = async (type, value) => {
-    console.log("호출?");
     // 함수 호출 시 입력값 유효성 검사
     if (!value || !value.trim()) {
       setIsAvailable(null);
@@ -29,7 +34,6 @@ export const useCheckDuplicate = () => {
 
     try {
       const resp = await checkUserExistReq(params.email, params.nickname);
-      console.log(resp);
       if (resp.data.status === "success") {
         setIsAvailable(true);
         setMessage(
@@ -50,5 +54,5 @@ export const useCheckDuplicate = () => {
     }
   };
 
-  return { isLoading, isAvailable, message, checkExist };
+  return { isLoading, isAvailable, message, checkExist, reset };
 };
