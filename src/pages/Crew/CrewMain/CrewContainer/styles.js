@@ -10,3 +10,15 @@ export const container = css`
   grid-template-columns: 1fr 1fr;
   gap: 15px;
 `;
+
+export const empty = css`
+  position: fixed;
+
+  p {
+    margin-left: 10px;
+  }
+
+  > h2 {
+    margin: 0px 0px 10px 10px;
+  }
+`;

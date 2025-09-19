@@ -9,6 +9,42 @@ import { useState } from "react";
 function CrewMain() {
   const [searchValue, setSearchValue] = useState("");
   const [searchProp, setSearchProp] = useState("");
+
+  const [regionProp, setRegionProp] = useState("");
+  const regionValue = [
+    "서울",
+    "부산",
+    "대구",
+    "인천",
+    "광주",
+    "대전",
+    "울산",
+    "경기",
+    "강원",
+    "충북",
+    "충남",
+    "전북",
+    "전남",
+    "경북",
+    "경남",
+    "세종",
+    "제주",
+  ];
+  const [isOpen, setIsOpen] = useState("");
+
+  const searchOnClickHandler = () => {
+    setSearchProp(searchValue);
+    window.scrollTo(0, 0);
+  };
+
+  const dropdownOnClickHandler = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const regionOnClickHandler = (region) => {
+    setRegionProp(region);
+    setIsOpen(!isOpen);
+  };
   return (
     <div css={s.container}>
       <div css={s.header}>
@@ -18,23 +54,38 @@ function CrewMain() {
           onChange={(e) => setSearchValue(e.target.value)}
         >
           <input type="text" />
-          <FaCircleArrowUp
-            size={"30px"}
-            onClick={() => (setSearchProp(searchValue))}
-          />
+          <FaCircleArrowUp size={"30px"} onClick={searchOnClickHandler} />
         </div>
         <div css={s.clickBox}>
           <span>
             NEW 크루
             <FaPlus size={"12px"} />
           </span>
-          <span>
+          <span onClick={dropdownOnClickHandler}>
             지역 선택
             <IoMdArrowDropdown />
           </span>
         </div>
       </div>
-      <CrewContainer searchProp={searchProp}/>
+      <ul
+        css={[
+          s.dropdownBox,
+          isOpen && {
+            opacity: "1",
+            visibility: "visible",
+            transform: "translateY(0)",
+          },
+        ]}
+      >
+        {regionValue.map((region, index) => {
+          return (
+            <li key={index} onClick={() => regionOnClickHandler(region)}>
+              {region}
+            </li>
+          );
+        })}
+      </ul>
+      <CrewContainer searchProp={searchProp} regionProp={regionProp} />
     </div>
   );
 }

@@ -4,12 +4,23 @@ import * as s from "./styles";
 import { IoPersonOutline } from "react-icons/io5";
 
 function CrewCard({ crew, isLoading }) {
+  const isFull = crew.currentMembers === crew.maxMembers;
+
   return (
     <>
       {isLoading ? (
         <div css={s.card}>스켈레톤</div>
       ) : (
-        <div css={s.card}>
+        <div
+          css={[
+            s.card,
+            isFull && {
+              opacity: "0.5",
+              pointerEvents: "none", // 클릭 막기
+              cursor: "not-allowed",
+            },
+          ]}
+        >
           <div css={s.imgBox}>
             <img src={crew.crewImgUrl} alt="crewImg" />
           </div>

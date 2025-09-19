@@ -7,7 +7,7 @@ import { getCrewListReq } from "../../../../services/crew/crewApis";
 import AlertModal from "../../../../components/common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
 
-function CrewContainer({ searchProp }) {
+function CrewContainer({ searchProp, regionProp }) {
   //refetch 문제 고민(중복된 값 crewList..)
   const size = 12;
   const [search, setSearch] = useState(null);
@@ -44,20 +44,23 @@ function CrewContainer({ searchProp }) {
   }, [searchProp]);
 
   useEffect(() => {
+    if (regionProp.trim().length === 0) {
+      return;
+    }
+    setCrewList([]);
+    setRegion(regionProp);
+  }, [regionProp]);
+
+  useEffect(() => {
     if (isLoading) return;
 
-    if (
-      isError ||
-      data?.pages[data.pages.length - 1]?.data?.status === "failed"
-    ) {
-      console.log(data?.pages[data.pages.length - 1]?.data?.status);
+    if (isError) {
+      //모달
       return;
     }
     console.log(data);
-    const slicedCrewList =
-      data?.pages[data.pages.length - 1]?.data?.data?.crewList.slice(0, -1) ??
-      [];
-    setCrewList((prev) => [...prev, ...slicedCrewList]);
+    const crewList = data?.pages[data.pages.length - 1]?.data?.data?.crewList;
+    setCrewList((prev) => [...prev, ...crewList]);
   }, [data, isError, isLoading]);
 
   useEffect(() => {
@@ -82,26 +85,34 @@ function CrewContainer({ searchProp }) {
   }, [fetchNextPage, hasNextPage, isLoading]);
 
   return (
-    <div css={s.container}>
-      {isError ||
-      data?.pages[data.pages.length - 1]?.data?.status === "failed" ? (
-        <AlertModal>
-          <BiSolidMessageSquareError
-            size={"60px"}
-            style={{ color: "#ff4d4d" }}
-          />
-          <strong>크루 목록을 불러올 수 없습니다.</strong>
-          <span>다시 시도해주세요.</span>
-        </AlertModal>
-      ) : crewList && crewList.length > 0 ? (
-        crewList.map((crew) => (
-          <CrewCard key={crew.crewId} crew={crew} isLoading={isLoading} />
-        ))
-      ) : (
-        <></>
-      )}
-      <div ref={observerTarget} style={{ height: "60px" }} />
-    </div>
+    <>
+      <div css={s.container}>
+        {isError ? (
+          <AlertModal>
+            <BiSolidMessageSquareError
+              size={"60px"}
+              style={{ color: "#ff4d4d" }}
+            />
+            <strong>크루 목록을 불러올 수 없습니다.</strong>
+            <p>다시 시도해주세요.</p>
+          </AlertModal>
+        ) : crewList && crewList.length > 0 ? (
+          crewList.map((crew) =>
+            crew.crewStatus === "ACTIVE" ? (
+              <CrewCard key={crew.crewId} crew={crew} isLoading={isLoading} />
+            ) : (
+              <></>
+            )
+          )
+        ) : (
+          <div css={s.empty}>
+            <h2>아직 등록된 크루가 없습니다.</h2>
+            <p>새로운 크루를 만들어보세요!</p>
+          </div>
+        )}
+      </div>
+      <div ref={observerTarget} style={{ height: "80px" }} />
+    </>
   );
 }
 
