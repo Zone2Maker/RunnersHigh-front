@@ -82,25 +82,25 @@ function CrewMain() {
             <IoMdArrowDropdown />
           </span>
         </div>
+        <ul
+          css={[
+            s.dropdownBox,
+            isDropDownOpen && {
+              opacity: "1",
+              visibility: "visible",
+              transform: "translateY(0)",
+            },
+          ]}
+        >
+          {regionValue.map((region, index) => {
+            return (
+              <li key={index} onClick={() => regionOnClickHandler(region)}>
+                {region}
+              </li>
+            );
+          })}
+        </ul>
       </div>
-      <ul
-        css={[
-          s.dropdownBox,
-          isDropDownOpen && {
-            opacity: "1",
-            visibility: "visible",
-            transform: "translateY(0)",
-          },
-        ]}
-      >
-        {regionValue.map((region, index) => {
-          return (
-            <li key={index} onClick={() => regionOnClickHandler(region)}>
-              {region}
-            </li>
-          );
-        })}
-      </ul>
       <CrewContainer searchProp={searchProp} regionProp={regionProp} />
       {errorMessage && isModalOpen && (
         <AlertModal onClose={() => setIsModalOpen(false)}>

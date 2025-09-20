@@ -68,9 +68,9 @@ export const dropdownBox = css`
   background: #fff;
   border-radius: 20px 0px 0px 20px;
   border: 1px solid #f0f0f0;
-  position: fixed;
-  top: 185px;
-  right: 483.5px;
+  position: absolute;
+  top: 128px;
+  right: 10px;
   width: 150px;
   height: 400px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.3);
