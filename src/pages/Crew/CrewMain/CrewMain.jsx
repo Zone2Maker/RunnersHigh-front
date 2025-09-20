@@ -4,8 +4,10 @@ import CrewContainer from "./CrewContainer/CrewContainer";
 import * as s from "./styles";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function CrewMain() {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [searchProp, setSearchProp] = useState("");
 
@@ -56,7 +58,7 @@ function CrewMain() {
           <FaCircleArrowUp size={"30px"} onClick={searchOnClickHandler} />
         </div>
         <div css={s.clickBox}>
-          <span>
+          <span onClick={() => navigate("/crew/new")}>
             NEW 크루
             <FaPlus size={"12px"} />
           </span>
