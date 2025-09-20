@@ -45,7 +45,8 @@ function BottomNavBar() {
           css={[s.navItem, pathname === "/profile" && s.activeNavItem]}
           onClick={() => navigate("/profile")}
         >
-          <IoPersonOutline size={24} />
+          {/* <IoPersonOutline size={24} /> */}
+          <img src={principal.profileImgUrl} css={s.profileImg} />
           <span>프로필</span>
         </div>
       ) : (

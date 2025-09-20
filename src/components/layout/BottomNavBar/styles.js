@@ -49,3 +49,10 @@ export const activeNavItem = css`
   color: #0d47a1; /* 활성화 상태 색상 */
   font-weight: bold;
 `;
+
+export const profileImg = css`
+  width: 26px;
+  border-radius: 50%;
+  aspect-ratio: 1;
+  object-fit: cover;
+`;

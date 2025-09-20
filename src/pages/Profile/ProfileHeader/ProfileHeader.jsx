@@ -7,7 +7,7 @@ import ProfileEditForm from "../ProfileEditForm/ProfileEditForm";
 function ProfileHeader() {
   const { principal } = usePrincipalState();
   // 프로필 수정 관리
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
   return (
     <ProfileCardLayout>
       {isEditing ? (

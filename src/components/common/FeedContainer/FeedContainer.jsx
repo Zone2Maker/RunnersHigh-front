@@ -70,7 +70,7 @@ function FeedContainer({ feeds, isLoading }) {
     setIsModalOpen(false);
   };
 
-  const handleImageError = (feedId) => {
+  const imageErrorHandler = (feedId) => {
     setImageErrors((prev) => new Set(prev).add(feedId));
   };
 
@@ -107,10 +107,9 @@ function FeedContainer({ feeds, isLoading }) {
               <>
                 <img
                   src={feed.feedImgUrl}
-                  alt={`${feed.feedId}`}
                   css={s.feedImage}
                   onError={() => {
-                    handleImageError(feed.feedId);
+                    imageErrorHandler(feed.feedId);
                   }}
                 />
                 <div css={s.likeInfo}>
