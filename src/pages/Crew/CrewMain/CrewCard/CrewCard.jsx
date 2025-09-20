@@ -12,7 +12,7 @@ function CrewCard({ crew }) {
   const isFull = crew.currentMembers === crew.maxMembers;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [crewDetail, setCrewDetail] = useState({});
-  const [errorMassage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleOpenModal = () => {
     getCrewByCrewReq(crew.crewId).then((reponse) => {
@@ -61,13 +61,13 @@ function CrewCard({ crew }) {
           )}
         </div>
       </div>
-      {errorMassage ? (
+      {errorMessage ? (
         <AlertModal onClose={() => (window.location.href = "/crew")}>
           <BiSolidMessageSquareError
             size={"60px"}
             style={{ color: "#ff4d4d" }}
           />
-          <strong>{errorMassage}</strong>
+          <strong>{errorMessage}</strong>
           <p>다시 시도해주세요.</p>
         </AlertModal>
       ) : (
