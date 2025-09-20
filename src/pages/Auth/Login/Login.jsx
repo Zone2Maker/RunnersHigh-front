@@ -14,7 +14,7 @@ function Login() {
       <LoginForm />
 
       <div css={s.joinButton}>
-        <Link to="/auth/join">회원가입</Link>
+        <Link to="/join">회원가입</Link>
       </div>
 
       <div css={s.socialSection}>
