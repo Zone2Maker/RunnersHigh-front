@@ -5,11 +5,17 @@ import * as s from "./styles";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePrincipalState } from "../../../stores/usePrincipalState";
+import AlertModal from "../../../components/common/AlertModal/AlertModal";
+import { BiSolidMessageSquareError } from "react-icons/bi";
 
 function CrewMain() {
+  const { principal } = usePrincipalState();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [searchProp, setSearchProp] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errorMessage, setErrerMessage] = useState("");
 
   const [regionProp, setRegionProp] = useState("");
   const regionValue = [
@@ -46,6 +52,15 @@ function CrewMain() {
     setRegionProp(region);
     setIsDropDownOpen(!isDropDownOpen);
   };
+
+  const newCrewOnClickHandler = () => {
+    if (principal.crewName) {
+      setErrerMessage("이미 함께하는 크루가 있어요!");
+      setIsModalOpen(true);
+      return;
+    }
+    navigate("/crew/new");
+  };
   return (
     <div css={s.container}>
       <div css={s.header}>
@@ -58,7 +73,7 @@ function CrewMain() {
           <FaCircleArrowUp size={"30px"} onClick={searchOnClickHandler} />
         </div>
         <div css={s.clickBox}>
-          <span onClick={() => navigate("/crew/new")}>
+          <span onClick={newCrewOnClickHandler}>
             NEW 크루
             <FaPlus size={"12px"} />
           </span>
@@ -87,6 +102,16 @@ function CrewMain() {
         })}
       </ul>
       <CrewContainer searchProp={searchProp} regionProp={regionProp} />
+      {errorMessage && isModalOpen && (
+        <AlertModal onClose={() => setIsModalOpen(false)}>
+          <BiSolidMessageSquareError
+            size={"60px"}
+            style={{ color: "#ff4d4d" }}
+          />
+          <strong>{errorMessage}</strong>
+          <p>기존 크루 탈퇴 후 다시 시도해주세요.</p>
+        </AlertModal>
+      )}
     </div>
   );
 }
