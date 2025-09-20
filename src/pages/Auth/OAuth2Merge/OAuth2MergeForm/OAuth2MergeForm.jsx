@@ -28,7 +28,6 @@ function OAuth2MergeForm() {
     console.log(searchParams.toString()); // searchParams 값 확인
   }, [searchParams]);
 
-
   // 비밀번호가 입력되었을 때만 버튼 활성화
   const isButtonDisabled = !password;
 
@@ -90,7 +89,7 @@ function OAuth2MergeForm() {
         <AuthInput
           type="email"
           placeholder="email@test.com(oauth로 받은 이메일정보)"
-          defaultvalue={email}
+          defaultValue={email}
           readOnly //사용자는 수정 불가
         />
         <AuthInput
