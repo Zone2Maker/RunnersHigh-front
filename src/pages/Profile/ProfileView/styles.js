@@ -1,5 +1,22 @@
 import { css } from "@emotion/react";
 
+export const noImageBox = css`
+  width: 115px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  opacity: 0.8;
+  font-size: 14px;
+
+  & > svg {
+    fill: #777;
+    font-size: 40px;
+  }
+`;
+
 export const profileImg = css`
   width: 115px;
   height: 115px;
@@ -11,6 +28,11 @@ export const profileImg = css`
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
+
+  & > svg {
+    fill: #777;
+    font-size: 40px;
+  }
 
   img {
     width: 100%;
@@ -36,19 +58,20 @@ export const nameEmailGroup = css`
 export const username = css`
   font-size: 26px;
   font-weight: 700;
-  color: #333;
   margin-bottom: 5px;
   display: flex;
   align-items: center;
   gap: 6px;
 
   svg {
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
-    transition: color 0.2s ease-in-out;
+    stroke: #0d47a1;
+    transform: translateY(1px);
+    transition: all 0.1s ease;
 
     :hover {
-      color: #0b3678ff;
+      stroke-width: 2.5px;
     }
   }
 `;
@@ -60,6 +83,7 @@ export const email = css`
   display: flex;
   align-items: center;
   gap: 5px;
+
   svg {
     color: #aaa;
   }
@@ -95,6 +119,12 @@ export const label = css`
   align-items: center;
   width: 86px;
   flex-shrink: 0;
+  color: #555;
+  font-weight: 500;
+
+  & > svg {
+    font-size: 16px;
+  }
 `;
 
 export const value = css`

@@ -51,14 +51,8 @@ export const getWeeklyTopFeedReq = async (startDate, endDate) => {
     const response = await instance.get("/feed/weekly-top", {
       params: { startDate, endDate },
     });
-
-    if (response.data.status === "failed") {
-      throw new Error(response.data.message);
-    }
-
     return response;
   } catch (error) {
     console.log(error);
-    throw error;
   }
 };

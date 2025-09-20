@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import ProfileTabs from "./ProfileTabs/ProfileTabs";
 import ProfileHeader from "./ProfileHeader/ProfileHeader";
 

@@ -6,7 +6,7 @@ export const container = css`
   margin: 0 20px;
   border-radius: 35px;
   border: 1px solid #e6e6e6ff;
-  background-color: #fafafaff;
+  background-color: #f5f5f5;
   box-sizing: border-box;
   color: #333;
   box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.25);

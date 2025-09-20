@@ -14,8 +14,8 @@ export const profileImg = css`
   aspect-ratio: 1;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  background-color: #d1e2fcff;
+  box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.25);
+  background-color: #e0e0e0;
 
   img {
     width: 100%;
@@ -25,7 +25,7 @@ export const profileImg = css`
 `;
 
 export const changeImageButton = css`
-  background-color: #ff8c00;
+  background-color: #0d47a1;
   color: #ffffff;
   border: none;
   border-radius: 16px;
@@ -37,8 +37,8 @@ export const changeImageButton = css`
   transition: background-color 0.2s ease-in-out;
 
   &:hover {
-    background-color: #fca235ff;
-    font-weight: 600;
+    background-color: #0a56c9ff;
+    font-weight: 500;
   }
 `;
 
@@ -135,7 +135,7 @@ export const saveButton = css`
   transition: background-color 0.2s ease-in-out;
 
   &:hover {
-    background-color: #1965d7ff;
+    background-color: #0a56c9ff;
   }
 
   &:disabled {
