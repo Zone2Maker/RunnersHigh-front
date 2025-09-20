@@ -27,6 +27,10 @@ export const navLink = (isActive) => css`
   &.active {
     color: #0d47a1;
     border-bottom: 2px solid #0d47a1;
+
+    & > svg {
+      fill: #0d47a1;
+    }
   }
 
   & :hover {
