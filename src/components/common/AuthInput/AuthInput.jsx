@@ -1,13 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 
-function AuthInput({ 
-  type = "text", 
-  placeholder, 
-  value, 
-  onChange, 
-  name, 
-  disabled = false 
+function AuthInput({
+  type = "text",
+  placeholder,
+  value,
+  onChange,
+  onBlur,
+  name,
+  disabled = false,
 }) {
   return (
     <input
@@ -16,6 +17,7 @@ function AuthInput({
       placeholder={placeholder}
       value={value}
       onChange={onChange}
+      onBlur={onBlur}
       name={name}
       disabled={disabled}
     />

@@ -1,17 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
+import { usePrincipalState } from "../../../stores/usePrincipalState";
 
 import {
   IoHomeOutline,
   IoPeopleOutline,
   IoImagesOutline,
   IoPersonOutline,
+  IoLogInOutline,
 } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function BottomNavBar() {
   const navigate = useNavigate(); //페이지 이동
   const { pathname } = useLocation(); //현재 URL 경로 정보
+  const { principal } = usePrincipalState();
 
   return (
     <nav css={s.navContainer}>
@@ -37,13 +40,23 @@ function BottomNavBar() {
         <IoImagesOutline size={24} />
         <span>피드</span>
       </div>
-      <div
-        css={[s.navItem, pathname === "/profile" && s.activeNavItem]}
-        onClick={() => navigate("/profile")}
-      >
-        <IoPersonOutline size={24} />
-        <span>프로필</span>
-      </div>
+      {principal !== null ? (
+        <div
+          css={[s.navItem, pathname === "/profile" && s.activeNavItem]}
+          onClick={() => navigate("/profile")}
+        >
+          <IoPersonOutline size={24} />
+          <span>프로필</span>
+        </div>
+      ) : (
+        <div
+          css={[s.navItem, pathname === "/login" && s.activeNavItem]}
+          onClick={() => navigate("/login")}
+        >
+          <IoLogInOutline size={24} />
+          <span>로그인</span>
+        </div>
+      )}
     </nav>
   );
 }

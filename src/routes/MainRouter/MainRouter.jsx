@@ -5,6 +5,8 @@ import CrewRouter from "../CrewRouter/CrewRouter";
 import FeedRouter from "../FeedRouter/FeedRouter";
 import Home from "../../pages/Home/Home";
 import ProfileRouter from "../ProfileRouter/ProfileRouter";
+import Join from "../../pages/Auth/Join/Join";
+import Login from "../../pages/Auth/Login/Login";
 
 function MainRouter() {
   return (
@@ -14,6 +16,8 @@ function MainRouter() {
         <Route element={<Layout />}>
           {/* index 사용시 기본 경로와 같다 */}
           <Route index element={<Home />} />
+          <Route path="/join" element={<Join />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/auth/*" element={<AuthRouter />} />
           <Route path="/crew/*" element={<CrewRouter />} />
           <Route path="/feed/*" element={<FeedRouter />} />
