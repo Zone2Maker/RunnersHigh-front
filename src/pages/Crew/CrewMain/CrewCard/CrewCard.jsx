@@ -54,8 +54,8 @@ function CrewCard({ crew }) {
               <span>{crew.currentMembers}</span>/<span>{crew.maxMembers}</span>
             </div>
           </div>
-          {crew.crewDetail.length > 38 ? (
-            <p>{crew.crewDetail.slice(0, 38)}...</p>
+          {crew.crewDetail.length > 18 ? (
+            <p>{crew.crewDetail.slice(0, 18)}...</p>
           ) : (
             <p>{crew.crewDetail}</p>
           )}
