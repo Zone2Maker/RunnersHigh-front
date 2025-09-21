@@ -12,6 +12,7 @@ import {
 import { useFirebaseUpload } from "../../../hooks/useFirebaseUpload";
 import { addCrewReq } from "../../../services/crew/crewApis";
 import { useNavigate } from "react-router-dom";
+import { SlPicture } from "react-icons/sl";
 
 function CrewRegister() {
   const { principal, logout } = usePrincipalState();
@@ -46,6 +47,7 @@ function CrewRegister() {
   const { progress, downloadUrl, error, isUploading, uploadFile } =
     useFirebaseUpload();
   const [imagePreview, setImagePreview] = useState("");
+  const [isImageError, setIsImageError] = useState(false);
   const fileInputRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState("");
@@ -125,8 +127,8 @@ function CrewRegister() {
         }
         return;
       }
-      setSuccessMessage(response.data.message); //홈화면으로 이동
-      setIsModalOpen(true);
+      setSuccessMessage(response.data.message);
+      setIsModalOpen(true); //모달 닫으면 홈화면으로 이동
     });
   };
 
@@ -135,8 +137,17 @@ function CrewRegister() {
       <div css={s.imgBox}>
         <p>대표사진</p>
         <div onClick={imageChangeOnClickHandler}>
-          {imagePreview ? (
-            <img src={imagePreview} alt="크루 대표사진 미리보기" />
+          {imagePreview && !isImageError ? (
+            <img
+              src={imagePreview}
+              alt="크루 대표사진 미리보기"
+              onError={() => setIsImageError(true)}
+            />
+          ) : isImageError ? (
+            <div css={s.noImgBox}>
+              <SlPicture />
+              <p>이미지를 불러올 수 없습니다</p>
+            </div>
           ) : (
             <CiCirclePlus />
           )}
@@ -243,7 +254,6 @@ function CrewRegister() {
           <p>채팅창에 접속하여 크루 활동을 시작하세요.</p>
         </AlertModal>
       )}
-      
     </div>
   );
 }

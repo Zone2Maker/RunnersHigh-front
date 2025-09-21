@@ -7,12 +7,14 @@ import PromptModal from "../../../../components/common/PromptModal/PromptModal";
 import { getCrewByCrewReq } from "../../../../services/crew/crewApis";
 import AlertModal from "../../../../components/common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
+import { SlPicture } from "react-icons/sl";
 
 function CrewCard({ crew }) {
   const isFull = crew.currentMembers === crew.maxMembers;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [crewDetail, setCrewDetail] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+  const [imageErrors, setImageErrors] = useState(new Set());
 
   const handleOpenModal = () => {
     getCrewByCrewReq(crew.crewId).then((reponse) => {
@@ -24,6 +26,10 @@ function CrewCard({ crew }) {
       setCrewDetail(reponse.data.data);
       setIsModalOpen(true);
     });
+  };
+
+  const imageErrorHandler = (crewId) => {
+    setImageErrors((prev) => new Set(prev).add(crewId));
   };
 
   return (
@@ -39,9 +45,22 @@ function CrewCard({ crew }) {
         ]}
         onClick={handleOpenModal}
       >
-        <div css={s.imgBox}>
-          <img src={crew.crewImgUrl} alt="crewImg" />
-        </div>
+        {imageErrors.has(crew.crewId) ? (
+          <div css={s.noImgBox}>
+            <SlPicture />
+            <p>이미지를 불러올 수 없습니다</p>
+          </div>
+        ) : (
+          <div css={s.imgBox}>
+            <img
+              src={crew.crewImgUrl}
+              alt="크루 대표사진"
+              onError={() => {
+                imageErrorHandler(crew.crewId);
+              }}
+            />
+          </div>
+        )}
         <div css={s.contentBox}>
           <span>
             <FaMapMarkerAlt size={"9px"} />
@@ -75,9 +94,22 @@ function CrewCard({ crew }) {
           <PromptModal onClose={() => setIsModalOpen(false)}>
             <div css={s.cardDetail}>
               <div>
-                <div css={s.cardDetailImgBox}>
-                  <img src={crewDetail.crewImgUrl} alt="crewImg" />
-                </div>
+                {imageErrors.has(crewDetail.crewId) ? (
+                  <div css={s.cardDetailNoImgBox}>
+                    <SlPicture />
+                    <p>이미지를 불러올 수 없습니다</p>
+                  </div>
+                ) : (
+                  <div css={s.cardDetailImgBox}>
+                    <img
+                      src={crewDetail.crewImgUrl}
+                      alt="크루 대표사진"
+                      onError={() => {
+                        imageErrorHandler(crewDetail.crewId);
+                      }}
+                    />
+                  </div>
+                )}
                 <div css={s.cardDetailContentBox}>
                   <span>
                     <FaMapMarkerAlt size={"11px"} />

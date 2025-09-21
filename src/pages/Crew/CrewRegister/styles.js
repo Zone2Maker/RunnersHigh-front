@@ -110,6 +110,22 @@ export const imgBox = css`
   }
 `;
 
+export const noImgBox = css`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #888;
+  opacity: 0.8;
+
+  > svg {
+    fill: #777;
+    font-size: 65px;
+  }
+`;
+
 export const dropdownBox = css`
   visibility: hidden;
   background-color: inherit;

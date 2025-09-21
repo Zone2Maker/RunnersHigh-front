@@ -9,16 +9,36 @@ export const card = css`
   overflow: hidden;
   box-shadow: 0px 5px 8px -5px rgba(0, 0, 0, 0.2);
   cursor: pointer;
+  border: 1px solid #e3e3e3;
 `;
 
 export const imgBox = css`
   width: 100%;
   height: 136.5px;
+  border-bottom: 1px solid #e3e3e3;
 
   > img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+`;
+
+export const noImgBox = css`
+  width: 100%;
+  height: 136.5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #888;
+  opacity: 0.8;
+  font-size: 12px;
+  border-bottom: 1px solid #e3e3e3;
+
+  > svg {
+    fill: #777;
+    font-size: 48px;
   }
 `;
 
@@ -98,6 +118,25 @@ export const cardDetailImgBox = css`
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+`;
+
+export const cardDetailNoImgBox = css`
+  width: 100%;
+  height: 195.8px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #888;
+  opacity: 0.8;
+  font-size: 15px;
+  border: 1px solid #888;
+
+  > svg {
+    fill: #777;
+    font-size: 55px;
   }
 `;
 
