@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 function CrewMain() {
   const { principal } = usePrincipalState();
@@ -74,15 +75,29 @@ function CrewMain() {
           <input type="text" />
           <FaCircleArrowUp size={"30px"} onClick={searchOnClickHandler} />
         </div>
-        <div css={s.clickBox}>
-          <span onClick={newCrewOnClickHandler}>
-            NEW 크루
-            <FaPlus size={"12px"} />
-          </span>
-          <span onClick={dropdownOnClickHandler}>
-            지역 선택
-            <IoMdArrowDropdown />
-          </span>
+        <div
+          css={[s.clickBox, regionProp && { justifyContent: "space-between" }]}
+        >
+          {regionProp ? (
+            <div
+              css={s.regionView}
+              onClick={() => (window.location.href = "/crew")}
+            >
+              <p>{regionProp} &times;</p>
+            </div>
+          ) : (
+            <></>
+          )}
+          <div>
+            <span onClick={newCrewOnClickHandler}>
+              NEW 크루
+              <FaPlus size={"12px"} />
+            </span>
+            <span onClick={dropdownOnClickHandler}>
+              지역 선택
+              <IoMdArrowDropdown />
+            </span>
+          </div>
         </div>
         <ul
           css={[
