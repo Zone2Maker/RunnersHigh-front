@@ -33,19 +33,25 @@ export const box = css`
     background-color: #d9d9d9;
     border-radius: 20px;
     box-sizing: border-box;
+    font-family: inherits;
+    font-size: 13px;
   }
 
   > input {
-    line-height: 15.9px;
+    line-height: 20px;
   }
 
   > textarea {
-    height: 100px;
+    line-height: 20px;
+    height: 104px;
     resize: none;
     font-family: inherit;
+    word-break: keep-all;
+    word-wrap: break-word;
   }
 
-  > textarea::placeholder {
+  > input::placeholder,
+  textarea::placeholder {
     font-size: 13px;
     font-family: inherits;
   }
@@ -56,20 +62,16 @@ export const box = css`
     align-items: center;
     position: relative;
 
-    > span {
-      font-size: 13px;
-    }
-
     > p {
       color: #000;
       margin: 0;
-      font-size: 13px;
     }
   }
 
   > button {
     font-size: 20px;
     color: #000;
+    cursor: pointer;
   }
 `;
 

@@ -5,10 +5,17 @@ import { CiCirclePlus } from "react-icons/ci";
 import { useRef, useState } from "react";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
-import { BiSolidMessageSquareError } from "react-icons/bi";
+import {
+  BiSolidMessageSquareCheck,
+  BiSolidMessageSquareError,
+} from "react-icons/bi";
+import { useFirebaseUpload } from "../../../hooks/useFirebaseUpload";
+import { addCrewReq } from "../../../services/crew/crewApis";
+import { useNavigate } from "react-router-dom";
 
 function CrewRegister() {
-  const { principal } = usePrincipalState();
+  const { principal, logout } = usePrincipalState();
+  const navigate = useNavigate();
   const [crewValue, setCrewValue] = useState({
     userId: principal?.userId,
     crewName: "",
@@ -36,11 +43,14 @@ function CrewRegister() {
     "세종",
     "제주",
   ];
-  const [imagePreview, setImagePreview] = useState(principal?.profileImgUrl);
+  const { progress, downloadUrl, error, isUploading, uploadFile } =
+    useFirebaseUpload();
+  const [imagePreview, setImagePreview] = useState("");
   const fileInputRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const regionOnClickHandler = (region) => {
     setCrewValue({ ...crewValue, crewRegion: region });
@@ -77,6 +87,49 @@ function CrewRegister() {
     }
   };
 
+  const enterOnKeyDownHandler = (e) => {
+    if (e.key === "enter") {
+      e.preventDefault();
+      return;
+    }
+  };
+
+  const maxMemberOnChangeHandler = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value) && (value === "" || Number(value) <= 100)) {
+      setCrewValue({ ...crewValue, maxMembers: value });
+    }
+  };
+
+  const registerOnClickHandler = async () => {
+    if (crewValue.crewImgUrl) {
+      const firebaseUrl = await uploadFile(crewValue.crewImgUrl, "profile-img");
+      crewValue.crewImgUrl = firebaseUrl; // 업로드 성공 시 파이어베이스 URL로 교체
+      console.log(crewValue.crewImgUrl);
+      if (error) {
+        setErrorMessage("이미지 업로드에 실패했습니다.");
+        setIsModalOpen(true);
+        return;
+      }
+    }
+
+    addCrewReq(crewValue).then((response) => {
+      if (response.data.status === "failed") {
+        setErrorMessage(response.data.message);
+        setIsModalOpen(true);
+        if (
+          response.data.message ===
+          "로그인 정보가 유효하지 않거나 권한이 없습니다."
+        ) {
+          logout();
+        }
+        return;
+      }
+      setSuccessMessage(response.data.message); //홈화면으로 이동
+      setIsModalOpen(true);
+    });
+  };
+
   return (
     <div css={s.container}>
       <div css={s.imgBox}>
@@ -103,15 +156,21 @@ function CrewRegister() {
           onChange={(e) =>
             setCrewValue({ ...crewValue, crewName: e.target.value })
           }
+          maxLength="25"
+          placeholder="크루를 대표하는 이름을 입력하세요. (25자 이내)"
         />
       </div>
       <div css={s.box}>
         <p>크루 소개</p>
         <textarea
+          onKeyDown={enterOnKeyDownHandler}
           onChange={(e) =>
             setCrewValue({ ...crewValue, crewDetail: e.target.value })
           }
-          placeholder="소개 문구를 입력하세요. (150자 내)"
+          placeholder="소개 문구를 입력하세요. (100자  이내)"
+          maxLength="100"
+          spellCheck="false"
+          rows={5}
         ></textarea>
       </div>
       <div css={s.box}>
@@ -145,17 +204,26 @@ function CrewRegister() {
         </div>
       </div>
       <div css={s.box}>
-        <p>최대 인원수(100명 이하)</p>
+        <p>최대 인원수</p>
         <input
           type="text"
-          onChange={(e) =>
-            setCrewValue({ ...crewValue, maxMembers: e.target.value })
-          }
+          value={crewValue.maxMembers}
+          onChange={maxMemberOnChangeHandler}
+          placeholder="인원을 입력하세요. (최대 100명)"
         />
       </div>
       <div css={s.box}>
-        <button>등록하기</button>
+        <button onClick={registerOnClickHandler}>등록하기</button>
       </div>
+      {!principal && (
+        <AlertModal onClose={() => navigate("/login")}>
+          <BiSolidMessageSquareError
+            size={"60px"}
+            style={{ color: "#ff4d4d" }}
+          />
+          <strong>로그인 후 이용 가능합니다.</strong>
+        </AlertModal>
+      )}
       {errorMessage && isModalOpen && (
         <AlertModal onClose={() => setIsModalOpen(false)}>
           <BiSolidMessageSquareError
@@ -165,6 +233,17 @@ function CrewRegister() {
           <strong>{errorMessage}</strong>
         </AlertModal>
       )}
+      {successMessage && (
+        <AlertModal onClose={() => navigate("/")}>
+          <BiSolidMessageSquareCheck
+            size={"60px"}
+            style={{ color: "#125bc8" }}
+          />
+          <strong>{successMessage}</strong>
+          <p>채팅창에 접속하여 크루 활동을 시작하세요.</p>
+        </AlertModal>
+      )}
+      
     </div>
   );
 }
