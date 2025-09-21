@@ -8,7 +8,7 @@ function OAuth2Redirect() {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const accessToken = searchParams.get("token");
+    const accessToken = searchParams.get("accessToken");
 
     if (accessToken) {
       localStorage.setItem("accessToken", accessToken);
