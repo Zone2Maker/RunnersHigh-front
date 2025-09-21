@@ -8,7 +8,13 @@ function ProfileView({ principal, setIsEditing }) {
   return (
     <>
       <div css={s.profileImg}>
-        <img src={`${principal?.profileImgUrl}`} alt="프로필 이미지" />
+        <img
+          src={`${principal?.profileImgUrl}`}
+          onError={(e) => {
+            e.target.onerror = null; // 무한 루프 방지
+            e.target.src = import.meta.env.VITE_PROFILE_DEFAULT_IMG;
+          }}
+        />
       </div>
       <div css={s.userInfo}>
         <div css={s.nameEmailGroup}>

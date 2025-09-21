@@ -1,4 +1,4 @@
-import { instance } from "../services/instance";
+import { instance } from "../instance/instance";
 
 export const addLikeReq = async (data) => {
   try {

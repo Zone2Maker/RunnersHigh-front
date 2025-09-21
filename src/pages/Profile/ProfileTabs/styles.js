@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 export const container = css`
   width: 100%;
   height: 50px;
-  background-color: #f0f0f0ff;
+  background-color: #f5f5f5;
   display: flex;
   align-items: center;
   border-bottom: 1px solid #e0e0e0;
@@ -27,6 +27,10 @@ export const navLink = (isActive) => css`
   &.active {
     color: #0d47a1;
     border-bottom: 2px solid #0d47a1;
+
+    & > svg {
+      fill: #0d47a1;
+    }
   }
 
   & :hover {

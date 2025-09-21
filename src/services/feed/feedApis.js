@@ -24,10 +24,10 @@ export const getFeedListReq = async (userId, cursorFeedId, size) => {
 };
 
 // 내가 좋아요한 피드 목록 조회
-export const getILikedFeedListReq = async (userId, cursorFeedId, size) => {
+export const getILikedFeedListReq = async (cursorFeedId, size) => {
   try {
     const response = await instance.get("/feed/liked", {
-      params: { userId: userId, cursorFeedId: cursorFeedId, size: size },
+      params: { cursorFeedId: cursorFeedId, size: size },
     });
     return response;
   } catch (error) {
@@ -51,14 +51,8 @@ export const getWeeklyTopFeedReq = async (startDate, endDate) => {
     const response = await instance.get("/feed/weekly-top", {
       params: { startDate, endDate },
     });
-
-    if (response.data.status === "failed") {
-      throw new Error(response.data.message);
-    }
-
     return response;
   } catch (error) {
     console.log(error);
-    throw error;
   }
 };

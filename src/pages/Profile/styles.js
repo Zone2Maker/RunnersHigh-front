@@ -18,5 +18,8 @@ export const profileMain = css`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  border-top-left-radius: 35px;
+  border-top-right-radius: 35px;
+  box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.25);
+  border: 1px solid #e6e6e6ff;
 `;

@@ -7,13 +7,13 @@ export const container = css`
 
   width: 100%;
   height: 60px;
-  padding: 0 10px;
+  padding: 0 20px;
   background-color: #fefefe;
   z-index: 10;
 
-  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 5px 7px -5px rgba(0, 0, 0, 0.2);
 
-  & > p {
+  & > span {
     padding: 0;
     margin: 0;
     text-align: left;
@@ -21,5 +21,6 @@ export const container = css`
     font-size: 28px;
     font-weight: 800;
     color: #0d47a1;
+    cursor: pointer;
   }
 `;

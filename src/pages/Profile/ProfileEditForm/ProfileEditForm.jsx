@@ -6,8 +6,11 @@ import * as s from "./styles";
 import { useRef, useState } from "react";
 import { queryClient } from "../../../configs/queryClient";
 import { updateUserReq } from "../../../services/user/userApis";
+import AlertModal from "../../../components/common/AlertModal/AlertModal";
+import { BiSolidMessageSquareError } from "react-icons/bi";
 
 function ProfileEditForm({ principal, onCancel }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChanged, setIsChanged] = useState(false); // 닉네임, 프로필 변경 사항이 상태 관리
 
   const [nickname, setNickname] = useState(principal?.username);
@@ -62,7 +65,7 @@ function ProfileEditForm({ principal, onCancel }) {
       const fileSize = file.size;
 
       if (fileSize > maxSize) {
-        alert("5MB이내의 사진만 업로드 가능합니다.");
+        setIsModalOpen(true);
         e.target.value = "";
         return;
       }
@@ -148,7 +151,13 @@ function ProfileEditForm({ principal, onCancel }) {
     <>
       <div css={s.profileImgBox}>
         <div css={s.profileImg}>
-          <img src={imagePreview} alt="프로필 미리보기" />
+          <img
+            src={imagePreview}
+            onError={(e) => {
+              e.target.onerror = null; // 무한 루프 방지
+              e.target.src = import.meta.env.VITE_PROFILE_DEFAULT_IMG;
+            }}
+          />
         </div>
         <button css={s.changeImageButton} onClick={imageChangeOnClickHandler}>
           이미지 변경
@@ -200,17 +209,24 @@ function ProfileEditForm({ principal, onCancel }) {
             // nicknameError => true취급. ! -> false, !! -> true
             disabled={
               isChecking || // 중복 검사 중이거나
-              (nickname !== principal.username && !isNicknameAvailable) || // 닉네임이 바뀌었을 때만 중복 여부 검사
+              (nickname !== principal?.username && !isNicknameAvailable) || // 닉네임이 바뀌었을 때만 중복 여부 검사
               !!nicknameError || // 닉네임 길이에 에러가 있거나
               !isChanged // 닉네임, 이미지 둘 다 변경사항이 없으면
             }
           >
-            {isProfileImgUploading || updateUserMutation.isLoading
-              ? "저장 중.."
-              : "저장"}
+            {isProfileImgUploading ? `${imgUploadingProgress}%` : "저장"}
           </button>
         </div>
       </div>
+      {isModalOpen && (
+        <AlertModal onClose={() => setIsModalOpen(false)}>
+          <BiSolidMessageSquareError
+            size={"60px"}
+            style={{ fill: "#ff4d4d" }}
+          />
+          <strong>5MB이내의 사진만 업로드 가능합니다.</strong>
+        </AlertModal>
+      )}
     </>
   );
 }
