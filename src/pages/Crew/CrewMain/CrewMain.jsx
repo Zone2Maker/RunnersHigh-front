@@ -1,5 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { FaCircleArrowUp, FaPlus } from "react-icons/fa6";
+
+import { useFirebaseUpload } from "../../../hooks/useFirebaseUpload";
 import CrewContainer from "./CrewContainer/CrewContainer";
 import * as s from "./styles";
 import { IoMdArrowDropdown } from "react-icons/io";
@@ -54,7 +56,7 @@ function CrewMain() {
   };
 
   const newCrewOnClickHandler = () => {
-    if (principal.crewName) {
+    if (principal?.crewId) {
       setErrerMessage("이미 함께하는 크루가 있어요!");
       setIsModalOpen(true);
       return;
