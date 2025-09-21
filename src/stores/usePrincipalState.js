@@ -11,6 +11,6 @@ export const usePrincipalState = create((set) => ({
     localStorage.removeItem("accessToken");
     queryClient.removeQueries(); //캐시 제거
     set({ isAuthenticated: false, principal: null });
-    window.location.href = "/auth/login";
+    window.location.href = "/login";
   },
 }));

@@ -10,7 +10,7 @@ function ProtectedRoutes({ children }) {
 
   if (principalData === undefined) {
     return (
-      <AlertModal onClose={() => navigate("/auth/login")}>
+      <AlertModal onClose={() => navigate("/login")}>
         <BiSolidMessageSquareError size={"60px"} style={{ color: "#ff4d4d" }} />
         <strong>로그인 후 이용 가능한 서비스입니다.</strong>
       </AlertModal>
