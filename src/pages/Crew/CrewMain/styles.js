@@ -46,20 +46,40 @@ export const inputBox = css`
 `;
 
 export const clickBox = css`
-  width: 100%;
   display: flex;
   justify-content: right;
-  gap: 10px;
-  box-sizing: border-box;
 
-  > span {
+  > div {
     display: flex;
     align-items: center;
-    font-size: 15px;
+    gap: 5px;
     color: #595959;
+
+    > span {
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      padding: 5px;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+  }
+`;
+
+export const regionView = css`
+  margin-left: 5px;
+  padding: 0px 5px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid #e3e3e3;
+  cursor: pointer;
+
+  > p {
+    margin: 0;
+    font-size: 13px;
+    color: #8b8b8b;
     padding: 5px;
     box-sizing: border-box;
-    cursor: pointer;
   }
 `;
 
@@ -68,9 +88,9 @@ export const dropdownBox = css`
   background: #fff;
   border-radius: 20px 0px 0px 20px;
   border: 1px solid #f0f0f0;
-  position: fixed;
-  top: 185px;
-  right: 483.5px;
+  position: absolute;
+  top: 128px;
+  right: 10px;
   width: 150px;
   height: 400px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.3);
