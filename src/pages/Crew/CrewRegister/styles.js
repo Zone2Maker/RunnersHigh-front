@@ -33,27 +33,21 @@ export const box = css`
     background-color: #d9d9d9;
     border-radius: 20px;
     box-sizing: border-box;
-    font-family: inherits;
-    font-size: 13px;
+    font-size: 14px;
   }
 
   > input {
     line-height: 20px;
+    font-family: inherit;
   }
 
   > textarea {
     line-height: 20px;
     height: 104px;
     resize: none;
-    font-family: inherit;
     word-break: keep-all;
     word-wrap: break-word;
-  }
-
-  > input::placeholder,
-  textarea::placeholder {
-    font-size: 13px;
-    font-family: inherits;
+    font-family: inherit;
   }
 
   > div {

@@ -18,7 +18,7 @@ function CrewRegister() {
   const { principal, logout } = usePrincipalState();
   const navigate = useNavigate();
   const [crewValue, setCrewValue] = useState({
-    userId: principal?.userId,
+    userId: principal?.userId ?? null,
     crewName: "",
     crewDetail: "",
     crewImgUrl: "",
@@ -46,6 +46,7 @@ function CrewRegister() {
   ];
   const { progress, downloadUrl, error, isUploading, uploadFile } =
     useFirebaseUpload();
+  const [profileImageFile, setProfileImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [isImageError, setIsImageError] = useState(false);
   const fileInputRef = useRef(null);
@@ -69,6 +70,7 @@ function CrewRegister() {
 
   const fileOnChangeHandler = (e) => {
     const file = e.target.files[0];
+    console.log(file);
     if (file) {
       const maxSize = 5 * 1024 * 1024;
       const fileSize = file.size;
@@ -85,7 +87,7 @@ function CrewRegister() {
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
-      setCrewValue({ ...crewValue, crewImgUrl: file });
+      setProfileImageFile(file);
     }
   };
 
@@ -98,16 +100,16 @@ function CrewRegister() {
 
   const maxMemberOnChangeHandler = (e) => {
     const value = e.target.value;
-    if (/^\d*$/.test(value) && (value === "" || Number(value) <= 100)) {
+    if (value === "" || (/^[1-9]\d*$/.test(value) && Number(value) <= 100)) {
       setCrewValue({ ...crewValue, maxMembers: value });
     }
   };
 
   const registerOnClickHandler = async () => {
-    if (crewValue.crewImgUrl) {
-      const firebaseUrl = await uploadFile(crewValue.crewImgUrl, "profile-img");
-      crewValue.crewImgUrl = firebaseUrl; // 업로드 성공 시 파이어베이스 URL로 교체
-      console.log(crewValue.crewImgUrl);
+    if (profileImageFile) {
+      const firebaseUrl = await uploadFile(profileImageFile, "profile-img");
+      setCrewValue({ ...crewValue, crewImgUrl: firebaseUrl });
+
       if (error) {
         setErrorMessage("이미지 업로드에 실패했습니다.");
         setIsModalOpen(true);
