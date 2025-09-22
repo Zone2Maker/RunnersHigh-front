@@ -37,7 +37,6 @@ export const connectStomp = (crewId, onSubscribeCallback) => {
   client.activate();
 };
 
-
 //발행
 export const publishStomp = (crewId, data) => {
   if (!client || !client.connected || !subscription) {
