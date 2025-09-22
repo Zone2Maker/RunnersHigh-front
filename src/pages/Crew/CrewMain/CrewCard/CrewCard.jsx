@@ -46,6 +46,10 @@ function CrewCard({ crew }) {
   };
 
   const joinOnClickHandler = () => {
+    if (!principal) {
+      setErrorMessage("크루에 가입하고 싶다면 로그인을 진행해주세요.");
+      return;
+    }
     joinCrewReq({
       crewId: crewDetail.crewId,
       userId: principal?.userId,
@@ -155,13 +159,13 @@ function CrewCard({ crew }) {
           </div>
         </PromptModal>
       )}
-      {!principal && (
+      {errorMessage && !principal && (
         <AlertModal onClose={() => navigate("/login")}>
           <BiSolidMessageSquareError
             size={"60px"}
             style={{ color: "#ff4d4d" }}
           />
-          <strong>크루에 가입하고 싶다면 로그인을 진행해주세요.</strong>
+          <strong>{errorMessage}</strong>
         </AlertModal>
       )}
       {errorMessage && isAlertModalOpen && (
