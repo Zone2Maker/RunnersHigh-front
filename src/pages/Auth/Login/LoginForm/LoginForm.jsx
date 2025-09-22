@@ -33,7 +33,7 @@ function LoginForm() {
 
     try {
       const response = await loginReq({ email, password });
-      console.log(response);
+
       if (response.data.status === "success") {
         localStorage.setItem("accessToken", response.data.data);
         window.location.replace("/");

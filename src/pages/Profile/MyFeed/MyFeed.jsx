@@ -15,11 +15,11 @@ function MyFeed() {
   const observerTarget = useRef(null);
   const { principal } = usePrincipalState();
 
-  const { data, isError, isLoading, hasNextPage, fetchNextPage } =
+const { data, isError, isLoading, hasNextPage, fetchNextPage } =
     useInfiniteQuery({
-      queryKey: ["feedList", principal?.userId, size],
+      queryKey: ["feeds", "my", principal?.userId, size],
       queryFn: ({ pageParam = null, queryKey }) => {
-        const [, userId, size] = queryKey;
+        const [, , userId, size] = queryKey;
         return getFeedListReq(userId, pageParam, size);
       },
       getNextPageParam: (lastPage) =>

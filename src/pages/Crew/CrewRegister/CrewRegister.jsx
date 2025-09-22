@@ -70,7 +70,7 @@ function CrewRegister() {
 
   const fileOnChangeHandler = (e) => {
     const file = e.target.files[0];
-    console.log(file);
+
     if (file) {
       const maxSize = 5 * 1024 * 1024;
       const fileSize = file.size;

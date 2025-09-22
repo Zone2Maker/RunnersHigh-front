@@ -11,11 +11,15 @@ export const addFeedReq = async (data) => {
 };
 
 // 피드 목록 조회
-export const getFeedListReq = async (userId, cursorFeedId, size) => {
+export const getFeedListReq = async (targetUserId, cursorFeedId, size) => {
   try {
     const response = await instance.get("/feed", {
       // 해당 값들은 파라미터로 받음
-      params: { userId: userId, cursorFeedId: cursorFeedId, size: size },
+      params: {
+        targetUserId: targetUserId,
+        cursorFeedId: cursorFeedId,
+        size: size,
+      },
     });
     return response;
   } catch (error) {

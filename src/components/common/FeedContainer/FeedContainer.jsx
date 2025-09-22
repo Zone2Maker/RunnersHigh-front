@@ -60,7 +60,7 @@ function FeedContainer({ feeds, isLoading }) {
             userId: principal.userId,
           });
         }
-        queryClient.invalidateQueries(["feedList", principal?.userId]);
+        queryClient.invalidateQueries(["feed"]);
       } catch (error) {
         console.error("좋아요 상태 변경 실패:", error);
       }
