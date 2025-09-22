@@ -13,6 +13,7 @@ import { useFirebaseUpload } from "../../../hooks/useFirebaseUpload";
 import { addCrewReq } from "../../../services/crew/crewApis";
 import { useNavigate } from "react-router-dom";
 import { SlPicture } from "react-icons/sl";
+import { queryClient } from "../../../configs/queryClient";
 
 function CrewRegister() {
   const { principal, logout } = usePrincipalState();
@@ -117,21 +118,26 @@ function CrewRegister() {
       }
     }
 
-    addCrewReq(crewValue).then((response) => {
-      if (response.data.status === "failed") {
-        setErrorMessage(response.data.message);
-        setIsModalOpen(true);
-        if (
-          response.data.message ===
-          "로그인 정보가 유효하지 않거나 권한이 없습니다."
-        ) {
-          logout();
+    addCrewReq(crewValue)
+      .then((response) => {
+        if (response.data.status === "failed") {
+          setErrorMessage(response.data.message);
+          setIsModalOpen(true);
+          if (
+            response.data.message ===
+            "로그인 정보가 유효하지 않거나 권한이 없습니다."
+          ) {
+            logout();
+          }
+          return;
         }
-        return;
-      }
-      setSuccessMessage(response.data.message);
-      setIsModalOpen(true); //모달 닫으면 홈화면으로 이동
-    });
+        setSuccessMessage(response.data.message);
+        queryClient.invalidateQueries(["getPrincipal"]);
+      })
+      .catch((error) => {
+        setErrorMessage(error.response?.data?.message);
+        isModalOpen(true);
+      });
   };
 
   return (
@@ -234,7 +240,7 @@ function CrewRegister() {
             size={"60px"}
             style={{ color: "#ff4d4d" }}
           />
-          <strong>로그인 후 이용 가능합니다.</strong>
+          <strong>크루를 만들고 싶다면 로그인을 진행해주세요.</strong>
         </AlertModal>
       )}
       {errorMessage && isModalOpen && (
