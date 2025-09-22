@@ -15,7 +15,7 @@ function WeeklyTopCrew() {
     isError,
     data: response,
   } = useQuery({
-    queryKey: ["topFeeds", start, end],
+    queryKey: ["topCrews", start, end],
     queryFn: () => getWeeklyTopCrewsReq(start, end),
     staleTime: 24 * 60 * 60 * 1000,
   });

@@ -36,7 +36,7 @@ function LoginForm() {
       console.log(response);
       if (response.data.status === "success") {
         localStorage.setItem("accessToken", response.data.data);
-        navigate("/");
+        window.location.replace("/");
       }
     } catch (error) {
       alert(error.response.data.message || "로그인 중 문제가 발생했습니다.");
