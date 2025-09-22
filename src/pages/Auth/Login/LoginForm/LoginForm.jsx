@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginReq } from "../../../../services/auth/AuthApis";
+import { loginReq } from "../../../../services/auth/authApis";
 import InputBox from "../../../../components/common/InputBox/InputBox";
 import AuthInput from "../../../../components/common/AuthInput/AuthInput";
 /** @jsxImportSource @emotion/react */

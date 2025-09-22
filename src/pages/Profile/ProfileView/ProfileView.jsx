@@ -36,7 +36,7 @@ function ProfileView({ principal, setIsEditing }) {
             {principal?.crewName ? (
               <span css={s.value}>{principal?.crewName}</span>
             ) : (
-              "소속된 크루가 없어요."
+              "크루에 가입해보세요!"
             )}
           </div>
           <div css={s.info}>
