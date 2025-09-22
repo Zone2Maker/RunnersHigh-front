@@ -15,11 +15,11 @@ function LikedFeed() {
   const observerTarget = useRef(null);
   const { principal } = usePrincipalState();
 
-  const { data, isError, isLoading, hasNextPage, fetchNextPage } =
+const { data, isError, isLoading, hasNextPage, fetchNextPage } =
     useInfiniteQuery({
-      queryKey: ["feedList", size],
+      queryKey: ["feeds", "liked", principal?.userId, size],
       queryFn: ({ pageParam = null, queryKey }) => {
-        const [, size] = queryKey;
+        const [, , , size] = queryKey;
         return getILikedFeedListReq(pageParam, size);
       },
       getNextPageParam: (lastPage) =>
