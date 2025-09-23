@@ -50,6 +50,7 @@ function CrewCard({ crew }) {
       setErrorMessage("크루에 가입하고 싶다면 로그인을 진행해주세요.");
       return;
     }
+    console.log(crewDetail.crewId, principal?.userId);
     joinCrewReq({
       crewId: crewDetail.crewId,
       userId: principal?.userId,
@@ -57,7 +58,7 @@ function CrewCard({ crew }) {
       .then((response) => {
         if (response.data.status === "failed") {
           setErrorMessage(response.data.message);
-          isAlertModalOpen(true);
+          setIsAlertModalOpen(true);
           return;
         }
         setSuccessMessage(response.data.message);
@@ -65,7 +66,7 @@ function CrewCard({ crew }) {
       })
       .catch((error) => {
         setErrorMessage(error.response?.data?.message);
-        isAlertModalOpen(true);
+        setIsAlertModalOpen(true);
       });
   };
 
@@ -117,7 +118,7 @@ function CrewCard({ crew }) {
           )}
         </div>
       </div>
-      {!errorMessage && isPromptModalOpen && (
+      {!errorMessage && isPromptModalOpen && !successMessage && (
         <PromptModal onClose={() => setIsPromptModalOpen(false)}>
           <div css={s.cardDetail}>
             <div>
