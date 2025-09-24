@@ -5,8 +5,8 @@ import { FaSearchLocation } from "react-icons/fa";
 import { useFirebaseUpload } from "../../../hooks/useFirebaseUpload";
 import { addFeedReq } from "../../../services/feed/feedApis";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
-import { instance } from "../../../services/instance/instance";
 import { SlPicture } from "react-icons/sl";
+import { CiLocationOn } from "react-icons/ci";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
 
 function FeedRegister() {
@@ -19,7 +19,6 @@ function FeedRegister() {
   const fileInputRef = useRef();
   const { principal } = usePrincipalState();
   const { uploadFile } = useFirebaseUpload();
-  const [imageError, setImageError] = useState(new Set());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
@@ -35,7 +34,6 @@ function FeedRegister() {
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_API_KEY}&libraries=services,clusterer&autoload=false`;
     script.async = true;
     document.head.appendChild(script);
-    console.log(import.meta.env.VITE_KAKAO_API_KEY);
 
     script.onload = () => {
       if (window.kakao && window.kakao.maps) {
@@ -54,17 +52,16 @@ function FeedRegister() {
   }, []);
 
   // 키워드 검색
-  const searchWithKeyword = () => {
-    console.log(searchKeyword);
+  const searchBtnOnClickHandler = () => {
     if (!searchKeyword.replace(/^\s+|\s+$/g, "")) {
+      setModalMessage("검색어를 입력해주세요.");
       setIsModalOpen(true);
-      openModal("검색어를 입력해주세요.");
       return false;
     }
 
     // 장소 검색 객체를 통해 키워드로 장소 검색 요청
     if (!keywordPs) {
-      openModal("장소 검색 객체가 준비되지 않았습니다.");
+      alert("오류가 발생했습니다. 다시 시도해주세요.");
       return;
     }
 
@@ -73,27 +70,31 @@ function FeedRegister() {
 
   //장소 검색 완료 시 호출되는 콜백 함수
   const placeSearchCB = (data, status) => {
+    setPlaces([]);
+
     if (status === window.kakao.maps.services.Status.OK) {
       setPlaces(data); //검색 결과를 상태로 저장
-      //이걸 map 돌려서 list로
     } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-      openModal("검색 중 오류가 발생했습니다.");
-      setPlaces([]);
+      setModalMessage("검색 결과가 없습니다.");
       return;
     }
   };
 
-  //키워드검색 onChange
-  const searchOnChangeHandler = (e) => {
-    // const keyword = e.target.value;
+  const searchInputOnChangeHandler = (e) => {
     setSearchKeyword(e.target.value);
   };
 
+  const searchInputOnKeyDownHandler = (e) => {
+    if (e.key !== "Enter") {
+      return;
+    }
+
+    searchBtnOnClickHandler();
+  };
+
   // 검색 결과 목록에서 장소를 클릭했을 때 실행되는 함수
-  const handlePlaceClick = (place) => {
-    console.log("selectedPlace:", selectedPlace);
+  const placeOnClickHandler = (place) => {
     setSelectedPlace(place); // 선택된 장소 정보 전체를 저장
-    setSearchKeyword(place.place_name); // input 창에는 장소 이름만 표시
     setPlaces([]);
   };
 
@@ -102,33 +103,16 @@ function FeedRegister() {
     const file = e.target.files[0]; // file 객체로 가져와야함 -> input vale=file 로
     if (file) {
       const previewUrl = URL.createObjectURL(file);
-      setImageError(false);
       setImage(file);
       setImagePreview(previewUrl);
     }
   };
 
-  // const inputOnClickHandler = () => {
-  //   if (!imageError) {
-  //   fileInputRef.current.click();
-  // }
-  // };
-
   // 공유하기 버튼 클릭 시  - submit 핸들러
   const handleFeedSubmit = async () => {
-    const token = localStorage.getItem("accessToken");
     if (!principal) {
-      openModal("사용자 정보를 불러오지 못했습니다. 다시 로그인해주세요.");
-      return;
-    }
-
-    if (!selectedPlace) {
-      openModal("먼저 장소를 선택해주세요."); // null일 때 경고
-      return;
-    }
-
-    if (!image) {
-      openModal("이미지를 선택해주세요.");
+      setModalMessage("로그인 후 피드를 등록할 수 있습니다.");
+      setIsModalOpen(true);
       return;
     }
 
@@ -146,10 +130,8 @@ function FeedRegister() {
 
       const response = await addFeedReq(data);
       if (response.data.status === "success") {
-        console.log(
-          response.data.message || "피드가 성공적으로 등록되었습니다."
-        );
-        openModal("피드가 성공적으로 등록되었습니다.");
+        setModalMessage("피드가 등록되었습니다.");
+        isModalOpen(true);
 
         // 입력 초기화
         setImage(null);
@@ -157,10 +139,13 @@ function FeedRegister() {
         setSelectedPlace(null);
         setSearchKeyword("");
       } else {
-        console.error("백엔드 처리 실패:", response.data.status);
+        setModalMessage(response.data.status);
+        isModalOpen(true);
       }
     } catch (error) {
-      openModal(error.response?.data?.message || "피드 등록에 실패했습니다.");
+      console.log(error);
+      setModalMessage("피드 등록에 실패했습니다. 다시 시도해주세요.");
+      isModalOpen(true);
     }
   };
 
@@ -168,56 +153,64 @@ function FeedRegister() {
   const isButtonDisabled = !image || !selectedPlace;
 
   return (
-    <div css={s.pagecontainer}>
+    <div css={s.container}>
       {/* 메인 콘텐츠 영역 */}
-      <main css={s.maincontainer}>
+      <div css={s.mainContainer}>
         {/* 장소 검색창 */}
-        <div css={s.locationSection}>
+        <div css={s.inputBox}>
           <input
             css={s.searchInput}
             type="text"
             value={searchKeyword}
-            placeholder="장소를 입력하세요."
-            onChange={searchOnChangeHandler}
+            placeholder="장소 검색"
+            onChange={searchInputOnChangeHandler}
+            onKeyDown={searchInputOnKeyDownHandler}
           />
-          <FaSearchLocation css={s.searchIcon} onClick={searchWithKeyword} />
-
-          {/* 검색 결과가 있을 때만 목록을 보여줌 */}
-          {places.length > 0 && (
-            <ul css={s.resultList}>
-              {/* places 배열에 저장된 검색된 장소 map 이용 - 리스트 */}
-              {places.map((place) => (
-                <li
-                  key={place.id}
-                  css={s.resultItem}
-                  onClick={() => handlePlaceClick(place)}
-                >
-                  <div css={s.placeInfo}>
-                    <h4>{place.place_name}</h4>
-                    <h5>{place.category_name.replace("여행 > ", "")}</h5>
-                  </div>
-                  <span>{place.address_name}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+          <FaSearchLocation
+            css={s.searchIcon}
+            onClick={searchBtnOnClickHandler}
+          />
         </div>
+        {selectedPlace && (
+          <div css={s.selectedLocation}>
+            <CiLocationOn />
+            <span css={s.selectedPlace}>{selectedPlace.place_name}</span>
+          </div>
+        )}
+        {/* 검색 결과가 있을 때만 목록을 보여줌 */}
 
+        {places.length > 0 && (
+          <ul css={s.placeList}>
+            {/* places 배열에 저장된 검색된 장소 map 이용 - 리스트 */}
+            {places.map((place) => (
+              <li
+                key={place.id}
+                css={s.placeInfo}
+                onClick={() => placeOnClickHandler(place)}
+              >
+                <div css={s.nameAndCategory}>
+                  <h3>{place.place_name}</h3>
+                  <div>
+                    {place.category_name.split(" > ").slice(0, 2).join(" > ")}
+                  </div>
+                </div>
+                <span>{place.address_name}</span>
+              </li>
+            ))}
+          </ul>
+        )}
         <div
           css={s.imageUploadSection}
           onClick={() => fileInputRef.current.click()}
         >
-          {imagePreview && !imageError ? (
+          {imagePreview ? (
             <img src={imagePreview} alt="미리보기" css={s.previewImage} />
-          ) : imageError ? (
+          ) : (
             // 에러 발생 시 보여줄 UI
             <div css={s.feedNoImageBox}>
               <SlPicture />
-              <p>추가할 이미지를 선택해주세요.</p>
+              <p>러닝 인증샷을 공유해보세요!</p>
             </div>
-          ) : (
-            // 기본 '+' 아이콘
-            <div css={s.plusIcon}>+</div>
           )}
           <input
             type="file"
@@ -229,18 +222,19 @@ function FeedRegister() {
 
         {/* 공유하기 버튼 */}
         <button
-          css={s.submitButton}
-          disabled={isButtonDisabled}
+          css={s.submitButton(isButtonDisabled)}
+          disabled={true}
           onClick={handleFeedSubmit}
         >
           공유하기
         </button>
-      </main>
+      </div>
+      <div css={s.dummyContainer}></div>
       {isModalOpen && (
-      <AlertModal onClose={() => setIsModalOpen(false)}>
-        {modalMessage}
-      </AlertModal>
-    )}
+        <AlertModal onClose={() => setIsModalOpen(false)}>
+          {modalMessage}
+        </AlertModal>
+      )}
     </div>
   );
 }
