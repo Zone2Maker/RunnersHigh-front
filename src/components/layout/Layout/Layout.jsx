@@ -7,8 +7,11 @@ import { useEffect } from "react";
 import { getPrincipalReq } from "../../../services/auth/authApis";
 import { useQuery } from "@tanstack/react-query";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
+import { useLocationState } from "../../../stores/useLocationState";
+import { useGetCurrentLocation } from "../../../hooks/useGetCurrentLocation";
 
 function Layout() {
+  // 사용자 인증
   const accessToken = localStorage.getItem("accessToken");
   const { login, logout } = usePrincipalState();
   const { data, isLoading } = useQuery({
@@ -26,6 +29,32 @@ function Layout() {
       logout();
     }
   }, [data, login, logout]);
+
+  // 현재 위치
+  const syncLocation = useLocationState((state) => state.syncLocation);
+  const {
+    data: locationData,
+    isLoading: isLocationLoading,
+    isError: isLocationError,
+    error: locationError,
+  } = useGetCurrentLocation();
+
+  useEffect(() => {
+    let newLocation = { lat: 37.5642135, lng: 127.0016985 };
+
+    if (locationData) {
+      newLocation = {
+        lat: locationData.coords.latitude,
+        lng: locationData.coords.longitude,
+      };
+    }
+
+    syncLocation({
+      location: newLocation,
+      isLoading: isLocationLoading,
+      error: isLocationError ? locationError : null,
+    });
+  }, [locationData, isLocationLoading, isLocationError, locationError]);
 
   return (
     <div css={s.container}>
