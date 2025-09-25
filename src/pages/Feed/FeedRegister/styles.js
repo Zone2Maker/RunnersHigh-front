@@ -121,7 +121,6 @@ export const placeList = css`
   height: 550px;
   list-style: none;
   overflow-y: auto;
-  /* border-radius: 15px; */
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
   background-color: #efefef;

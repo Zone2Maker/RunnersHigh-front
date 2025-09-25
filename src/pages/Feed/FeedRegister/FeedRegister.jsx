@@ -88,7 +88,6 @@ function FeedRegister() {
     if (e.key !== "Enter") {
       return;
     }
-
     searchBtnOnClickHandler();
   };
 
