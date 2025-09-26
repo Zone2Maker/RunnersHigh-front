@@ -18,8 +18,8 @@ export const noImageBox = css`
 `;
 
 export const profileImg = css`
-  width: 115px;
-  height: 115px;
+  width: 136px;
+  height: 136px;
   box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.25);
   border-radius: 50%;
   overflow: hidden;
