@@ -87,7 +87,7 @@ export const myChat = css`
   width: 100%;
   display: flex;
   justify-content: right;
-  gap: 10px;
+  gap: 5px;
 
   > div {
     display: flex;
@@ -117,7 +117,7 @@ export const yourChat = css`
   width: 100%;
   display: flex;
   justify-content: left;
-  gap: 10px;
+  gap: 5px;
 
   > div {
     display: flex;
@@ -143,8 +143,7 @@ export const yourChat = css`
         font-size: 15px;
         line-height: 20px;
       }
-      >span{
-
+      > span {
       }
     }
   }
@@ -174,6 +173,17 @@ export const lastReadMessageBox = css`
   flex-direction: column;
   gap: 10px;
   align-items: center;
+`;
+
+export const timeBox = css`
+  height: 100%;
+  display: flex;
+  justify-content: end;
+
+  > p {
+    margin: 0;
+    font-size: 10px;
+  }
 `;
 
 export const chatInput = css`
@@ -207,5 +217,6 @@ export const chatInput = css`
     font-size: 18px;
     margin: 5px;
     color: #333;
+    cursor: pointer;
   }
 `;
