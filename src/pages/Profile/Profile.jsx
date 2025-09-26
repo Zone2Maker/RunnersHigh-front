@@ -7,7 +7,9 @@ import ProfileHeader from "./ProfileHeader/ProfileHeader";
 function Profile() {
   return (
     <div css={s.container}>
-      <ProfileHeader />
+      <div css={s.stickyContainer}>
+        <ProfileHeader />
+      </div>
       <div css={s.profileMain}>
         <ProfileTabs />
         {/* /profile의 자식 라우트들이 들어갈 곳 */}
