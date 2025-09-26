@@ -1,53 +1,5 @@
 import { css } from "@emotion/react";
 
-export const mainFeedContainer = css`
-  width: 100%; /* 화면 전체 차지 */
-  display: flex;
-  justify-content: center; /* 가운데 정렬 */
-  align-items: flex-start; /* 위에서부터 시작 */
-`;
-
-export const container = css`
-  margin-top: 80px;
-  width: 100%;
-  max-width: 480px; /* 인스타 피드 폭 고정 (가운데 정렬용) */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  position: relative;
-`;
-
-export const feedContainer = css`
-  width: 100%;
-  box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.25);
-  border: 1px solid #e6e6e6ff;
-`;
-
-export const empty = css`
-  width: 100%;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #888;
-  opacity: 0.8;
-  font-size: 20px;
-  padding: 30px;
-  & > svg {
-    font-size: 60px;
-  }
-`;
-
-export const mapBox = css`
-  display: block;
-  width: 100%;
-  height: 550px;
-
-  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
-`;
-
 // 모달
 export const userInfoContainer = css`
   width: 100%;
@@ -115,7 +67,8 @@ export const modalHeartIcon = (newLike) => css`
   fill: ${newLike ? "#FB4141" : "#333"};
   font-size: 20px;
   transition: all 0.1s ease;
-
+  padding-right: 2px;
+  
   &:hover {
     fill: ${newLike ? "#333" : "#FB4141"};
   }
