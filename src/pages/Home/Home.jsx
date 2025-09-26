@@ -8,10 +8,10 @@ import WeeklyTopFeed from "./WeeklyTopFeed/WeeklyTopFeed";
 function Home() {
   return (
     <div css={s.container}>
+      <Banner />
       <Weather />
       <WeeklyTopFeed />
       <WeeklyTopCrew />
-      <Banner />
     </div>
   );
 }

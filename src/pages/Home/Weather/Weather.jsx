@@ -82,7 +82,7 @@ function Weather() {
       );
     }
 
-    if (weatherData?.main.feels_like >= 30) {
+    if (weatherData?.main.feels_like >= 32) {
       return (
         <>
           폭염 수준이에요! 🥵

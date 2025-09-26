@@ -42,10 +42,7 @@ function BottomNavBar() {
       {principal ? (
         pathname.includes("/profile") ? (
           pathname.includes("/profile") && (
-            <div
-              css={[s.navItem, pathname === "/profile" && s.activeNavItem]}
-              onClick={logout}
-            >
+            <div css={s.navItem} onClick={logout}>
               <IoLogOutOutline size={24} />
               <span>로그아웃</span>
             </div>
@@ -55,8 +52,10 @@ function BottomNavBar() {
             css={[s.navItem, pathname === "/profile" && s.activeNavItem]}
             onClick={() => navigate("/profile")}
           >
-            <img src={principal.profileImgUrl} css={s.profileImg} />
-            <span>프로필</span>
+            <div css={s.profileBox}>
+              <img src={principal.profileImgUrl} css={s.profileImg} />
+              <div>프로필</div>
+            </div>
           </div>
         )
       ) : (

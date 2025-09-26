@@ -1,66 +1,65 @@
 import { css } from "@emotion/react";
 
 export const container = css`
-  margin: 0 20px;
-  background-color: #fafafaff;
+  margin: 0 10px;
+  background-color: #fefefe;
   border-radius: 35px;
-  box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.25);
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.09), 0px 1px 3px rgba(0, 0, 0, 0.07);
   overflow: hidden;
 `;
 
+// 전체 헤더 컨테이너
 export const titleContainer = css`
-  width: 100%;
-  padding: 20px 30px 10px;
-  margin-bottom: 3px;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  background-color: #d7d7d7;
+  padding: 20px 15px 5px 20px;
+  background-color: #fefefe;
+`;
 
-  & > div:nth-of-type(2) {
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    & > div:nth-of-type(2) {
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease-in-out;
+export const titleGroup = css`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+`;
 
-      &:hover {
-        font-weight: 700;
-      }
-    }
+export const icon = css`
+  font-size: 55px;
+  stroke-width: 1.8px;
+  color: #0d47a1;
+`;
 
-    &:hover {
-      font-weight: 700;
-    }
+// 부제 (예: 9월 3주차)
+export const subtitle = css`
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: 2px;
+`;
+
+// 메인 제목 (인기 피드)
+export const title = css`
+  font-size: 30px;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  & > svg {
+    color: #ff4500;
   }
 `;
 
-export const title = css`
-  flex-grow: 1;
-  font-size: 24px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 16px;
+export const moreBtn = css`
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #f57c00;
+  transition: all 0.2s ease-in-out;
 
-  & > svg {
-    font-size: 50px;
-    color: #0d47a1;
-    transform: translateY(4px);
-  }
-
-  & span {
-    font-size: 28px;
-    font-weight: 700;
-
-    & > svg {
-      font-size: 24px;
-      color: #e43636;
-      transform: translateY(3px);
-    }
+  &:hover {
+    transform: scale(1.01);
   }
 `;
 
@@ -68,13 +67,12 @@ export const feedContainer = css`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 3px;
+  gap: 2px;
 `;
 
 export const feed = css`
   aspect-ratio: 1;
-  /* background-color: #fafafaff; */
-  background-color: whitesmoke;
+  background-color: #f0f0f0;
 
   & > img {
     display: block;
