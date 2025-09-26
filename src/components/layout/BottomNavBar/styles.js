@@ -9,7 +9,6 @@ export const navContainer = css`
   right: 0;
   flex-shrink: 0;
 
-  /* 모바일 화면 너비*/
   width: 500px;
   margin: 0 auto;
 
@@ -18,7 +17,6 @@ export const navContainer = css`
   opacity: 0.85;
   border: none;
 
-  /* 아이콘 4개 배치*/
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -29,30 +27,42 @@ export const navItem = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px; /* 아이콘과 텍스트 사이 간격 */
+  justify-content: center;
+  gap: 2px; /* 아이콘과 텍스트 사이 간격 */
+  transform: translateY(2px);
 
-  color: #555;
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2 ease;
+  transition: all 0.2 ease;
 
-  /* 마우스를 올렸을 때 색상 변경 */
   &:hover {
-    /* background-color: #888; */
-    color: #0d47a1; /* 헤더 파란색 동일 */
+    color: #0d47a1;
+    font-weight: 800;
   }
 `;
 
 // 활성화된 탭에만 추가될 스타일
 export const activeNavItem = css`
   color: #0d47a1; /* 활성화 상태 색상 */
-  font-weight: bold;
+  font-weight: 800;
+`;
+
+export const profileBox = css`
+  width: 100%;
+  height: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
 `;
 
 export const profileImg = css`
-  width: 26px;
+  width: 28px;
   border-radius: 50%;
   aspect-ratio: 1;
   object-fit: cover;
+  box-shadow: rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 `;

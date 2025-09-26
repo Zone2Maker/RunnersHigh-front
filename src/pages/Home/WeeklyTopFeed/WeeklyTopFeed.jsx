@@ -33,19 +33,18 @@ function WeeklyTopFeed() {
   return (
     <div css={s.container}>
       <div css={s.titleContainer}>
-        <div css={s.title}>
-          <FiCamera />
+        <div css={s.titleGroup}>
+          <FiCamera css={s.icon} />
           <div>
-            <div>
-              {getLastWeek(new Date())}
-              <br />
-              <span>
-                인기 피드 <FaFireAlt />
-              </span>
+            <div css={s.subtitle}>{getLastWeek(new Date())}</div>
+            <div css={s.title}>
+              인기 피드 <FaFireAlt />
             </div>
           </div>
         </div>
-        <div onClick={() => navigate("/feed")}>더보기+</div>
+        <div css={s.moreBtn} onClick={() => navigate("/feed")}>
+          더보기+
+        </div>
       </div>
       <div css={s.feedContainer}>
         {isLoading

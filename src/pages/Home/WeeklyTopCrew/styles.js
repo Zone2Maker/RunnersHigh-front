@@ -1,21 +1,21 @@
 import { css } from "@emotion/react";
 
 export const container = css`
-  margin: 0 20px;
-  padding: 25px 20px 20px;
+  margin: 0 10px;
+  padding: 20px 20px 20px;
   box-sizing: border-box;
-  background-color: whitesmoke;
+  background-color: #fefefe;
   border-radius: 35px;
-  box-shadow: 0px 0px 2px 2px hsla(0, 0%, 82%, 0.25);
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.09), 0px 1px 3px rgba(0, 0, 0, 0.07);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  color: #333;
 `;
 
 export const titleContainer = css`
   width: 100%;
+  height: 60px;
   padding: 0 15px;
   box-sizing: border-box;
   margin-bottom: 3px;
@@ -24,28 +24,29 @@ export const titleContainer = css`
   align-items: baseline;
 
   & > div:nth-of-type(2) {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    color: #f57c00;
+    transition: all 0.2s ease-in-out;
 
     &:hover {
-      font-weight: 700;
+      transform: scale(1.01);
     }
   }
 `;
 
 export const title = css`
   flex-grow: 1;
-  font-size: 24px;
-  display: flex;
   gap: 10px;
+  display: flex;
   align-items: center;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
 
   & > svg {
-    font-size: 55px;
+    font-size: 60px;
+    stroke-width: 0.5px;
     color: #0d47a1 !important;
   }
 
@@ -56,12 +57,12 @@ export const title = css`
 `;
 
 export const crewList = css`
-  background-color: #fefefe;
+  background-color: #f2f7ffff;
   border-radius: 35px;
-  height: 220px;
+  height: 210px;
   list-style: none;
   margin: 0;
-  padding: 20px;
+  padding: 12px 15px;
   box-sizing: border-box;
 
   display: flex;
@@ -80,10 +81,8 @@ export const crewItem = (rank) => css`
   justify-content: space-between;
   align-items: center;
   padding: 15px 0; // 아이템 위아래로 여백을 줘서 공간 확보
-  border-bottom: 1px solid #f0f0f0; // 얇은 구분선 추가
-  font-weight: 500;
-  color: #333;
-
+  border-bottom: 2px solid #e7e7e7ff; // 얇은 구분선 추가
+  font-weight: 600;
   font-size: ${rank === 0
     ? "25px"
     : rank === 1
@@ -102,18 +101,26 @@ export const rank = (rank) => css`
   padding: 0;
   margin: 0;
   width: 30px;
-  font-weight: 600;
   text-align: center;
 
   & > svg {
+    font-size: ${rank === 0
+      ? "27px"
+      : rank === 1
+      ? "25px"
+      : rank === 2
+      ? "23px"
+      : "19px"};
+
     color: ${rank === 0
       ? "#FFD700"
       : rank === 1
-      ? "#C0C0C0"
+      ? "#CED4DA"
       : rank === 2
-      ? "#CD7F32"
+      ? "#E97451"
       : "#333"};
     transform: translateY(3px);
+    stroke-width: 1px;
   }
 `;
 
@@ -127,15 +134,16 @@ export const like = css`
   padding: 0;
   margin: 0;
   font-size: 14px;
+  font-weight: 500;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: 5px;
-  background-color: #f0f0f0;
+  background-color: #e7e7e7ff;
   border-radius: 20px;
   padding: 4px 8px;
 
   & > svg {
-    color: #f03131ff;
+    color: #ff4500;
   }
 `;
