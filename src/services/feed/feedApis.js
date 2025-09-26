@@ -60,3 +60,15 @@ export const getWeeklyTopFeedReq = async (startDate, endDate) => {
     console.log(error);
   }
 };
+
+// map 클러스터링용 API
+export const getFeedMapReq = async (startDate, endDate) => {
+  try {
+    const response = await instance.get("/feed/map", {
+      params: { startDate, endDate },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
