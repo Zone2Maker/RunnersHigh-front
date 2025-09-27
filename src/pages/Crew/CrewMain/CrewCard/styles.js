@@ -1,21 +1,21 @@
 import { css } from "@emotion/react";
 
-export const card = css`
+export const card = (isFull) => css`
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1;
   display: flex;
   flex-direction: column;
-  border-radius: 36px;
+  border-radius: 23px;
   overflow: hidden;
-  box-shadow: 0px 5px 8px -5px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  border: 1px solid #e3e3e3;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  pointer-events: ${isFull && "none"};
+  cursor: ${isFull ? "not-allowed" : "pointer"};
+  opacity: ${isFull && "0.5"};
 `;
 
 export const imgBox = css`
   width: 100%;
-  height: 136.5px;
-  border-bottom: 1px solid #e3e3e3;
+  height: 140px;
 
   > img {
     width: 100%;
@@ -26,7 +26,7 @@ export const imgBox = css`
 
 export const noImgBox = css`
   width: 100%;
-  height: 136.5px;
+  height: 140px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -44,165 +44,75 @@ export const noImgBox = css`
 
 export const contentBox = css`
   width: 100%;
-  height: 101px;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  padding: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 10px 15px;
   box-sizing: border-box;
   word-break: keep-all;
   word-wrap: break-word;
+`;
 
-  > span {
-    display: flex;
-    align-items: center;
-    gap: 1px;
-    font-size: 10px;
-    color: #8b8b8b;
+export const regionAndMemberBox = css`
+  width: 100%;
+  height: 16px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+`;
 
-    > svg {
-      color: #515151ff;
-    }
-  }
+export const region = css`
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 2px;
 
-  > div {
-    display: flex;
-    justify-content: space-between;
-    padding-left: 10px;
-    font-size: 14px;
-    box-sizing: border-box;
-
-    > p {
-      margin: 0;
-    }
-
-    > div {
-      display: flex;
-      align-items: center;
-      margin: 0;
-      gap: 3px;
-      color: #4c4c4c;
-
-      > span:first-of-type {
-        color: #b6b6b6;
-      }
-    }
-  }
-
-  > p {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 5px 0px 10px 10px;
+  & svg {
     font-size: 13px;
-    color: #707070;
+    color: #00296b;
+    transform: translateY(1px);
   }
 `;
 
-export const cardDetail = css`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 50px 30px 30px 30px;
-  box-sizing: border-box;
+export const seperator = css`
+  width: 1.5px;
+  height: 12px;
+  background-color: #888;
 `;
 
-export const cardDetailImgBox = css`
-  width: 100%;
-  height: 195.8px;
-  border-radius: 20px;
-  overflow: hidden;
-
-  > img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
-
-export const cardDetailNoImgBox = css`
-  width: 100%;
-  height: 195.8px;
-  border-radius: 20px;
+export const member = css`
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: #888;
-  opacity: 0.8;
-  font-size: 15px;
-  border: 1px solid #888;
+  gap: 2px;
+  font-size: 12px;
 
-  > svg {
-    fill: #777;
-    font-size: 55px;
-  }
-`;
-
-export const cardDetailContentBox = css`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 15px 5px 20px 15px;
-  box-sizing: border-box;
-  word-break: keep-all;
-  word-wrap: break-word;
-
-  > span {
-    display: flex;
-    align-items: center;
-    gap: 1px;
-    font-size: 12px;
-    color: #8b8b8b;
-
-    > svg {
-      color: #515151ff;
-    }
-  }
-
-  > div {
-    display: flex;
-    justify-content: space-between;
-    font-size: 20px;
-
-    > p {
-      margin: 0;
-    }
-
-    > div {
-      display: flex;
-      align-items: center;
-      margin: 0;
-      gap: 3px;
-      color: #4c4c4c;
-      font-size: 18px;
-
-      > span:first-of-type {
-        color: #b6b6b6;
-      }
-    }
-  }
-
-  > p {
-    box-sizing: border-box;
-    margin: 0;
-    padding-top: 10px;
+  & svg {
     font-size: 15px;
-    color: #707070;
   }
 `;
 
-export const cardDetailBtnBox = css`
-  text-align: center;
-  > button {
-    outline: none;
-    border: none;
-    border-radius: 40px;
-    font-size: 20px;
-    padding: 15px 70px;
-    background-color: #d9d9d9;
-    cursor: pointer;
-  }
+export const crewName = css`
+  height: 21px;
+  font-size: 18px;
+  font-weight: 700;
+`;
+
+export const crewDetail = css`
+  height: 34px;
+  margin: 0;
+  color: #444;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+  // 2줄 넘어가면 ...처리
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `;

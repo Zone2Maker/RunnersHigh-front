@@ -8,5 +8,5 @@ export const container = css`
   display: flex;
   flex-direction: column;
   gap: 18px;
-  background-color: #f7f9faff;
+  background-color: #f7f9fa;
 `;
