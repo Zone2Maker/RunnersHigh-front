@@ -3,116 +3,233 @@ import { css } from "@emotion/react";
 export const container = css`
   width: 100%;
   height: 100%;
-  margin-top: 143px;
+  margin-top: 106px;
+  box-sizing: border-box;
+  background-color: #f7f9fa;
 `;
 
 export const header = css`
-  position: fixed;
-  top: 60px;
+  width: 500px;
+  height: 100px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  width: 500px;
-  height: auto;
-  padding: 20px;
+  padding: 15px;
+  padding-bottom: 0px;
+  position: fixed;
+  top: 60px;
   box-sizing: border-box;
-  background-color: #fff;
   z-index: 10;
+  gap: 7px;
+  background-color: #f7f9fa;
 `;
 
-export const inputBox = css`
+export const searchContainer = css`
+  position: relative;
   width: 100%;
-  padding: 10px 20px;
-  border-radius: 27px;
-  background-color: #e3e3e3;
-  box-sizing: border-box;
-
   display: flex;
   align-items: center;
+  border-radius: 50px;
+  outline: 2px solid #b3b3b3;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box;
+  overflow: hidden;
 
-  > input {
-    background-color: inherit;
-    font-size: 17px;
-    padding: 10px;
-    flex-grow: 1;
-    outline: none;
-    border: none;
-  }
-
-  > svg {
-    color: #7f7f7f;
-    cursor: pointer;
+  &:focus-within {
+    outline-color: #0d47a1;
+    background-color: #efefef;
   }
 `;
 
-export const clickBox = css`
+export const searchInput = css`
+  width: 100%;
+  height: 48px;
+  padding: 0 60px 0 20px;
+  box-sizing: border-box;
+  border: none;
+  background-color: none;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  outline: none;
+
+  &::placeholder {
+    font-weight: 400;
+  }
+`;
+
+export const searchBtn = css`
+  position: absolute;
+  right: 12px;
+  top: 17%;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   display: flex;
-  justify-content: right;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 
-  > div {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #595959;
+  & > svg {
+    font-size: 32px;
+    color: #04327c;
+    transition: all 0.2s;
 
-    > span {
-      display: flex;
-      align-items: center;
-      font-size: 15px;
-      padding: 5px;
-      box-sizing: border-box;
-      cursor: pointer;
+    &:hover {
+      color: #f57c00;
     }
   }
 `;
 
-export const regionView = css`
-  margin-left: 5px;
-  padding: 0px 5px;
-  box-sizing: border-box;
+export const selectedRegion = css`
+  padding: 5px 8px;
+  display: inline-flex;
+  background-color: #e5e8f8ff;
   border-radius: 10px;
-  border: 1px solid #e3e3e3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  gap: 3px;
   cursor: pointer;
+  transition: all 0.2s ease;
 
-  > p {
+  & > span {
     margin: 0;
-    font-size: 13px;
-    color: #8b8b8b;
-    padding: 5px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #444;
     box-sizing: border-box;
   }
+
+  & > svg {
+    font-size: 14px;
+    color: #00296b;
+    stroke-width: 0.5px;
+  }
+
+  &:hover {
+    background-color: #0d47a1;
+
+    & > * {
+      color: #e7e7e7ff;
+    }
+  }
 `;
 
-export const dropdownBox = css`
-  visibility: hidden;
-  background: #fff;
-  border-radius: 20px 0px 0px 20px;
-  border: 1px solid #f0f0f0;
+export const filterContainer = (isRegionSelected) => css`
+  width: 100%;
+  padding: 0 5px;
+  display: flex;
+  justify-content: ${isRegionSelected ? "space-between" : "flex-end"};
+  align-items: center;
+`;
+
+export const filter = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const filterBtn = css`
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #f57c00;
+    font-weight: 600;
+  }
+`;
+
+export const newCrew = css`
+  & > svg {
+    font-size: 14px;
+    transform: translateY(2px);
+  }
+`;
+
+export const seperator = css`
+  width: 1px;
+  height: 16px;
+  background-color: #c4c4c4;
+`;
+
+export const dropdownContainer = css`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+`;
+
+export const selectRegion = css`
+  transform: translateY(-1px);
+
+  & > svg {
+    // 드롭다운 아이콘
+    font-size: 17px;
+    transform: translateY(2px);
+  }
+`;
+
+export const regionList = (isDropDownOpen) => css`
+  display: ${isDropDownOpen ? "block" : "none"};
   position: absolute;
-  top: 128px;
-  right: 10px;
-  width: 150px;
-  height: 400px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.3);
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: all 0.4s ease;
-  padding: 10px;
+  top: 110%;
+  right: -10px;
+  width: 80px;
+  height: 125px;
+  border-radius: 10px;
+  background-color: #fefefe;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   margin: 0;
+  padding: 5px;
   list-style: none;
   z-index: 20;
+  overflow-y: auto;
   cursor: pointer;
-  overflow: auto;
 
-  > li {
-    color: #8b8b8b;
-    text-align: center;
-    border-bottom: 1.5px solid #d0d0d0;
-    padding: 10px 0px;
+  // 스크롤바 숨기기
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
+`;
 
-    &:last-of-type {
-      border-bottom: none;
-    }
+export const regionItem = (isSelected) => css`
+  margin: 2px 0;
+  padding: 6px 8px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: ${isSelected ? "600" : "500"};
+  border-bottom: ${isSelected && "1px solid #e2e1e1"};
+  background-color: ${isSelected ? "#F1F3FF" : "transparent"};
+  border-radius: 8px;
+  transition: border-bottom 0.3s ease-in-out, background-color 0.2s ease;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > span {
+    margin: 0;
+    padding: 0;
+    line-height: 18px;
+  }
+
+  & > svg {
+    color: #00296b;
+  }
+
+  &:hover {
+    background-color: #f1f3ff;
+    border-bottom: 1px solid #dfdfdfff;
+  }
+
+  &:last-of-type {
+    border-bottom: none;
   }
 `;
