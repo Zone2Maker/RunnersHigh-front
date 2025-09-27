@@ -16,7 +16,7 @@ function CrewContainer({ searchProp, regionProp }) {
 
   const { data, isError, isLoading, hasNextPage, fetchNextPage } =
     useInfiniteQuery({
-      queryKey: ["fetchList", size, search, region],
+      queryKey: ["crewList", size, search, region],
       queryFn: ({ pageParam = null, queryKey }) => {
         const [, size, search, region] = queryKey;
         return getCrewListReq(pageParam, size, search, region);

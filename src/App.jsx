@@ -7,10 +7,10 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect, useState } from "react";
 import { usePrincipalState } from "./stores/usePrincipalState";
 import { connectStomp, disconnectStomp } from "./configs/stompClient";
+import MyChattingButton from "./components/layout/MyChattingButton/MyChattingButton";
 
 function App() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [pendingMessageList, setPendingMessageList] = useState([]);
   const { principal } = usePrincipalState();
 
   useEffect(() => {
@@ -20,7 +20,7 @@ function App() {
 
     connectStomp(principal?.crewId, (payload) => {
       console.log(payload);
-      setMessages((prev) => [...prev, payload]);
+      setPendingMessageList((prev) => [...prev, payload]);
     });
 
     return () => {
@@ -34,7 +34,12 @@ function App() {
       <BrowserRouter>
         <MainRouter />
       </BrowserRouter>
-      {/* 로그인 상태일 때 채팅 버튼 나타낼 곳 */}
+      {principal?.crewId && (
+        <MyChattingButton
+          pendingMessageList={pendingMessageList}
+          setPendingMessageList={setPendingMessageList}
+        />
+      )}
     </QueryClientProvider>
   );
 }

@@ -176,8 +176,8 @@ function CrewRegister() {
           onChange={(e) =>
             setCrewValue({ ...crewValue, crewName: e.target.value })
           }
-          maxLength="25"
-          placeholder="크루의 이름을 정해주세요. (25자 이내)"
+          maxLength="20"
+          placeholder="크루를 대표하는 이름을 입력해주세요. (20자 이내)"
         />
       </div>
       <div css={s.box}>

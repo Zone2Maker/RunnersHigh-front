@@ -15,6 +15,9 @@ export const connectStomp = (crewId, onSubscribeCallback) => {
   client = new Client({
     webSocketFactory: () => new SockJS(SOCKET_URL),
     reconnectDelay: 5000, //연결 끊기면 자동으로 5초 후 재시도
+    connectHeaders: {
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+    },
     onConnect: () => {
       if (!client || !client.connected) return;
 
