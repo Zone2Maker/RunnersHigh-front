@@ -9,50 +9,74 @@ export const container = css`
 // --- 메인 콘텐츠 ---
 export const mainContainer = css`
   width: 100%;
-  padding: 15px 10px;
+  padding: 12px 10px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   position: relative;
+  box-sizing: border-box;
 `;
 
 // --- 장소 검색 ---
 export const inputBox = css`
+  position: relative;
   width: 100%;
   display: flex;
-  position: relative;
+  align-items: center;
 `;
 
 export const searchInput = css`
-  flex-grow: 1;
-  padding: 12px 40px 12px 15px; /* 아이콘 공간 확보 */
+  width: 100%;
+  height: 48px;
+  padding: 0 60px 0 20px;
   box-sizing: border-box;
-  border-radius: 15px;
-  background-color: #d9d9d9;
+  font-family: inherit;
   font-size: 18px;
   font-weight: 500;
-  outline: none;
   border: none;
-  font-family: inherit;
+  border-radius: 50px;
+  outline: 2px solid #cdcdcd;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+
+  &:focus-within {
+    outline-color: #0d47a1;
+  }
+
+  &::placeholder {
+    font-weight: 400;
+  }
 `;
 
 export const searchIcon = css`
-  font-size: 30px;
-  color: #0d47a1;
+  font-size: 32px;
+  color: #00296b;
   position: absolute;
   top: 8px;
-  right: 10px;
+  right: 12px;
   cursor: pointer;
+  transition: all 0.2s;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:hover {
+    color: #f57c00;
+  }
 `;
 
 export const selectedLocation = css`
   width: 100%;
-  padding-left: 5px;
   display: flex;
   align-items: center;
+  gap: 2px;
 
   & > svg {
-    font-size: 32px;
+    font-size: 28px;
     stroke-width: 1px;
     color: #0d47a1;
   }
@@ -193,12 +217,17 @@ export const nameAndCategory = css`
 export const submitButton = (isButtonDisabled) => css`
   padding: 12px 14px;
   border: none;
-  background-color: ${isButtonDisabled ? "#d9d9d9" : "#0d47a1"};
-  color: ${isButtonDisabled ? "#888" : "white"};
+  outline: none;
+  background-color: ${isButtonDisabled ? "#d9d9d9" : "#00296b"};
+  color: ${isButtonDisabled ? "#888" : "#eeeeee"};
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 15px;
   cursor: ${!isButtonDisabled && "pointer"};
+
+  &:hover {
+    background-color: ${!isButtonDisabled && "#f57c00"};
+  }
 `;
 
 export const dummyContainer = css`

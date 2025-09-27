@@ -1,106 +1,94 @@
 import { css } from "@emotion/react";
 
-// 상단 버튼 nav 바 개선 해야할 점
-// 게시물 없을 시 위로 밀려 올라가는 문제 있음
-
 export const btnNav = css`
   position: fixed;
-  top: 60px; /* ❗️ LOGO가 있는 헤더의 높이를 여기에 입력하세요. 예: 60px */
+  top: 60px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
   max-width: 500px;
-  background-color: #fefefe;
-  z-index: 1; /* z-index 값을 높여 다른 요소에 가려지지 않게 합니다. */
+  background-color: #f8f9fa;
+  z-index: 1;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 15px;
+  box-sizing: border-box;
 `;
 
 export const changeBtnContainer = css`
   display: flex;
-  justify-content: space-between; /* 왼쪽 div, 오른쪽 div를 끝으로 배치 */
+  justify-content: space-between;
   align-items: center;
-
   width: 100%;
   max-width: 470px;
-  padding: 10px 15px;
+  padding: 8px 10px;
   border-radius: 23px;
-  background-color: #e7e7e7ff;
-  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+  background-color: #e9e9e9ff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 `;
 
-// export const showPhoto = css`
-//   border: none;
-//   cursor: pointer;
-// `;
-// export const showMap = css`
-//   border: none;
-//   cursor: pointer;
-// `;
-// export const addBtn = css`
-//   border: none;
-//   cursor: pointer;
-// `;
-
-export const showPhoto = css`
-  margin: 0;
-  background-color: #d6d6d6ff;
-  border-radius: 15px;
-  padding: 4px 12px;
-  border: none;
-  cursor: pointer;
-  font-size: 22px;
-  margin-left: 5px;
-
-  display: inline-flex;
+export const left = css`
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  gap: 10px;
+`;
 
-  transition: all 0.3s ease;
-  &:hover {
-    background-color: #bfbfbf;
+export const tapBtn = css`
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f6f7f8;
+  color: #5f6368;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+
+  transition: all 0.2s ease, transform 0.1s ease-out;
+
+  & svg {
+    font-size: 24px;
+    font-weight: 400;
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 `;
 
-export const showMap = css`
-  margin: 0;
-  background-color: #d6d6d6ff;
-  border-radius: 15px;
-  padding: 4px 12px;
-  border: none;
-  cursor: pointer;
-  font-size: 22px;
-  margin-left: 5px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  transition: all 0.3s ease;
-  &:hover {
-    background-color: #bfbfbf; /* hover 시 배경 살짝 진하게 */
-  }
+export const isActive = css`
+  background-color: #00296b;
+  color: #efefef;
 `;
 
 export const addBtn = css`
-  margin: 0;
-  background-color: #d6d6d6ff;
-  border-radius: 15px;
-  padding: 4px 12px;
+  width: 36px;
+  height: 36px;
+  background-color: #00296b;
+  color: #fefefe;
   border: none;
   cursor: pointer;
-  font-size: 22px;
-  margin-right: 3px;
-
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  font-weight: 400;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease-out;
 
-  transition: all 0.3s ease;
   &:hover {
-    background-color: #bfbfbf; /* hover 시 배경 살짝 진하게 */
+    background-color: #f57c00;
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 `;

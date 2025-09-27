@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 export const container = css`
   width: 100%;
   padding: 0px 10px;
-  background-color: #f7f9fa;
+  background-color: #f8f9fa;
   box-sizing: border-box;
 
   display: grid;

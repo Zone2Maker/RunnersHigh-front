@@ -1,13 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect, useRef, useState } from "react";
 import * as s from "./styles";
-import { FaSearchLocation } from "react-icons/fa";
 import { useFirebaseUpload } from "../../../hooks/useFirebaseUpload";
 import { addFeedReq } from "../../../services/feed/feedApis";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import { SlPicture } from "react-icons/sl";
 import { CiLocationOn } from "react-icons/ci";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
+import { FaCircleArrowUp } from "react-icons/fa6";
+import { BiSolidMessageSquareError } from "react-icons/bi";
 
 function FeedRegister() {
   const [keywordPs, setKeywordPs] = useState(null); // 장소 검색 객체
@@ -22,33 +23,16 @@ function FeedRegister() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
-  const openModal = (message) => {
-    setModalMessage(message);
-    setIsModalOpen(true);
-  };
-
   //카카오맵 불러오기
   useEffect(() => {
-    const KAKAO_API_KEY = import.meta.env.VITE_KAKAO_API_KEY;
-    const script = document.createElement("script");
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_API_KEY}&libraries=services,clusterer&autoload=false`;
-    script.async = true;
-    document.head.appendChild(script);
-
-    script.onload = () => {
-      if (window.kakao && window.kakao.maps) {
-        window.kakao.maps.load(() => {
-          const ps = new window.kakao.maps.services.Places();
-          setKeywordPs(ps);
-        });
-      } else {
-        console.error("카카오 SDK 로드 실패");
-      }
-    };
-
-    script.onerror = () => {
-      console.error("카카오 SDK 스크립트 로드 중 오류 발생");
-    };
+    if (window.kakao && window.kakao.maps) {
+      window.kakao.maps.load(() => {
+        const ps = new window.kakao.maps.services.Places();
+        setKeywordPs(ps);
+      });
+    } else {
+      console.error("카카오 SDK 로드 실패");
+    }
   }, []);
 
   // 키워드 검색
@@ -99,8 +83,20 @@ function FeedRegister() {
 
   //이미지 등록
   const imageOnChangeHandler = (e) => {
-    const file = e.target.files[0]; // file 객체로 가져와야함 -> input vale=file 로
+    const file = e.target.files[0]; // file 객체로 가져와야함 ->
+
     if (file) {
+      // 올린 파일의 크기가 5MB가 넘으면 return
+      const maxSize = 5 * 1024 * 1024; // 1024 = 1KB
+      const fileSize = file.size;
+
+      if (fileSize > maxSize) {
+        setModalMessage("5MB이내의 사진만 업로드 가능합니다.");
+        setIsModalOpen(true);
+        e.target.value = "";
+        return;
+      }
+
       const previewUrl = URL.createObjectURL(file);
       setImage(file);
       setImagePreview(previewUrl);
@@ -165,7 +161,7 @@ function FeedRegister() {
             onChange={searchInputOnChangeHandler}
             onKeyDown={searchInputOnKeyDownHandler}
           />
-          <FaSearchLocation
+          <FaCircleArrowUp
             css={s.searchIcon}
             onClick={searchBtnOnClickHandler}
           />
@@ -222,7 +218,7 @@ function FeedRegister() {
         {/* 공유하기 버튼 */}
         <button
           css={s.submitButton(isButtonDisabled)}
-          disabled={true}
+          disabled={isButtonDisabled}
           onClick={handleFeedSubmit}
         >
           공유하기
@@ -231,7 +227,8 @@ function FeedRegister() {
       <div css={s.dummyContainer}></div>
       {isModalOpen && (
         <AlertModal onClose={() => setIsModalOpen(false)}>
-          {modalMessage}
+          <BiSolidMessageSquareError size={60} style={{ fill: "#ff4d4d" }} />
+          <strong>{modalMessage}</strong>
         </AlertModal>
       )}
     </div>

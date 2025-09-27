@@ -9,13 +9,26 @@ import {
 } from "react-kakao-maps-sdk";
 import { getLast7Days } from "../../../utils/dateUtils.js";
 import moment from "moment/moment.js";
-import { getFeedMapReq } from "../../../services/feed/feedApis.js";
+import {
+  getFeedDetailReq,
+  getFeedMapReq,
+} from "../../../services/feed/feedApis.js";
+import FeedDetailModal from "../../../components/common/FeedDetailModal/FeedDetailModal.jsx";
+import { addLikeReq, removeLikeReq } from "../../../services/like/likeApis.js";
+import { queryClient } from "../../../configs/queryClient.js";
+import { usePrincipalState } from "../../../stores/usePrincipalState.js";
 
 function FeedMapView({ onOpenModal }) {
+  const { principal } = usePrincipalState();
   const CLUSTERER_VISIBLE_MIN_LEVEL = 8;
   const [level, setLevel] = useState(13);
   const [center, setCenter] = useState({ lat: 35.57, lng: 128.15 });
   const [mapFeeds, setMapFeeds] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [feedDetail, setFeedDetail] = useState(null);
+  const [newLike, setNewLike] = useState(null);
+  const [originLike, setOriginLike] = useState(null);
+  const [likeCount, setLikeCount] = useState(0);
 
   // 내 위치 기준으로 지도 센터 잡기
   useEffect(() => {
@@ -41,11 +54,78 @@ function FeedMapView({ onOpenModal }) {
     const fetchMapFeeds = async () => {
       const { start, end } = getLast7Days(moment());
       const res = await getFeedMapReq(start, end);
-      console.log("map feeds : ", res);
       setMapFeeds(res.data.data);
     };
     fetchMapFeeds();
   }, []);
+
+  const closeModal = async () => {
+    if (newLike !== originLike) {
+      try {
+        if (newLike === true) {
+          // 좋아요 추가 API 호출
+          await addLikeReq({
+            feedId: feedDetail.feedId,
+            userId: principal.userId,
+          });
+        } else {
+          // 좋아요 삭제 API 호출
+          await removeLikeReq({
+            feedId: feedDetail.feedId,
+            userId: principal.userId,
+          });
+        }
+      } catch (error) {
+        console.error("좋아요 상태 변경 실패:", error);
+      } finally {
+        queryClient.invalidateQueries({ queryKey: ["feeds"], exact: false });
+      }
+    }
+
+    setFeedDetail(null);
+    setIsModalOpen(false);
+    setOriginLike(null);
+    setNewLike(null);
+    setLikeCount(0);
+  };
+
+  const openModal = (feedId) => {
+    setFeedDetail(null); // 상태 초기화
+    setOriginLike(null);
+    setNewLike(null);
+    setLikeCount(0);
+
+    getFeedDetailReq(feedId)
+      .then((resp) => {
+        if (resp.data.status === "success") {
+          const data = resp.data.data;
+          setFeedDetail(data);
+          setOriginLike(data.isLikedByUser);
+          setNewLike(data.isLikedByUser);
+          setLikeCount(data.likeCount);
+          setIsModalOpen(true);
+        } else if (resp.data.status === "failed") {
+          console.log(resp.data.message);
+        }
+      })
+      .catch((error) => {
+        alert("서버 오류가 발생했습니다. 잠시후 다시 시도해주세요.");
+        return;
+      });
+  };
+
+  const heartOnClickHandler = () => {
+    if (newLike === true) {
+      // 좋아요였던 상태
+      // 좋아요 취소하면 -1
+      setLikeCount((prev) => prev - 1);
+    } else {
+      // 좋아요가 아니었던 상태
+      // 좋아요 누르면 +1
+      setLikeCount((prev) => prev + 1);
+    }
+    setNewLike(!newLike);
+  };
 
   const centerOnChangeHandler = (map) => {
     const newCenter = map.getCenter();
@@ -89,7 +169,7 @@ function FeedMapView({ onOpenModal }) {
               >
                 <div
                   css={s.markerContainer(level)}
-                  onClick={() => onOpenModal(feed.feedId)} // feedId만 전달
+                  onClick={() => openModal(feed.feedId)} // feedId만 전달
                 >
                   <img src={feed.feedImgUrl} css={s.markerImg} />
                 </div>
@@ -116,6 +196,15 @@ function FeedMapView({ onOpenModal }) {
         )}
         <ZoomControl />
       </Map>
+      <FeedDetailModal
+        isOpen={isModalOpen}
+        feedDetail={feedDetail}
+        newLike={newLike}
+        likeCount={likeCount}
+        imageErrors={new Set()}
+        onClose={closeModal}
+        onHeartClick={heartOnClickHandler}
+      />
     </div>
   );
 }

@@ -3,80 +3,103 @@ import { css } from "@emotion/react";
 // 모달
 export const userInfoContainer = css`
   width: 100%;
-  height: 4.5em;
+  height: 60px;
   display: flex;
   padding: 15px 15px 15px;
-  margin-top: 20px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  gap: 10px;
 
   align-items: center;
 `;
 
 export const profileContainer = css`
-  background-color: #bdbdbd;
-  height: 50px;
   width: 50px;
+  height: 50px;
+  background-color: #bdbdbd;
   border-radius: 50%;
+  border: 1px solid #ddd;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  margin-right: 8px;
-
-  & > img {
+  & img {
     width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
   }
+`;
+export const userInfoBox = css`
+  flex-grow: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
 `;
 
 export const username = css`
-  font-size: 1.1em;
-  font-weight: 500;
-  margin-bottom: 0.1em;
+  font-size: 18px;
+  font-weight: 700;
 `;
+
 export const userLocation = css`
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
 `;
 
 export const photoContainer = css`
   position: relative;
   width: 100%;
-  height: auto;
-  max-width: 420px;
-  height: 86%;
+  aspect-ratio: 1;
 `;
 
 export const feedPhotoDetail = css`
+  width: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  object-fit: cover;
+  background-color: #fefefe;
 `;
 
 export const modalLikeInfo = css`
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
-  margin: 0px 17px 18px;
-  height: 2.5em;
+  padding: 0 15px;
+  transform: translateY(-8px);
 `;
 
 export const modalHeartIcon = (newLike) => css`
-  /* margin-right: 4px; */
-  cursor: pointer;
   fill: ${newLike ? "#FB4141" : "#333"};
-  font-size: 20px;
+  font-size: 22px;
   transition: all 0.1s ease;
-  padding-right: 2px;
-  
+  cursor: pointer;
+  transform: translateY(2px);
+
   &:hover {
     fill: ${newLike ? "#333" : "#FB4141"};
   }
 `;
 
 export const modalLikeCount = css`
+  display: flex;
+  align-items: center;
   margin-left: 5px;
   font-size: 18px;
+  font-weight: 500;
+
+  & > p {
+    margin-right: 3px;
+    padding: 0;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  & > span {
+    color: #444;
+  }
 `;
 
 export const feedDetailNoImageBox = css`

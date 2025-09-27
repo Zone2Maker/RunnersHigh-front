@@ -4,12 +4,11 @@ import * as s from "./styles";
 import AlertModal from "../../components/common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getFeedListReq, getFeedDetailReq } from "../../services/feed/feedApis";
+import { getFeedListReq } from "../../services/feed/feedApis";
 import { AiOutlinePicture } from "react-icons/ai";
 import FeedContainer from "../../components/common/FeedContainer/FeedContainer";
 import FeedBtnContainer from "./FeedBtnContainer/FeedBtnContainer";
 import FeedMapView from "./FeedMapView/FeedMapView";
-import FeedDetailModal from "./FeedDetailModal/FeedDetailModal";
 import { queryClient } from "../../configs/queryClient";
 
 function FeedMain() {
@@ -17,13 +16,6 @@ function FeedMain() {
   const [feedList, setFeedList] = useState([]);
   const observerTarget = useRef(null);
   const [view, setView] = useState(0);
-
-  // 모달 상태
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [feedDetail, setFeedDetail] = useState(null);
-  const [newLike, setNewLike] = useState(null);
-  const [likeCount, setLikeCount] = useState(0);
-  const [imageErrors, setImageErrors] = useState(new Set());
 
   const {
     data,
@@ -76,7 +68,7 @@ function FeedMain() {
 
   return (
     <>
-      <FeedBtnContainer setView={setView} />
+      <FeedBtnContainer view={view} setView={setView} />
 
       <div css={s.mainFeedContainer}>
         <div css={s.container}>
@@ -116,43 +108,11 @@ function FeedMain() {
 
           {view === 1 && (
             <div css={s.mapBox}>
-              <FeedMapView
-                onOpenModal={async (feedId) => {
-                  try {
-                    const res = await getFeedDetailReq(feedId);
-                    if (res.data.status === "success") {
-                      const data = res.data.data;
-                      setFeedDetail(data);
-                      setNewLike(data.isLikedByUser);
-                      setLikeCount(data.likeCount);
-                      setIsModalOpen(true);
-                    }
-                  } catch (error) {
-                    console.error("피드 상세 조회 실패:", error);
-                  }
-                }}
-              />
+              <FeedMapView />
             </div>
           )}
         </div>
       </div>
-
-      <FeedDetailModal
-        isOpen={isModalOpen}
-        feedDetail={feedDetail}
-        newLike={newLike}
-        likeCount={likeCount}
-        imageErrors={imageErrors}
-        onClose={() => setIsModalOpen(false)}
-        onHeartClick={() => {
-          if (newLike) {
-            setLikeCount((prev) => prev - 1);
-          } else {
-            setLikeCount((prev) => prev + 1);
-          }
-          setNewLike(!newLike);
-        }}
-      />
     </>
   );
 }

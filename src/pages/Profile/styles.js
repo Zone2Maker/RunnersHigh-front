@@ -10,24 +10,24 @@ export const container = css`
   justify-content: center;
   align-items: center;
   position: relative;
+  background-color: #f7f9fa;
 `;
 
 export const stickyContainer = css`
   width: 100%;
   height: 240px;
   max-width: 500px;
-  background-color: #efefef;
+  background-color: #f7f9fa;
   padding: 10px;
   position: fixed;
   top: 60px;
-  background-color: white;
   z-index: 2;
   box-sizing: border-box;
 `;
 
 export const navBar = css`
-margin-top: 10px;
-`
+  margin-top: 10px;
+`;
 
 export const profileMain = css`
   width: 100%;
@@ -37,8 +37,7 @@ export const profileMain = css`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  /* border-top-left-radius: 35px;
-  border-top-right-radius: 35px; */
+  background-color: #f7f9fa;
   box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.25);
   border: 1px solid #e6e6e6ff;
 `;

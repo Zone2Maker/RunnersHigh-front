@@ -19,7 +19,7 @@ export const container = css`
   height: 550px;
   border-radius: 23px;
   box-shadow: 0 5px 7px rgba(0, 0, 0, 0.3);
-  background-color: #efefef;
+  background-color: #f8f9fa;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -171,7 +171,7 @@ export const joinBtn = css`
     font-size: 18px;
     font-weight: 600;
     background-color: #00296b;
-    color: #eeeeeeff;
+    color: #eeeeee;
     cursor: pointer;
     transition: all 0.2s;
 

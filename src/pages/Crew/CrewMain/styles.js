@@ -5,7 +5,7 @@ export const container = css`
   height: 100%;
   margin-top: 106px;
   box-sizing: border-box;
-  background-color: #f7f9fa;
+  background-color: #f8f9fa;
 `;
 
 export const header = css`
@@ -20,7 +20,7 @@ export const header = css`
   box-sizing: border-box;
   z-index: 10;
   gap: 7px;
-  background-color: #f7f9fa;
+  background-color: #f8f9fa;
 `;
 
 export const searchContainer = css`
@@ -29,10 +29,11 @@ export const searchContainer = css`
   display: flex;
   align-items: center;
   border-radius: 50px;
-  outline: 2px solid #b3b3b3;
+  outline: 2px solid #cdcdcd;
   background-color: #f8f9fa;
   transition: all 0.2s ease-in-out;
   box-sizing: border-box;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 
   &:focus-within {
@@ -77,6 +78,10 @@ export const searchBtn = css`
 
     &:hover {
       color: #f57c00;
+    }
+
+    &:active {
+      transform: scale(0.95);
     }
   }
 `;
@@ -174,8 +179,39 @@ export const selectRegion = css`
   }
 `;
 
+// export const regionList = (isDropDownOpen) => css`
+//   display: ${isDropDownOpen ? "block" : "none"};
+//   opacity: ${isDropDownOpen ? 1 : 0};
+//   transform: ${isDropDownOpen ? "translateY(0)" : "translateY(40px)"};
+//   transition: all 0.5s ease;
+//   position: absolute;
+//   top: 110%;
+//   right: -10px;
+//   width: 80px;
+//   height: 125px;
+//   border-radius: 10px;
+//   background-color: #fefefe;
+//   border: 1px solid #e9ecef;
+//   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+//   box-sizing: border-box;
+//   margin: 0;
+//   padding: 5px;
+//   list-style: none;
+//   z-index: 20;
+//   overflow-y: auto;
+//   cursor: pointer;
+
+//   // 스크롤바 숨기기
+//   &::-webkit-scrollbar {
+//     width: 0px;
+//   }
+// `;
+
 export const regionList = (isDropDownOpen) => css`
   display: ${isDropDownOpen ? "block" : "none"};
+  opacity: ${isDropDownOpen ? 1 : 0};
+  transform: ${isDropDownOpen ? "translateY(0)" : "translateY(40px)"};
+  transition: all 0.5s ease;
   position: absolute;
   top: 110%;
   right: -10px;
