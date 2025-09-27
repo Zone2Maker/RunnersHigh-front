@@ -1,6 +1,9 @@
 import { css } from "@emotion/react";
 
-export const chatBox = css`
+export const chatContainer = (isChatOpen) => css`
+  display: ${isChatOpen ? "block" : "none"};
+  opacity: ${isChatOpen ? 1 : 0};
+  transform: ${!isChatOpen ? "translateX(40px)" : "translateX(0px)"};
   position: fixed;
   right: 50px;
   bottom: 120px;
@@ -8,8 +11,6 @@ export const chatBox = css`
   height: 550px;
   border-radius: 30px;
   background-color: #dfdfdf;
-  opacity: 0;
-  transform: translateX(40px);
   transition: all 0.4s ease;
   overflow: hidden;
   box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.25);
@@ -83,77 +84,8 @@ export const chatMain = css`
   }
 `;
 
-export const myChat = css`
-  width: 100%;
-  display: flex;
-  justify-content: right;
-  gap: 5px;
-
-  > div {
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    gap: 5px;
-
-    > div {
-      background-color: #d3d3d3;
-      border-radius: 8px 0 8px 8px;
-      padding: 5px 10px;
-      max-width: 250px;
-      box-sizing: border-box;
-
-      > p {
-        margin: 0;
-        word-break: keep-all;
-        word-wrap: break-word;
-        font-size: 15px;
-        line-height: 20px;
-      }
-    }
-  }
-`;
-
-export const yourChat = css`
-  width: 100%;
-  display: flex;
-  justify-content: left;
-  gap: 5px;
-
-  > div {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-
-    > span {
-      font-size: 14px;
-    }
-
-    > div {
-      background-color: #d3d3d3;
-      border-radius: 0 8px 8px 8px;
-      padding: 5px 10px;
-      max-width: 250px;
-      box-sizing: border-box;
-      display: flex;
-
-      > p {
-        margin: 0;
-        word-break: keep-all;
-        word-wrap: break-word;
-        font-size: 15px;
-        line-height: 20px;
-      }
-      > span {
-      }
-    }
-  }
-
-  > img {
-    width: 22px;
-    height: 22px;
-    object-fit: cover;
-    border-radius: 50%;
-  }
+export const obserber = css`
+  padding: 1px;
 `;
 
 export const systemChat = css`
@@ -175,18 +107,7 @@ export const lastReadMessageBox = css`
   align-items: center;
 `;
 
-export const timeBox = css`
-  height: 100%;
-  display: flex;
-  justify-content: end;
-
-  > p {
-    margin: 0;
-    font-size: 10px;
-  }
-`;
-
-export const chatInput = css`
+export const chatFooter = css`
   position: absolute;
   width: 100%;
   height: 70px;

@@ -1,248 +1,195 @@
 /** @jsxImportSource @emotion/react */
-import * as s from "./styles";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { usePrincipalState } from "../../../stores/usePrincipalState";
+import * as s from "./styles";
+import { VscSend } from "react-icons/vsc";
 import { IoExitOutline } from "react-icons/io5";
 import {
+  getInitialMessageListReq,
   getLastReadMessageIdReq,
   getMessageListReq,
   updateLastReadMessageIdReq,
 } from "../../../services/message/messageApis";
+import { usePrincipalState } from "../../../stores/usePrincipalState";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { VscSend } from "react-icons/vsc";
+import MyMessage from "./MyMessage/MyMessage";
+import YourMessage from "./YourMessage/YourMessage";
+import { data } from "react-router-dom";
 
-function MyChattingRoom({ message, crewInfo, isChatOpen }) {
+function MyChattingRoom({
+  pendingMessageList,
+  setPendingMessageList,
+  crewInfo,
+  isChatOpen,
+  setIsChatOpen,
+}) {
   const size = 50;
   const { principal } = usePrincipalState();
+  const [lastReadMessageId, setLastReadMessageId] = useState(0);
+  const [prevCursorId, setPrevCursorId] = useState(0);
+  const [nextCursorId, setNextCursorId] = useState(0);
+  const [messageList, setMessageList] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [messageList, setMessageList] = useState([]);
-  const [lastReadMessageId, setLastReadMessageId] = useState(0);
-
   const chatMainRef = useRef(null);
-  const scrollDownRef = useRef(null);
-  const [initialScroll, setInitialScroll] = useState(false);
+  const lastReadMessageRef = useRef(null);
+  // const [isScrolled, setIsScrolled] = useState(false);
+  const prevScrollHeightRef = useRef(0);
+  const initialScrollDone = useRef(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const prevReadMessageIdRef = useRef(0);
-  const [prevReadMessageId, setPrevReadMessageId] = useState(0);
+  const topObserver = useRef(null);
+  const bottomObserver = useRef(null);
+
+  const [sendMessageValue, setSendMessageValue] = useState("");
 
   useEffect(() => {
-    prevReadMessageIdRef.current = prevReadMessageId;
-    console.log(prevReadMessageId);
-  }, [prevReadMessageId]);
+    getLastReadMessageIdReq(principal.crewId).then((response) => {
+      const id = response.data.data;
+      setLastReadMessageId(id);
+      console.log(id);
+      getInitialMessageListReq(principal.crewId, response.data.data, size).then(
+        (response) => {
+          if (response.data.status === "failed") {
+            setIsChatOpen(false);
+            setErrorMessage(response.data.message);
+            return;
+          }
 
-  useEffect(() => {
-    console.log("마운트");
-    getLastReadMessageIdReq(principal?.crewId).then((response) => {
-      setLastReadMessageId(response.data.data);
-      console.log(response.data.data);
+          const messages = response.data.data.messages;
+
+          console.log(messages);
+          let slicedMessages = null;
+          if (messages.length < 100) {
+            if (messages[50].messageId > id) {
+              setPrevCursorId(null);
+              setNextCursorId(messages[messages.length - 1].messageId);
+              slicedMessages = messages.slice(0, messages.length - 1);
+            } else if (messages[50].messageId === id) {
+              setPrevCursorId(messages[0].messageId);
+              setNextCursorId(null);
+              slicedMessages = messages.slice(1, messages.length);
+            }
+          } else {
+            setPrevCursorId(messages[0].messageId);
+            setNextCursorId(messages[messages.length - 1].messageId);
+            slicedMessages = messages.slice(1, messages.length - 1);
+          }
+
+          setMessageList(slicedMessages);
+        }
+      );
     });
-    return () => {
-      console.log("언마운트", prevReadMessageIdRef.current);
 
-      if (principal?.crewId && prevReadMessageIdRef.current) {
-        updateLastReadMessageIdReq(
-          principal.crewId,
-          prevReadMessageIdRef.current
-        );
-      }
-      setMessageList([]);
-      setInitialScroll(false);
+    return () => {
+      updateLastReadMessageIdReq(principal.crewId).then((response) =>
+        console.log(response)
+      );
     };
   }, []);
 
-  const {
-    data,
-    isError,
-    isLoading,
-    hasNextPage,
-    hasPreviousPage,
-    fetchNextPage,
-    fetchPreviousPage,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-  } = useInfiniteQuery({
-    queryKey: ["messageList", principal.crewId, size],
-    queryFn: ({ pageParam }) => {
-      const { nextCursorId, prevCursorId, direction } = pageParam || {
-        nextCursorId: lastReadMessageId + 1,
-        prevCursorId: lastReadMessageId,
-        direction: "prev",
-      };
-
-      return getMessageListReq(
-        principal.crewId,
-        prevCursorId,
-        nextCursorId,
-        size,
-        direction
-      );
-    },
-    getNextPageParam: (lastPage) => {
-      const nextCursorId = lastPage?.data?.data?.nextCursorId ?? undefined;
-      const prevCursorId = lastPage?.data?.data?.prevCursorId ?? undefined;
-      return nextCursorId
-        ? {
-            nextCursorId,
-            prevCursorId,
-            direction: "next",
-          }
-        : undefined;
-    },
-    getPreviousPageParam: (firstPage) => {
-      const nextCursorId = firstPage?.data?.data?.nextCursorId ?? undefined;
-      const prevCursorId = firstPage?.data?.data?.prevCursorId ?? undefined;
-      return prevCursorId
-        ? {
-            prevCursorId,
-            nextCursorId,
-            direction: "prev",
-          }
-        : undefined;
-    },
-    enabled: !!lastReadMessageId,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-  });
-
-  useEffect(() => {
-    if (isLoading || isError) return;
-
-    const newMessageList = data?.pages
-      ? data.pages
-          .flatMap((page) => page.data.data.messages)
-          .sort((a, b) => a.messageId - b.messageId)
-      : [];
-    console.log(newMessageList);
-    setMessageList(newMessageList);
-  }, [data, isError, isLoading]);
-
   useLayoutEffect(() => {
-    if (initialScroll) return;
-    if (isLoading || isError) return;
-    if (!messageList.length) return;
-    if (!scrollDownRef.current || !chatMainRef.current) return;
-
-    console.log("이전 스크롤");
-    chatMainRef.current.scrollTop = scrollDownRef.current.offsetTop;
-    requestAnimationFrame(() => setInitialScroll(true));
-  }, [messageList, isLoading, isError, initialScroll, lastReadMessageId]);
-
-  useEffect(() => {
-    if (!initialScroll) return;
-    if (!chatMainRef.current || !prevReadMessageId) return;
-    if (isFetchingPreviousPage) return;
-
-    const target = chatMainRef.current.querySelector(
-      `[data-msgid="${prevReadMessageId}"]`
-    );
-
-    if (target) {
-      console.log("이후 스크롤");
-      chatMainRef.current.scrollTop = target.offsetTop;
+    // if (isScrolled) return;
+    if (!chatMainRef.current || messageList.length === 0) {
+      return;
     }
-  }, [messageList, isFetchingPreviousPage]);
+    // 맨 처음 실행
+    if (lastReadMessageRef.current && !initialScrollDone.current) {
+      lastReadMessageRef.current.scrollIntoView({
+        behavior: "auto",
+        block: "start",
+      });
+      initialScrollDone.current = true;
+      return;
+    }
 
-  useLayoutEffect(() => {}, []);
+    // 나머지 실행
+    // 이전 메시지 로딩 했음
+    if (prevScrollHeightRef > 0) {
+      const scrollOffset =
+        chatMainRef.current.scrollHeight - prevScrollHeightRef;
+      chatMainRef.current.scrollTop += scrollOffset;
+      prevScrollHeightRef.current = 0;
+    }
 
-  const topObserver = useRef(null);
+    // requestAnimationFrame(() => setIsScrolled(true));
+    // requestAnimationFrame(() => setIsScrolled(true));
+  }, [messageList, lastReadMessageRef]);
+
   useEffect(() => {
-    if (!chatMainRef.current || !topObserver.current) return;
-
-    const timer = setTimeout(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (
-            entries[0].isIntersecting &&
-            hasPreviousPage &&
-            !isFetchingPreviousPage
-          ) {
-            fetchPreviousPage();
-          }
-        },
-        { root: chatMainRef.current, threshold: 0.1 }
-      );
-      observer.observe(topObserver.current);
-
-      return () => observer.disconnect();
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [
-    fetchPreviousPage,
-    hasPreviousPage,
-    isFetchingPreviousPage,
-    prevReadMessageId,
-  ]);
-
-  const visibleMsgIdsRef = useRef(new Set());
-  useEffect(() => {
-    if (!messageList.length) return;
+    // if (!isScrolled) return;
+    if (!messageList || !chatMainRef.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          const messageId = Number(entry.target.dataset.msgid);
+        if (entries[0].isIntersecting && prevCursorId !== null && !isLoading) {
+          // 요청 직전
+          prevScrollHeightRef.current = chatMainRef.current.scrollHeight;
+          setIsLoading(true);
+          const direction = "prev";
+          getMessageListReq(
+            principal.crewId,
+            prevCursorId,
+            direction,
+            size
+          ).then((response) => {
+            if (response.data.status === "failed") {
+              setIsChatOpen(false);
+              setErrorMessage(response.data.message);
+            }
 
-          if (entry.isIntersecting) {
-            visibleMsgIdsRef.current.add(messageId);
-          } else {
-            visibleMsgIdsRef.current.delete(messageId);
-          }
-        });
-
-        // 현재 화면에 보이는 메시지 중 가장 작은 msgId 찾기
-        if (visibleMsgIdsRef.current.size > 0) {
-          const maxId = Math.min(...Array.from(visibleMsgIdsRef.current));
-          setPrevReadMessageId(maxId);
+            console.log(response);
+            setPrevCursorId(response.data.data.newCursorId);
+            const reversedMessages = response.data.data.messages.reverse();
+            console.log(reversedMessages);
+            setMessageList((prev) => [...reversedMessages, ...prev]);
+            setIsLoading(false);
+          });
         }
       },
-      { root: chatMainRef.current, threshold: 1 }
+      {
+        root: chatMainRef.current,
+        threshold: 0.1,
+      }
     );
-
-    messageList.forEach((message) => {
-      const element = document.querySelector(
-        `[data-msgid="${message.messageId}"]`
-      );
-      if (element) observer.observe(element);
-    });
-
+    observer.observe(topObserver.current);
     return () => observer.disconnect();
-  }, [messageList]);
+    // }, [messageList, prevCursorId, principal, setIsChatOpen, isScrolled]);
+  }, [messageList, prevCursorId, principal, setIsChatOpen, isLoading]);
 
-  const bottomObserver = useRef(null);
   useEffect(() => {
-    if (!chatMainRef.current || !bottomObserver.current) return;
+    // if (!isScrolled) return;
+    if (!messageList || !chatMainRef.current) return;
 
-    const timer = setTimeout(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
-          }
-        },
-        { root: chatMainRef.current, threshold: 0.1 }
-      );
-      observer.observe(bottomObserver.current);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && nextCursorId !== null) {
+          const direction = "next";
+          getMessageListReq(
+            principal.crewId,
+            nextCursorId,
+            direction,
+            size
+          ).then((response) => {
+            if (response.data.status === "failed") {
+              setIsChatOpen(false);
+              setErrorMessage(response.data.message);
+            }
 
-      return () => observer.disconnect();
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+            setPrevCursorId(response.data.data.newCursorId);
+            const messages = response.data.data.messages;
+            setMessageList((prev) => [...prev, ...messages]);
+          });
+        }
+      },
+      { root: chatMainRef.current, threshold: 0.1 }
+    );
+    observer.observe(bottomObserver.current);
+    return () => observer.disconnect();
+  }, [messageList, nextCursorId, principal, setIsChatOpen]);
+  // }, [messageList, nextCursorId, principal, setIsChatOpen, isScrolled]);
 
   return (
-    <div
-      css={[
-        s.chatBox,
-        isChatOpen && {
-          opacity: "1",
-          visibility: "visible",
-          transform: "translateY(0)",
-        },
-      ]}
-    >
+    <div css={s.chatContainer(isChatOpen)}>
       <div css={s.chatHeader}>
         <div>
           <img src={crewInfo.crewImgUrl} alt="크루 대표사진" />
@@ -251,96 +198,51 @@ function MyChattingRoom({ message, crewInfo, isChatOpen }) {
         <IoExitOutline />
       </div>
       <div css={s.chatMain} ref={chatMainRef}>
-        <div ref={topObserver} style={{ padding: "1px" }} />
+        <div ref={topObserver} css={s.obserber} />
         {messageList.map((message) => {
           if (message.messageType === "ENTER") {
             return (
-              <div
-                css={s.systemChat}
-                key={message.messageId}
-                data-msgid={message.messageId}
-              >
+              <div css={s.systemChat} key={message.messageId}>
                 {message.message}
               </div>
             );
           }
+          const isMine = principal.userId === message.userId;
+          const isLastRead = message.messageId === lastReadMessageId;
 
-          if (message.userId === principal.userId) {
-            if (lastReadMessageId === message.messageId) {
-              return (
-                <div
-                  key={message.messageId}
-                  css={s.lastReadMessageBox}
-                  data-msgid={message.messageId}
-                  ref={scrollDownRef}
-                >
-                  <div css={s.myChat}>
-                    <div>
-                      <div>
-                        <p>{message.message}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div css={s.systemChat}>여기까지 읽으셨습니다.</div>
-                </div>
-              );
-            }
+          if (isLastRead) {
             return (
               <div
-                css={s.myChat}
                 key={message.messageId}
-                data-msgid={message.messageId}
+                ref={lastReadMessageRef}
+                css={s.lastReadMessageBox}
               >
-                <div>
-                  <div>
-                    <p>{message.message}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          } else {
-            if (lastReadMessageId === message.messageId) {
-              return (
-                <div
-                  key={message.messageId}
-                  css={s.lastReadMessageBox}
-                  data-msgid={message.messageId}
-                  ref={scrollDownRef}
-                >
-                  <div css={s.yourChat}>
-                    <img src={message.profileImgUrl} alt="유저 프로필사진" />
-                    <div>
-                      <span>{message.nickname}</span>
-                      <div>
-                        <p>{message.message}</p>
-                      </div>
-                    </div>
-                  </div>
+                {isMine ? (
+                  <MyMessage message={message} />
+                ) : (
+                  <YourMessage message={message} />
+                )}
+                {nextCursorId !== null && (
                   <div css={s.systemChat}>여기까지 읽으셨습니다.</div>
-                </div>
-              );
-            }
-            return (
-              <div
-                css={s.yourChat}
-                key={message.messageId}
-                data-msgid={message.messageId}
-              >
-                <img src={message.profileImgUrl} alt="유저 프로필사진" />
-                <div>
-                  <span>{message.nickname}</span>
-                  <div>
-                    <p>{message.message}</p>
-                  </div>
-                </div>
+                )}
               </div>
             );
           }
+
+          return isMine ? (
+            <MyMessage key={message.messageId} message={message} />
+          ) : (
+            <YourMessage key={message.messageId} message={message} />
+          );
         })}
-        <div ref={bottomObserver} style={{ padding: "1px" }} />
+        <div ref={bottomObserver} css={s.obserber} />
       </div>
-      <div css={s.chatInput}>
-        <textarea placeholder="메세지를 입력해주세요." />
+      <div css={s.chatFooter}>
+        <textarea
+          placeholder="메세지를 입력해주세요."
+          value={sendMessageValue}
+          onChange={(e) => setSendMessageValue(e.target.value)}
+        />
         <VscSend />
       </div>
     </div>

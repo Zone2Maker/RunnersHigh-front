@@ -10,7 +10,7 @@ import { connectStomp, disconnectStomp } from "./configs/stompClient";
 import MyChattingButton from "./components/layout/MyChattingButton/MyChattingButton";
 
 function App() {
-  const [message, setMessage] = useState([]);
+  const [pendingMessageList, setPendingMessageList] = useState([]);
   const { principal } = usePrincipalState();
 
   useEffect(() => {
@@ -20,7 +20,7 @@ function App() {
 
     connectStomp(principal?.crewId, (payload) => {
       console.log(payload);
-      setMessage(payload);
+      setPendingMessageList((prev) => [...prev, payload]);
     });
 
     return () => {
@@ -34,7 +34,12 @@ function App() {
       <BrowserRouter>
         <MainRouter />
       </BrowserRouter>
-      {principal?.crewId && <MyChattingButton message={message}/>}
+      {principal?.crewId && (
+        <MyChattingButton
+          pendingMessageList={pendingMessageList}
+          setPendingMessageList={setPendingMessageList}
+        />
+      )}
     </QueryClientProvider>
   );
 }

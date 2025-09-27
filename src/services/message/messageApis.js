@@ -1,19 +1,35 @@
 import { instance } from "../instance/instance";
 
+export const getInitialMessageListReq = async (
+  crewId,
+  cursorMessageId,
+  size
+) => {
+  try {
+    const response = await instance.get(`/crews/${crewId}/messages/initial`, {
+      params: {
+        cursorMessageId: cursorMessageId,
+        size: size,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};
+
 export const getMessageListReq = async (
   crewId,
-  prevCursorId,
-  nextCursorId,
-  size,
-  direction
+  cursorMessageId,
+  direction,
+  size
 ) => {
   try {
     const response = await instance.get(`/crews/${crewId}/messages`, {
       params: {
-        prevCursorId: prevCursorId,
-        nextCursorId: nextCursorId,
-        size: size,
+        cursorMessageId: cursorMessageId,
         direction: direction,
+        size: size,
       },
     });
     return response;
@@ -31,12 +47,10 @@ export const getLastReadMessageIdReq = async (crewId) => {
   }
 };
 
-export const updateLastReadMessageIdReq = async (crewId, lastReadMessageId) => {
+export const updateLastReadMessageIdReq = async (crewId) => {
   try {
     const response = await instance.post(
-      `/crews/${crewId}/messages/read-update`,
-      {}, // body 비우기
-      { params: { lastReadMessageId } }
+      `/crews/${crewId}/messages/read-update`
     );
     return response;
   } catch (error) {

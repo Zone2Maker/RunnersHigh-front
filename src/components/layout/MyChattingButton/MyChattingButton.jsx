@@ -9,13 +9,13 @@ import AlertModal from "../../common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
 import MyChattingRoom from "../MyChattingRoom/MyChattingRoom";
 
-function MyChattingButton({ message }) {
+function MyChattingButton({ pendingMessageList, setPendingMessageList }) {
   const { principal } = usePrincipalState();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [crewInfo, setCrewInfo] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-//   const [unreadMessageCnt, setUnreadMessageCnt] = useState(0);
+  //   const [unreadMessageCnt, setUnreadMessageCnt] = useState(0);
 
   // getUnreadMessageCountReq(principal?.crewId).then((response) => {
   //   console.log(response.data.data);
@@ -23,7 +23,6 @@ function MyChattingButton({ message }) {
   // });
 
   const chatBtnOnClickHandler = () => {
-    setIsChatOpen(!isChatOpen);
     getCrewByCrewReq(principal.crewId).then((response) => {
       if (response.data.status === "failed") {
         setErrorMessage(response.data.message);
@@ -33,15 +32,19 @@ function MyChattingButton({ message }) {
       }
       setCrewInfo(response.data.data);
     });
+
+    setIsChatOpen(!isChatOpen);
   };
 
   return (
     <>
       {isChatOpen && (
         <MyChattingRoom
-          message={message}
+          pendingMessageList={pendingMessageList}
+          setPendingMessageList={setPendingMessageList}
           crewInfo={crewInfo}
           isChatOpen={isChatOpen}
+          setIsChatOpen={setIsChatOpen}
         />
       )}
       <div css={s.btn} onClick={chatBtnOnClickHandler}>
@@ -51,7 +54,7 @@ function MyChattingButton({ message }) {
           </div>
         ) : (
           <div css={s.closeChattingBtn}>
-            {message && <MdCircle />}
+            {pendingMessageList.length > 0 && <MdCircle />}
             <p>채팅</p>
           </div>
         )}
