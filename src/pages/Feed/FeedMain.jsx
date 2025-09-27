@@ -10,6 +10,7 @@ import FeedContainer from "../../components/common/FeedContainer/FeedContainer";
 import FeedBtnContainer from "./FeedBtnContainer/FeedBtnContainer";
 import FeedMapView from "./FeedMapView/FeedMapView";
 import FeedDetailModal from "./FeedDetailModal/FeedDetailModal";
+import { queryClient } from "../../configs/queryClient";
 
 function FeedMain() {
   const size = 12;
@@ -41,7 +42,7 @@ function FeedMain() {
       lastPage?.data?.data?.nextCursorFeedId ?? undefined,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
   });
 
   useEffect(() => {
@@ -63,6 +64,15 @@ function FeedMain() {
     observer.observe(observerTarget.current);
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isLoading, view]);
+
+  useEffect(() => {
+    return () => {
+      queryClient.invalidateQueries({
+        queryKey: ["feeds"],
+        exact: false,
+      });
+    };
+  }, []);
 
   return (
     <>
