@@ -1,0 +1,185 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: beige; */
+  padding: 10px;
+  border-radius: 12px;
+}
+
+/* 캘린더 */
+.react-calendar {
+  width: 400px;
+  height: auto;
+  border: none;
+  border-radius: 12px;
+  padding: 20px; /* 내부 여백 */
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+/* 헤더 (April 2025 < >) */
+.react-calendar__navigation {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* 현재 표시되는 네비바 년도와 월 나타냄 */
+.react-calendar__navigation__label {
+  font-weight: bold;
+  font-size: 18px; /* 폰트 크기 확장 */
+  flex-grow: 1;
+  text-align: center;
+  border: none;
+  background: none;
+
+  & > span {
+    font-size: 15px;
+  }
+}
+
+.react-calendar__navigation__arrow {
+  border: none;
+  background: none;
+  font-size: 20px;
+}
+
+.react-calendar__navigation__prev-button,
+.react-calendar__navigation__next-button,
+.react-calendar__navigation__next2-button,
+.react-calendar__navigation__prev2-button {
+  border: none;
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  font-size: 18px;
+}
+
+.react-calendar__viewContainer {
+  margin: 0;
+  height: 320px;
+  justify-items: center;
+}
+
+.react-calendar__month-view {
+  align-items: flex-end;
+  height: 250px;
+}
+
+/* 상단 요일 스타일 */
+.react-calendar__month-view__weekdays__weekday {
+  text-align: center;
+  font-family: Noto_Sans;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 6px;
+  background-color: white;
+}
+
+/*월 화 수 목 금 토 일 밑줄 없애기*/
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+}
+
+.react-calendar__tile {
+  padding: 15px;
+}
+
+/* .react-calendar__tile.react-calendar__month-view__days__day--neighboringMonth {
+  overflow: hidden;
+
+  & > abbr {
+    color: #d1cccc;
+    overflow: hidden;
+  }
+} */
+
+/* 해당 월이 아닌 날짜 */
+.react-calendar__month-view__days__day--neighboringMonth {
+  opacity: 0.5;
+}
+
+.react-calendar__tile.react-calendar__month-view__days__day {
+  position: relative;
+  /* dot 에 position: absolute 주기위함 */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0;
+  overflow: hidden;
+  background-color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  padding-top: 8px;
+
+  box-sizing: border-box;
+
+  & > abbr {
+    color: #333;
+    font-size: 14px;
+    text-align: center;
+    margin: 0;
+  }
+}
+
+/* Dot 스타일 추가 - 빨간 dot*/
+.dot {
+  position: absolute;
+  height: 5px;
+  width: 5px;
+  bottom: 8px;
+  left: 52%;
+  background-color: #f87171;
+  border-radius: 50%;
+  margin-top: 8px;
+  transform: translateX(-50%);
+}
+
+/* 오늘 날짜 스타일: 파란색 동그라미 배경 */
+.react-calendar__tile--now {
+  background-color: #dbeafe;
+  border-radius: 50%;
+  color: #7394ed;
+  font-weight: bold;
+}
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  background-color: #bfdbfe;
+}
+
+/* 오늘 날짜가 선택되었을 때 */
+.react-calendar__tile--active.react-calendar__tile--now {
+  background-color: #7394ed;
+  color: white;
+  border-radius: 50%;
+}
+
+/* 선택된 날짜 스타일 */
+.react-calendar__tile--active {
+  background-color: #dbeafe;
+  color: #7394ed;
+  font-weight: bold;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background-color: #bfdbfe;
+}
+
+/* 마우스 호버 스타일 */
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #eff6ff;
+}
