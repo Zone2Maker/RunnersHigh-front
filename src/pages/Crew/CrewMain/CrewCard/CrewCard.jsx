@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { FaMapMarkerAlt } from "react-icons/fa";
 import * as s from "./styles";
-import { IoPersonOutline } from "react-icons/io5";
+import { IoPeopleOutline } from "react-icons/io5";
 import { useState } from "react";
-import PromptModal from "../../../../components/common/PromptModal/PromptModal";
 import {
   getCrewByCrewReq,
   joinCrewReq,
@@ -17,11 +16,12 @@ import { SlPicture } from "react-icons/sl";
 import { queryClient } from "../../../../configs/queryClient";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
 import { useNavigate } from "react-router-dom";
+import CrewDetailModal from "./CrewDetailModal/CrewDetailModal";
 
 function CrewCard({ crew }) {
   const { principal } = usePrincipalState();
   const isFull = crew.currentMembers === crew.maxMembers;
-  const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
+  const [isCrewDetailModalOpen, setIsCrewDetailModalOpen] = useState(false);
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [crewDetail, setCrewDetail] = useState({});
@@ -37,7 +37,7 @@ function CrewCard({ crew }) {
       }
 
       setCrewDetail(reponse.data.data);
-      setIsPromptModalOpen(true);
+      setIsCrewDetailModalOpen(true);
     });
   };
 
@@ -50,7 +50,6 @@ function CrewCard({ crew }) {
       setErrorMessage("크루에 가입하고 싶다면 로그인을 진행해주세요.");
       return;
     }
-    console.log(crewDetail.crewId, principal?.userId);
     joinCrewReq({
       crewId: crewDetail.crewId,
       userId: principal?.userId,
@@ -72,17 +71,7 @@ function CrewCard({ crew }) {
 
   return (
     <>
-      <div
-        css={[
-          s.card,
-          isFull && {
-            opacity: "0.5",
-            pointerEvents: "none",
-            cursor: "not-allowed",
-          },
-        ]}
-        onClick={handleOpenModal}
-      >
+      <div css={s.card(isFull)} onClick={handleOpenModal}>
         {imageErrors.has(crew.crewId) ? (
           <div css={s.noImgBox}>
             <SlPicture />
@@ -100,65 +89,31 @@ function CrewCard({ crew }) {
           </div>
         )}
         <div css={s.contentBox}>
-          <span>
-            <FaMapMarkerAlt size={"9px"} />
-            {crew.crewRegion}
-          </span>
-          <div>
-            <p>{crew.crewName}</p>
-            <div>
-              <IoPersonOutline size={"11px"} />
+          <div css={s.regionAndMemberBox}>
+            <div css={s.region}>
+              <span>
+                <FaMapMarkerAlt />
+              </span>
+              <span>{crew.crewRegion}</span>
+            </div>
+            <div css={s.seperator}></div>
+            <div css={s.member}>
+              <IoPeopleOutline />
               <span>{crew.currentMembers}</span>/<span>{crew.maxMembers}</span>
             </div>
           </div>
-          {crew.crewDetail.length > 18 ? (
-            <p>{crew.crewDetail.slice(0, 18)}...</p>
-          ) : (
-            <p>{crew.crewDetail}</p>
-          )}
+          <div css={s.crewName}>{crew.crewName}</div>
+          <div css={s.crewDetail}>{crew.crewDetail}</div>
         </div>
       </div>
-      {!errorMessage && isPromptModalOpen && !successMessage && (
-        <PromptModal onClose={() => setIsPromptModalOpen(false)}>
-          <div css={s.cardDetail}>
-            <div>
-              {imageErrors.has(crewDetail.crewId) ? (
-                <div css={s.cardDetailNoImgBox}>
-                  <SlPicture />
-                  <p>이미지를 불러올 수 없습니다</p>
-                </div>
-              ) : (
-                <div css={s.cardDetailImgBox}>
-                  <img
-                    src={crewDetail.crewImgUrl}
-                    alt="크루 대표사진"
-                    onError={() => {
-                      imageErrorHandler(crewDetail.crewId);
-                    }}
-                  />
-                </div>
-              )}
-              <div css={s.cardDetailContentBox}>
-                <span>
-                  <FaMapMarkerAlt size={"11px"} />
-                  {crewDetail.crewRegion}
-                </span>
-                <div>
-                  <p>{crewDetail.crewName}</p>
-                  <div>
-                    <IoPersonOutline size={"16px"} />
-                    <span>{crewDetail.currentMembers}</span>/
-                    <span>{crewDetail.maxMembers}</span>
-                  </div>
-                </div>
-                <p>{crewDetail.crewDetail}</p>
-              </div>
-            </div>
-            <div css={s.cardDetailBtnBox}>
-              <button onClick={joinOnClickHandler}>참여하기</button>
-            </div>
-          </div>
-        </PromptModal>
+      {!errorMessage && isCrewDetailModalOpen && (
+        <CrewDetailModal
+          crew={crewDetail}
+          isOpen={isCrewDetailModalOpen}
+          onClose={() => setIsCrewDetailModalOpen(false)}
+          onJoinClick={joinOnClickHandler}
+        />
+
       )}
       {errorMessage && !principal && (
         <AlertModal onClose={() => navigate("/login")}>

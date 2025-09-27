@@ -107,6 +107,10 @@ function ProfileEditForm({ principal, onCancel }) {
     if (newNickname && newNickname.length < 2) {
       setNicknameError("닉네임은 2자 이상이어야 합니다.");
     }
+
+    if (newNickname.replace(/[Il1i|ㅣ]/g, "").trim() === "") {
+      setNicknameError("사용할 수 없는 닉네임입니다.");
+    }
   };
 
   // onBlur 이벤트가 발생했을 때 실행될 함수
@@ -124,7 +128,7 @@ function ProfileEditForm({ principal, onCancel }) {
 
   // 저장 버튼 클릭
   const saveBtnOnClickHandler = async () => {
-    let finalProfileImgUrl = principal.profilImgUrl;
+    let finalProfileImgUrl = principal.profileImgUrl;
 
     // 새로 선택한 이미지가 있다면 파이어베이스에 업로드
     if (profileImageFile) {
@@ -182,7 +186,7 @@ function ProfileEditForm({ principal, onCancel }) {
             placeholder="닉네임을 입력해주세요."
             onChange={nicknameOnChangeHandler}
             onBlur={nicknameOnBlurHandler}
-            maxLength={12}
+            maxLength={10}
             css={s.input}
           />
           {isChecking ? (

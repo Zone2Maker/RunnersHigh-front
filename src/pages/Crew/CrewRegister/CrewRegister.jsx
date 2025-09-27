@@ -12,11 +12,11 @@ import {
 import { useFirebaseUpload } from "../../../hooks/useFirebaseUpload";
 import { addCrewReq } from "../../../services/crew/crewApis";
 import { useNavigate } from "react-router-dom";
-import { SlPicture } from "react-icons/sl";
 import { queryClient } from "../../../configs/queryClient";
 
 function CrewRegister() {
   const { principal, logout } = usePrincipalState();
+  console.log(principal);
   const navigate = useNavigate();
   const [crewValue, setCrewValue] = useState({
     userId: principal?.userId ?? null,
@@ -49,7 +49,6 @@ function CrewRegister() {
     useFirebaseUpload();
   const [profileImageFile, setProfileImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [isImageError, setIsImageError] = useState(false);
   const fileInputRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropDownOpen, setIsDropDownOpen] = useState("");
@@ -65,7 +64,7 @@ function CrewRegister() {
     setIsDropDownOpen(!isDropDownOpen);
   };
 
-  const imageChangeOnClickHandler = () => {
+  const imageSelectOnClickHandler = () => {
     fileInputRef.current.click();
   };
 
@@ -109,6 +108,7 @@ function CrewRegister() {
   const registerOnClickHandler = async () => {
     if (profileImageFile) {
       const firebaseUrl = await uploadFile(profileImageFile, "profile-img");
+      console.log(crewValue);
       setCrewValue({ ...crewValue, crewImgUrl: firebaseUrl });
 
       if (error) {
@@ -140,28 +140,28 @@ function CrewRegister() {
       });
   };
 
+  const isBtnDisabled =
+    !crewValue.crewName.trim() ||
+    !crewValue.crewDetail.trim() ||
+    !crewValue.crewImgUrl ||
+    !crewValue.crewRegion ||
+    !crewValue.maxMembers.trim();
   return (
     <div css={s.container}>
-      <div css={s.imgBox}>
-        <p>대표사진</p>
-        <div onClick={imageChangeOnClickHandler}>
-          {imagePreview && !isImageError ? (
-            <img
-              src={imagePreview}
-              alt="크루 대표사진 미리보기"
-              onError={() => setIsImageError(true)}
-            />
-          ) : isImageError ? (
-            <div css={s.noImgBox}>
-              <SlPicture />
-              <p>이미지를 불러올 수 없습니다</p>
-            </div>
+      <div css={s.box}>
+        <p css={s.subject}>대표 사진</p>
+        <div css={s.imgInput} onClick={imageSelectOnClickHandler}>
+          {imagePreview ? (
+            <img src={imagePreview} alt="크루 대표 사진 미리보기" />
           ) : (
-            <CiCirclePlus />
+            <>
+              <CiCirclePlus />
+              <p>크루를 대표할 이미지를 선택해주세요.</p>
+            </>
           )}
           <input
             type="file"
-            style={{ display: "none" }}
+            css={s.imageInput}
             ref={fileInputRef}
             onChange={fileOnChangeHandler}
             accept="image/*"
@@ -169,70 +169,77 @@ function CrewRegister() {
         </div>
       </div>
       <div css={s.box}>
-        <p>크루명</p>
+        <p css={s.subject}>크루명</p>
         <input
           type="text"
+          css={s.textInput}
           onChange={(e) =>
             setCrewValue({ ...crewValue, crewName: e.target.value })
           }
           maxLength="20"
-          placeholder="크루를 대표하는 이름을 입력하세요. (20자 이내)"
+          placeholder="크루를 대표하는 이름을 입력해주세요. (20자 이내)"
         />
       </div>
       <div css={s.box}>
-        <p>크루 소개</p>
+        <p css={s.subject}>크루 소개</p>
         <textarea
+          css={s.textarea}
           onKeyDown={enterOnKeyDownHandler}
           onChange={(e) =>
             setCrewValue({ ...crewValue, crewDetail: e.target.value })
           }
-          placeholder="소개 문구를 입력하세요. (100자  이내)"
+          placeholder="우리 크루를 소개할 문구를 입력해주세요. (100자 이내)"
           maxLength="100"
           spellCheck="false"
           rows={5}
         ></textarea>
       </div>
-      <div css={s.box}>
-        <p>활동 지역</p>
-        <div onClick={dropdownOnClickHandler}>
-          {crewValue.crewRegion ? (
-            <p>{crewValue.crewRegion}</p>
-          ) : (
-            <>
-              <span>지역 선택</span>
+      <div css={s.regionAndMaxGroup}>
+        <div css={s.box}>
+          <p css={s.subject}>활동 지역</p>
+          <div css={s.dropdownContainer}>
+            {/* 드롭다운 버튼과 ul을 형제 요소로 */}
+            <div
+              css={s.dropdownButton(isDropDownOpen)}
+              onClick={dropdownOnClickHandler}
+            >
+              {crewValue.crewRegion ? (
+                <span css={s.region}>{crewValue.crewRegion}</span>
+              ) : (
+                <span>지역</span>
+              )}
               <IoMdArrowDropdown />
-            </>
-          )}
-          <ul
-            css={[
-              s.dropdownBox,
-              isDropDownOpen && {
-                opacity: "1",
-                visibility: "visible",
-              },
-            ]}
-          >
-            {regionValue.map((region, index) => {
-              return (
-                <li key={index} onClick={() => regionOnClickHandler(region)}>
-                  {region}
-                </li>
-              );
-            })}
-          </ul>
+            </div>
+            <ul css={s.dropdownMenu(isDropDownOpen)}>
+              {regionValue.map((region, index) => {
+                return (
+                  <li key={index} onClick={() => regionOnClickHandler(region)}>
+                    {region}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+        <div css={s.box}>
+          <p css={s.subject}>최대 인원수</p>
+          <input
+            type="text"
+            css={s.textInput}
+            value={crewValue.maxMembers}
+            onChange={maxMemberOnChangeHandler}
+            placeholder="최대 100명"
+          />
         </div>
       </div>
-      <div css={s.box}>
-        <p>최대 인원수</p>
-        <input
-          type="text"
-          value={crewValue.maxMembers}
-          onChange={maxMemberOnChangeHandler}
-          placeholder="인원을 입력하세요. (최대 100명)"
-        />
-      </div>
-      <div css={s.box}>
-        <button onClick={registerOnClickHandler}>등록하기</button>
+      <div css={s.btnContainer} onClick={registerOnClickHandler}>
+        <button
+          css={s.registerBtn}
+          onClick={registerOnClickHandler}
+          disabled={isBtnDisabled}
+        >
+          등록하기
+        </button>
       </div>
       {!principal && (
         <AlertModal onClose={() => navigate("/login")}>

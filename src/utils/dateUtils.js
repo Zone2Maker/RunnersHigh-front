@@ -68,3 +68,18 @@ export const formatDate = (date) => {
 
   return momentDate.format("YYYY년 MM월 DD일");
 };
+
+// xxxx-xx-xx 형식으로 바꿔주는 함수
+export const formatDate2 = (date) => {
+  const momentDate = moment(date);
+  return momentDate.format("YYYY-MM-DD");
+};
+
+// 오늘 날짜부터 7일 전까지의 기간을 계산하는 함수
+export const getLast7Days = (date) => {
+  const momentDate = moment(date);
+  const end = momentDate.clone().format("YYYY-MM-DD"); // 오늘
+  const start = momentDate.clone().subtract(7, "days").format("YYYY-MM-DD"); // 30일 전
+
+  return { start, end };
+};

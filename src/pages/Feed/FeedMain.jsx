@@ -4,31 +4,46 @@ import * as s from "./styles";
 import AlertModal from "../../components/common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getFeedListReq } from "../../services/feed/feedApis";
+import { getFeedListReq, getFeedDetailReq } from "../../services/feed/feedApis";
 import { AiOutlinePicture } from "react-icons/ai";
 import FeedContainer from "../../components/common/FeedContainer/FeedContainer";
 import FeedBtnContainer from "./FeedBtnContainer/FeedBtnContainer";
-import MarkerClusteringFeed from "./MarkerClusteringFeed/MarkerClusteringFeed";
+import FeedMapView from "./FeedMapView/FeedMapView";
+import FeedDetailModal from "./FeedDetailModal/FeedDetailModal";
+import { queryClient } from "../../configs/queryClient";
 
 function FeedMain() {
   const size = 12;
   const [feedList, setFeedList] = useState([]);
   const observerTarget = useRef(null);
-  const [view, setView] = useState(0); // 0 = 사진, 1 = 지도
+  const [view, setView] = useState(0);
 
-  const { data, isError, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ["feeds", size],
-      queryFn: ({ pageParam = null, queryKey }) => {
-        const [, size] = queryKey;
-        return getFeedListReq(undefined, pageParam, size);
-      },
-      getNextPageParam: (lastPage) =>
-        lastPage?.data?.data?.nextCursorFeedId ?? undefined,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false,
-    });
+  // 모달 상태
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [feedDetail, setFeedDetail] = useState(null);
+  const [newLike, setNewLike] = useState(null);
+  const [likeCount, setLikeCount] = useState(0);
+  const [imageErrors, setImageErrors] = useState(new Set());
+
+  const {
+    data,
+    isError,
+    isLoading,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["feeds", size],
+    queryFn: ({ pageParam = null, queryKey }) => {
+      const [, size] = queryKey;
+      return getFeedListReq(undefined, pageParam, size);
+    },
+    getNextPageParam: (lastPage) =>
+      lastPage?.data?.data?.nextCursorFeedId ?? undefined,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: true,
+  });
 
   useEffect(() => {
     if (isLoading || isError) return;
@@ -37,7 +52,7 @@ function FeedMain() {
   }, [data, isError, isLoading]);
 
   useEffect(() => {
-    if (!observerTarget.current || view !== 0) return; // 사진 모드일 때만 작동
+    if (!observerTarget.current || view !== 0) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (!isLoading && hasNextPage && entries[0].isIntersecting) {
@@ -50,16 +65,36 @@ function FeedMain() {
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isLoading, view]);
 
+  useEffect(() => {
+    return () => {
+      queryClient.invalidateQueries({
+        queryKey: ["feeds"],
+        exact: false,
+      });
+    };
+  }, []);
+
   return (
     <>
-      {/* 상단 버튼 */}
       <FeedBtnContainer setView={setView} />
 
       <div css={s.mainFeedContainer}>
         <div css={s.container}>
-          {/* 사진 모드 */}
           {view === 0 && (
             <>
+              {feedList.length > 0 ? (
+                <div css={s.feedContainer}>
+                  <FeedContainer feeds={feedList} isLoading={isLoading} />
+                </div>
+              ) : (
+                !isLoading && (
+                  <div css={s.empty}>
+                    <AiOutlinePicture />
+                    <div>게시물 없음</div>
+                  </div>
+                )
+              )}
+
               {isError && (
                 <AlertModal onClose={() => window.location.reload()}>
                   <BiSolidMessageSquareError
@@ -71,34 +106,53 @@ function FeedMain() {
                 </AlertModal>
               )}
 
-              {!isError && feedList.length > 0 && (
-                <FeedContainer feeds={feedList} isLoading={isLoading} />
-              )}
-
-              {!isError && feedList.length === 0 && !isLoading && (
-                <div css={s.empty}>
-                  <AiOutlinePicture />
-                  <div>게시물 없음</div>
-                </div>
-              )}
-
-              {/* 무한스크롤 트리거 */}
-              <div ref={observerTarget} style={{ height: "40px" }} />
-
-              {(isLoading || isFetchingNextPage) && (
-                <p style={{ textAlign: "center", margin: 10 }}>로딩 중...</p>
-              )}
+              <div ref={observerTarget} style={{ height: "40px" }}>
+                {(isLoading || isFetchingNextPage) && (
+                  <p style={{ textAlign: "center", margin: 10 }}>로딩 중...</p>
+                )}
+              </div>
             </>
           )}
 
-          {/* 지도 모드 */}
           {view === 1 && (
-            <div>
-              <MarkerClusteringFeed/>
+            <div css={s.mapBox}>
+              <FeedMapView
+                onOpenModal={async (feedId) => {
+                  try {
+                    const res = await getFeedDetailReq(feedId);
+                    if (res.data.status === "success") {
+                      const data = res.data.data;
+                      setFeedDetail(data);
+                      setNewLike(data.isLikedByUser);
+                      setLikeCount(data.likeCount);
+                      setIsModalOpen(true);
+                    }
+                  } catch (error) {
+                    console.error("피드 상세 조회 실패:", error);
+                  }
+                }}
+              />
             </div>
           )}
         </div>
       </div>
+
+      <FeedDetailModal
+        isOpen={isModalOpen}
+        feedDetail={feedDetail}
+        newLike={newLike}
+        likeCount={likeCount}
+        imageErrors={imageErrors}
+        onClose={() => setIsModalOpen(false)}
+        onHeartClick={() => {
+          if (newLike) {
+            setLikeCount((prev) => prev - 1);
+          } else {
+            setLikeCount((prev) => prev + 1);
+          }
+          setNewLike(!newLike);
+        }}
+      />
     </>
   );
 }

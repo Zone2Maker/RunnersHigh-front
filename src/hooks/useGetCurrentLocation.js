@@ -15,7 +15,7 @@ const getCurrentLocation = () => {
 
 export const useGetCurrentLocation = () => {
   /** data 이케 생김
-   * GeolocationPosition {coords: GeolocationCoordinates, timestamp: 1758103852804}coords: GeolocationCoordinatesaccuracy: 2730.1967537019946altitude: nullaltitudeAccuracy: nullheading: nulllatitude: 35.1544453longitude: 129.060646speed: null[[Prototype]]: GeolocationCoordinatestimestamp: 1758103852804[[Prototype]]: GeolocationPosition */
+   * GeolocationPosition{coords: GeolocationCoordinates, timestamp: 1758103852804}coords: GeolocationCoordinatesaccuracy: 2730.1967537019946altitude: nullaltitudeAccuracy: nullheading: nulllatitude: 35.1544453longitude: 129.060646speed: null[[Prototype]]: GeolocationCoordinatestimestamp: 1758103852804[[Prototype]]: GeolocationPosition */
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["currentLocation"],

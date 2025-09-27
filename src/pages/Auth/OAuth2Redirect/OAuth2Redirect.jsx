@@ -12,7 +12,6 @@ function OAuth2Redirect() {
 
     if (accessToken) {
       localStorage.setItem("accessToken", accessToken);
-      alert("로그인되었습니다.");
       window.location.replace("/");
     } else {
       //토큰 없을 때 로그인 페이지로 돌림

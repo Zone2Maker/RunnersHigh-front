@@ -1,20 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
-
 import {
   IoHomeOutline,
   IoPeopleOutline,
   IoImagesOutline,
-  IoPersonOutline,
   IoLogInOutline,
+  IoLogOutOutline,
 } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function BottomNavBar() {
   const navigate = useNavigate(); //페이지 이동
   const { pathname } = useLocation(); //현재 URL 경로 정보
-  const { principal } = usePrincipalState();
+  const { principal, logout } = usePrincipalState();
 
   return (
     <nav css={s.navContainer}>
@@ -40,15 +39,25 @@ function BottomNavBar() {
         <IoImagesOutline size={24} />
         <span>피드</span>
       </div>
-      {principal !== null ? (
-        <div
-          css={[s.navItem, pathname === "/profile" && s.activeNavItem]}
-          onClick={() => navigate("/profile")}
-        >
-          {/* <IoPersonOutline size={24} /> */}
-          <img src={principal.profileImgUrl} css={s.profileImg} />
-          <span>프로필</span>
-        </div>
+      {principal ? (
+        pathname.includes("/profile") ? (
+          pathname.includes("/profile") && (
+            <div css={s.navItem} onClick={logout}>
+              <IoLogOutOutline size={24} />
+              <span>로그아웃</span>
+            </div>
+          )
+        ) : (
+          <div
+            css={[s.navItem, pathname === "/profile" && s.activeNavItem]}
+            onClick={() => navigate("/profile")}
+          >
+            <div css={s.profileBox}>
+              <img src={principal.profileImgUrl} css={s.profileImg} />
+              <div>프로필</div>
+            </div>
+          </div>
+        )
       ) : (
         <div
           css={[s.navItem, pathname === "/login" && s.activeNavItem]}

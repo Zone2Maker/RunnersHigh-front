@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FaCircleArrowUp, FaPlus } from "react-icons/fa6";
-
-import { useFirebaseUpload } from "../../../hooks/useFirebaseUpload";
+import { FaCheck, FaCircleArrowUp, FaPlus } from "react-icons/fa6";
 import CrewContainer from "./CrewContainer/CrewContainer";
 import * as s from "./styles";
 import { IoMdArrowDropdown } from "react-icons/io";
@@ -10,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 
 function CrewMain() {
   const { principal } = usePrincipalState();
@@ -19,7 +17,7 @@ function CrewMain() {
   const [searchProp, setSearchProp] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrerMessage] = useState("");
-
+  const [isRegionSelected, setisRegionSelected] = useState(false);
   const [regionProp, setRegionProp] = useState("");
   const regionValue = [
     "서울",
@@ -42,9 +40,15 @@ function CrewMain() {
   ];
   const [isDropDownOpen, setIsDropDownOpen] = useState("");
 
-  const searchOnClickHandler = () => {
+  const searchBtnOnClickHandler = () => {
     setSearchProp(searchValue);
     window.scrollTo(0, 0);
+  };
+
+  const searchInputOnKeyDownHandler = (e) => {
+    if (e.key === "Enter") {
+      searchBtnOnClickHandler();
+    }
   };
 
   const dropdownOnClickHandler = () => {
@@ -53,6 +57,7 @@ function CrewMain() {
 
   const regionOnClickHandler = (region) => {
     setRegionProp(region);
+    setisRegionSelected(true);
     setIsDropDownOpen(!isDropDownOpen);
   };
 
@@ -67,56 +72,61 @@ function CrewMain() {
   return (
     <div css={s.container}>
       <div css={s.header}>
-        <div
-          css={s.inputBox}
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-        >
-          <input type="text" />
-          <FaCircleArrowUp size={"30px"} onClick={searchOnClickHandler} />
-        </div>
-        <div
-          css={[s.clickBox, regionProp && { justifyContent: "space-between" }]}
-        >
-          {regionProp ? (
-            <div
-              css={s.regionView}
-              onClick={() => (window.location.href = "/crew")}
-            >
-              <p>{regionProp} &times;</p>
-            </div>
-          ) : (
-            <></>
-          )}
-          <div>
-            <span onClick={newCrewOnClickHandler}>
-              NEW 크루
-              <FaPlus size={"12px"} />
-            </span>
-            <span onClick={dropdownOnClickHandler}>
-              지역 선택
-              <IoMdArrowDropdown />
-            </span>
+        <div css={s.searchContainer}>
+          <input
+            type="text"
+            value={searchValue}
+            css={s.searchInput}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={searchInputOnKeyDownHandler}
+            placeholder="이름, 지역으로 크루 검색"
+          />
+          <div css={s.searchBtn} onClick={searchBtnOnClickHandler}>
+            <FaCircleArrowUp />
           </div>
         </div>
-        <ul
-          css={[
-            s.dropdownBox,
-            isDropDownOpen && {
-              opacity: "1",
-              visibility: "visible",
-              transform: "translateY(0)",
-            },
-          ]}
-        >
-          {regionValue.map((region, index) => {
-            return (
-              <li key={index} onClick={() => regionOnClickHandler(region)}>
-                {region}
-              </li>
-            );
-          })}
-        </ul>
+        <div css={s.filterContainer(isRegionSelected)}>
+          {regionProp && (
+            <div
+              css={s.selectedRegion}
+              onClick={() => (window.location.href = "/crew")}
+            >
+              <span>{regionProp}</span>
+              <FaTimes />
+            </div>
+          )}
+          <div css={s.filter}>
+            <div css={[s.filterBtn, s.newCrew]} onClick={newCrewOnClickHandler}>
+              <span>크루 만들기</span>
+              <FaPlus />
+            </div>
+            <div css={s.seperator}></div>
+            <div css={s.dropdownContainer}>
+              <div
+                css={[s.filterBtn, s.selectRegion]}
+                onClick={dropdownOnClickHandler}
+              >
+                <span>지역</span>
+                <IoMdArrowDropdown />
+              </div>
+              {/* 드롭다운 */}
+              <ul css={s.regionList(isDropDownOpen)}>
+                {regionValue.map((region, index) => {
+                  return (
+                    <li
+                      key={index}
+                      css={s.regionItem(region === regionProp)}
+                      onClick={() => regionOnClickHandler(region)}
+                    >
+                      <span>{region}</span>
+                      {region === regionProp && <FaCheck />}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
       <CrewContainer searchProp={searchProp} regionProp={regionProp} />
       {errorMessage && isModalOpen && (

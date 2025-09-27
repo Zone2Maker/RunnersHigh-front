@@ -8,19 +8,19 @@ export const container = css`
   width: 100%;
   height: 60px;
   padding: 0 20px;
-  background-color: #fefefe;
+  background-color: #00296b;
   z-index: 10;
 
-  box-shadow: 0px 5px 7px -5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05), 0px 1px 2px rgba(0, 0, 0, 0.04);
 
   & > span {
     padding: 0;
     margin: 0;
     text-align: left;
     line-height: 60px;
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 800;
-    color: #0d47a1;
+    color: #efefef;
     cursor: pointer;
   }
 `;

@@ -1,28 +1,24 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
-import { useGetCurrentLocation } from "../../../hooks/useGetCurrentLocation";
 import { useQuery } from "@tanstack/react-query";
 import {
   getAirPollutionReq,
   getReverseGeoApi,
   getWeatherReq,
 } from "../../../services/weather/weatherApis";
+import { useLocationState } from "../../../stores/useLocationState";
 
 function Weather() {
-  const { data: locationData, isLoading: isLocationLoading } =
-    useGetCurrentLocation();
-
-  const lat = locationData?.coords.latitude;
-  const lng = locationData?.coords.longitude;
+  const { location, isLoading: isLocationLoading } = useLocationState();
 
   // 날씨 API 호출
   // 위치가 존재하면 실행
   const { data: weatherData, isLoading: isWeatherLoading } = useQuery({
     queryKey: ["weather"],
     // API 호출 함수
-    queryFn: () => getWeatherReq(lat, lng),
+    queryFn: () => getWeatherReq(location.lat, location.lng),
     // 위치 값이 있을 때만 실행
-    enabled: !!lat && !!lng,
+    enabled: !isLocationLoading,
     staleTime: 60 * 60 * 1000, // 1시간
   });
 
@@ -31,17 +27,17 @@ function Weather() {
   const { data: airData, isLoading: isAirLoading } = useQuery({
     queryKey: ["air"],
     // API 호출 함수
-    queryFn: () => getAirPollutionReq(lat, lng),
+    queryFn: () => getAirPollutionReq(location.lat, location.lng),
     // 위치 값이 있을 때만 실행
-    enabled: !!lat && !!lng,
+    enabled: !isLocationLoading,
     staleTime: 60 * 60 * 1000, // 1시간
   });
 
   // 리버스 지오코딩 API 호출
   const { data: geoData, isLoading: isGeoLoading } = useQuery({
     queryKey: ["geo"],
-    queryFn: () => getReverseGeoApi(lat, lng),
-    enabled: !!lat && !!lng,
+    queryFn: () => getReverseGeoApi(location.lat, location.lng),
+    enabled: !isLocationLoading,
     staleTime: 24 * 60 * 60 * 1000,
   });
 
@@ -86,7 +82,7 @@ function Weather() {
       );
     }
 
-    if (weatherData?.main.feels_like >= 30) {
+    if (weatherData?.main.feels_like >= 32) {
       return (
         <>
           폭염 수준이에요! 🥵

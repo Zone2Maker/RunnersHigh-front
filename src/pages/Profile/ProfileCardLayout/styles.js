@@ -3,7 +3,7 @@ import { css } from "styled-components";
 export const container = css`
   width: 100%;
   height: 170px;
-  padding: 20px 35px;
+  padding: 16px 36px;
   box-sizing: border-box;
   border: 1px solid #e6e6e6ff;
   border-radius: 35px;
@@ -15,5 +15,5 @@ export const container = css`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 20px;
+  gap: 25px;
 `;
