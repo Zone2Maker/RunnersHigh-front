@@ -8,6 +8,7 @@ import { usePrincipalState } from "../../../stores/usePrincipalState";
 import { getILikedFeedListReq } from "../../../services/feed/feedApis";
 import { AiOutlinePicture } from "react-icons/ai";
 import FeedContainer from "../../../components/common/FeedContainer/FeedContainer";
+import { queryClient } from "../../../configs/queryClient";
 
 function LikedFeed() {
   const size = 12;
@@ -15,7 +16,7 @@ function LikedFeed() {
   const observerTarget = useRef(null);
   const { principal } = usePrincipalState();
 
-const { data, isError, isLoading, hasNextPage, fetchNextPage } =
+  const { data, isError, isLoading, hasNextPage, fetchNextPage } =
     useInfiniteQuery({
       queryKey: ["feeds", "liked", principal?.userId, size],
       queryFn: ({ pageParam = null, queryKey }) => {
@@ -26,7 +27,7 @@ const { data, isError, isLoading, hasNextPage, fetchNextPage } =
         lastPage?.data?.data?.nextCursorFeedId ?? undefined,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
-      refetchOnMount: false,
+      refetchOnMount: true,
     });
 
   useEffect(() => {
@@ -56,6 +57,15 @@ const { data, isError, isLoading, hasNextPage, fetchNextPage } =
       }
     };
   }, [fetchNextPage, hasNextPage, isLoading]);
+
+  useEffect(() => {
+    return () => {
+      queryClient.invalidateQueries({
+        queryKey: ["feeds"],
+        exact: false,
+      });
+    };
+  }, []);
 
   return (
     <>
