@@ -110,6 +110,7 @@ function CrewMain() {
                 <IoMdArrowDropdown />
               </div>
               {/* 드롭다운 */}
+              {/* <ul css={s.regionList(isDropDownOpen)}> */}
               <ul css={s.regionList(isDropDownOpen)}>
                 {regionValue.map((region, index) => {
                   return (

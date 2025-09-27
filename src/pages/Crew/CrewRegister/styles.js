@@ -8,7 +8,7 @@ export const container = css`
   flex-direction: column;
   gap: 15px;
   box-sizing: border-box;
-  background-color: #f7f9fa;
+  background-color: #f8f9fa;
   overflow-y: hidden;
 `;
 

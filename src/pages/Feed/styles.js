@@ -5,6 +5,7 @@ export const mainFeedContainer = css`
   display: flex;
   justify-content: center; /* 가운데 정렬 */
   align-items: flex-start; /* 위에서부터 시작 */
+  background-color: #f8f9fa;
 `;
 
 export const container = css`
@@ -44,8 +45,6 @@ export const mapBox = css`
   display: block;
   width: 100%;
   height: 550px;
-
-  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
 `;
 
 // 모달

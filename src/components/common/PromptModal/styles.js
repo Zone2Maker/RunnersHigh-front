@@ -19,9 +19,10 @@ export const modalContent = css`
   position: relative;
   width: 90%;
   max-width: 420px;
-  height: 70%;
-  max-height: 700px;
-  background-color: white;
+  /* height: 70%; */
+  height: auto;
+  max-height: 85vh;
+  background-color: #fefefe;
   border-radius: 24px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
   display: flex;

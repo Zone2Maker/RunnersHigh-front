@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles.js";
-import PromptModal from "../../../components/common/PromptModal/PromptModal.jsx";
+import PromptModal from "../PromptModal/PromptModal.jsx";
 import { FaHeart } from "react-icons/fa";
 import { SlPicture } from "react-icons/sl";
 
@@ -50,7 +50,9 @@ function FeedDetailModal({
 
       <div css={s.modalLikeInfo}>
         <FaHeart css={s.modalHeartIcon(newLike)} onClick={onHeartClick} />
-        <p>{(likeCount ?? 0).toLocaleString("en-AU")} likes</p>
+        <div css={s.modalLikeCount}>
+          <p>{(likeCount ?? 0).toLocaleString("en-AU")} </p>likes
+        </div>
       </div>
     </PromptModal>
   );

@@ -9,6 +9,7 @@ export const container = css`
   align-items: center;
   padding: 0 80px;
   box-sizing: border-box;
+  background-color: #fefefe;
 `;
 
 export const title = css`

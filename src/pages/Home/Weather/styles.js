@@ -52,8 +52,7 @@ export const weatherIcon = css`
   align-items: center;
   background-color: #d3d3d3ff;
   border-radius: 35px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.08),
-    /* 아래로 은은하게 퍼지는 그림자 */ 0px 1px 2px rgba(0, 0, 0, 0.05); /* 더 가깝게, 살짝 더 연한 그림자 */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.05);
 
   & > img {
     width: 100%;

@@ -128,6 +128,11 @@ function ProfileEditForm({ principal, onCancel }) {
 
   // 저장 버튼 클릭
   const saveBtnOnClickHandler = async () => {
+    if (nickname.length === 0 || nickname.trim() === "") {
+      setNicknameError("사용하실 닉네임을 입력해주세요.");
+      return;
+    }
+
     let finalProfileImgUrl = principal.profileImgUrl;
 
     // 새로 선택한 이미지가 있다면 파이어베이스에 업로드

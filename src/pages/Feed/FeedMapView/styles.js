@@ -3,15 +3,16 @@ import { css } from "@emotion/react";
 export const container = css`
   width: 100%;
   height: 520px;
+  background-color: #f8f9fa;
 `;
 
 export const clusterCommonStyles = css`
-width: 50px;
-height: 50px;
-overflow: hidden;
-border-radius: 50%;
-border: 2px solid #edededff;
-box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.3);
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 2px solid #edededff;
+  box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.3);
 
   & > img {
     width: 100%;
@@ -19,7 +20,6 @@ box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.3);
     object-fit: cover;
   }
 `;
-
 
 export const mapContainer = css`
   width: 600px;
@@ -29,8 +29,6 @@ export const mapContainer = css`
 export const title = css`
   font-size: 40px;
 `;
-
-
 
 // 마커 클러스터 커스텀 디자인
 // 달라지는 스타일만 따로 정의해두기
@@ -114,7 +112,6 @@ export const eachClusterStyles = [
     boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
   },
 ];
-
 
 // map 돌려서 합치기
 export const customClusterStyles = eachClusterStyles.map((style) => ({

@@ -5,16 +5,15 @@ export const profileImgBox = css`
   width: 115px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 `;
 
 export const profileImg = css`
-  width: 100px;
+  width: 120px;
   aspect-ratio: 1;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.25);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.05);
   background-color: #e0e0e0;
 
   img {
@@ -25,20 +24,19 @@ export const profileImg = css`
 `;
 
 export const changeImageButton = css`
-  background-color: #0d47a1;
-  color: #ffffff;
+  background: none;
+  color: #1a4d8c;
   border: none;
   border-radius: 16px;
-  padding: 4px 12px;
+  padding: 0;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  margin-top: 10px;
-  transition: background-color 0.2s ease-in-out;
+  margin-top: 5px;
+  transition: all 0.3s ease-in-out;
 
   &:hover {
-    background-color: #0a56c9ff;
-    font-weight: 500;
+    font-weight: 700;
   }
 `;
 
@@ -74,21 +72,20 @@ export const label = css`
 export const input = css`
   width: 100%;
   padding: 12px 15px;
-  border: 1px solid #0d47a1;
-  border-radius: 10px;
+  outline: 2px solid #cdcdcd;
+  background-color: #f8f9fa;
+  border: none;
+  border-radius: 15px;
   font-size: 16px;
-  color: #333;
   font-family: inherit;
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
   box-sizing: border-box;
 
   &:focus {
-    outline: none;
-    border: 2px solid #0d47a1;
+    outline-color: #0d47a1;
   }
 
   &::placeholder {
-    color: #666;
     opacity: 0.7;
   }
 `;
@@ -103,7 +100,7 @@ export const errorMessage = (isAvailable) => css`
 export const buttonContainer = css`
   width: 100%;
   display: flex;
-  gap: 8px;
+  gap: 10px;
   justify-content: flex-end;
 `;
 
@@ -111,35 +108,43 @@ export const cancelButton = css`
   background-color: #f0f0f0;
   color: #666;
   border: none;
-  border-radius: 14px;
+  border-radius: 15px;
   padding: 6px 16px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 
   &:hover {
-    background-color: #ccd3e2;
+    background-color: #e0e6f3;
+    color: #1a4d8c;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  &:active {
+    transform: scale(0.95);
+    background-color: #c9d2e7;
   }
 `;
 
 export const saveButton = css`
-  background-color: #0d47a1;
-  color: #ffffff;
+  background-color: #04327c;
+  color: #fefefe;
   border: none;
   border-radius: 14px;
   padding: 6px 16px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: #0a56c9ff;
+    background-color: #f57c00;
   }
-
+  &:active {
+    transform: scale(0.95);
+  }
   &:disabled {
     background-color: #b0c4de;
-    cursor: not-allowed;
+    cursor: default;
   }
 `;
