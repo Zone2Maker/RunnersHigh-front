@@ -9,7 +9,7 @@ export const container = css`
   align-items: center;
   padding: 0 80px;
   box-sizing: border-box;
-  background-color: #fefefe;
+  background-color: #f8f9fa;
 `;
 
 export const title = css`
@@ -28,14 +28,17 @@ export const joinButton = css`
   align-items: center;
   margin-top: 10px;
   margin-right: 10px;
-  font-size: 14px;
+  font-size: 15px;
 
   a {
-    color: #888;
+    color: #444;
     text-decoration: none;
 
+    transition: all 0.2s;
+
     &:hover {
-      font-weight: 600;
+      color: #f57c00;
+      font-weight: 500;
     }
   }
 `;

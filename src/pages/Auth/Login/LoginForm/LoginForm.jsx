@@ -11,13 +11,12 @@ function LoginForm() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // API 호출 시 로딩 상태
-  const [isDisabled, setIsDisabled] = useState(false); // 화면이 마운트되었을 때 false
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
     setIsDisabled(false);
 
-    // 입력값이 하나라도 없으면 버튼 비활성화
     if (
       email.trim() === null ||
       email.length === 0 ||
@@ -29,7 +28,7 @@ function LoginForm() {
   }, [email, password]);
 
   const loginOnClickHandler = async () => {
-    setIsLoading(true); // API 호출 시작 -> 로딩 상태 true
+    setIsLoading(true);
 
     try {
       const response = await loginReq({ email, password });
@@ -52,11 +51,13 @@ function LoginForm() {
     <div css={s.loginForm}>
       <InputBox>
         <AuthInput
+          id="email"
           type="email"
           placeholder="이메일"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+
         <AuthInput
           type="password"
           placeholder="패스워드"

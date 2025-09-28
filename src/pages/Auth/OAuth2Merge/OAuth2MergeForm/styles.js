@@ -6,10 +6,17 @@ export const oAuth2MergeForm = css`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 60px;
+  gap: 15px;
 
-  & > button {
+  & > Button {
     cursor: pointer;
+    background-color: #0d47a1;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: #04327c;
+    }
+
   }
 `;
 
