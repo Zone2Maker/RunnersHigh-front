@@ -95,9 +95,9 @@ function FeedRegister() {
     if (!file) return;
 
     if (file.size > MAX_SIZE) {
-      openModal("5MB이내의 사진만 업로드 가능합니다.");
       e.target.value = "";
       setImageState({ file: null, previewUrl: "" });
+      openModal("5MB이내의 사진만 업로드 가능합니다.");
       return;
     }
 

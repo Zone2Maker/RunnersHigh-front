@@ -3,11 +3,12 @@ import { useState } from "react";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import * as s from "./styles";
 import { getCrewByCrewReq } from "../../../services/crew/crewApis";
-import { LiaTimesSolid } from "react-icons/lia";
 import { MdCircle } from "react-icons/md";
 import AlertModal from "../../common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
 import MyChattingRoom from "../MyChattingRoom/MyChattingRoom";
+import { HiOutlineChatBubbleOvalLeftEllipsis } from "react-icons/hi2";
+import { IoClose } from "react-icons/io5";
 
 function MyChattingButton({ pendingMessageList, setPendingMessageList }) {
   const { principal } = usePrincipalState();
@@ -47,15 +48,15 @@ function MyChattingButton({ pendingMessageList, setPendingMessageList }) {
           setIsChatOpen={setIsChatOpen}
         />
       )}
-      <div css={s.btn} onClick={chatBtnOnClickHandler}>
+      <div css={s.btn(isChatOpen)} onClick={chatBtnOnClickHandler}>
         {isChatOpen ? (
-          <div css={s.openChattingBtn}>
-            <LiaTimesSolid />
+          <div css={s.closeBtn}>
+            <IoClose />
           </div>
         ) : (
-          <div css={s.closeChattingBtn}>
-            {pendingMessageList.length > 0 && <MdCircle />}
-            <p>채팅</p>
+          <div css={s.openBtn}>
+            {pendingMessageList.length > 0 && <MdCircle css={s.dot} />}
+            <HiOutlineChatBubbleOvalLeftEllipsis css={s.bubble} />
           </div>
         )}
       </div>

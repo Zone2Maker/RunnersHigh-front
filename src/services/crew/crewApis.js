@@ -61,3 +61,12 @@ export const joinCrewReq = async (data) => {
     return error.response;
   }
 };
+
+export const leaveCrewReq = async (data) => {
+  try {
+    const response = await instance.post("/crew/leave", data);
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};

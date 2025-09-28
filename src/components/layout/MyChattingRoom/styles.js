@@ -1,143 +1,78 @@
 import { css } from "@emotion/react";
 
+// 채팅방 전체 컨테이너
 export const chatContainer = (isChatOpen) => css`
-  display: ${isChatOpen ? "block" : "none"};
-  opacity: ${isChatOpen ? 1 : 0};
-  transform: ${!isChatOpen ? "translateX(40px)" : "translateX(0px)"};
   position: fixed;
   right: 50px;
-  bottom: 120px;
-  width: 350px;
+  bottom: 110px;
+  width: 330px;
   height: 550px;
-  border-radius: 30px;
-  background-color: #dfdfdf;
+  border-radius: 20px;
+  background-color: #d7d7d7;
   transition: all 0.4s ease;
   overflow: hidden;
-  box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.25);
+  box-shadow: 0 6px 30px rgba(63, 63, 63, 0.12);
+  display: ${isChatOpen ? "flex" : "none"};
+  flex-direction: column;
+  opacity: ${isChatOpen ? 1 : 0};
+  /* transform: ${!isChatOpen ? "translateX(40px)" : "translateX(0px)"}; */
   z-index: 100;
 `;
 
-export const chatHeader = css`
+export const leaveConfirm = css`
   position: absolute;
-  width: 100%;
-  height: 50px;
-  top: 0;
-
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 20px;
-  background-color: inherit;
-  box-sizing: border-box;
-  > div {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-
-    > p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    > img {
-      width: 30px;
-      height: 30px;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-  }
-
-  > svg {
-    font-size: 20px;
-    transform: translateY(5px);
-    cursor: pointer;
-    color: #333;
-  }
-`;
-
-export const chatMain = css`
-  width: 100%;
-  height: calc(100% - 50px - 70px);
-  margin-top: 50px;
-  margin-bottom: 70px;
-  padding: 0 10px;
-  overflow-y: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  padding: 30px 40px 20px;
+  background-color: #fefefe;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 
-  &::-webkit-scrollbar {
-    width: 5px;
-    height: auto;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #d3d3d3;
-    border-radius: 10px;
-    opacity: 1;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    cursor: pointer;
+  & > p {
+    padding: 0;
+    margin: 0;
+    font-weight: 500;
   }
 `;
 
-export const obserber = css`
-  padding: 1px;
-`;
-
-export const systemChat = css`
-  max-width: 240px;
-  padding: 5px 15px;
-  font-size: 12px;
-  border-radius: 15px;
-  color: #6b6b6b;
-  background-color: #b4b4b4;
-  word-break: keep-all;
-  word-wrap: break-word;
-`;
-
-export const lastReadMessageBox = css`
+export const btnContainer = css`
   width: 100%;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
+  justify-content: center;
+  gap: 5px;
 `;
 
-export const chatFooter = css`
-  position: absolute;
-  width: 100%;
-  height: 70px;
-  bottom: 0;
-  z-index: 50;
-  background-color: #fff;
-  padding: 10px;
-  display: flex;
+export const confirmBtn = css`
+  padding: 6px 15px;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+`;
 
-  > textarea {
-    flex-grow: 1;
-    padding: 5px;
-    box-sizing: border-box;
-    font-family: inherit;
-    outline: none;
-    border: none;
-    resize: none;
-    height: 40px;
-    border-radius: 0 0 0 20px;
+export const cancelBtn = css`
+  font-weight: 500;
+  background-color: #f0f0f0;
+  transition: all 0.1s ease;
+
+  &:hover {
+    background-color: #e0e0e0;
   }
+`;
 
-  > textarea::placeholder {
-    color: #d9d9d9;
-  }
+export const leaveBtn = css`
+  font-weight: 600;
+  color: #fcfcfc;
+  background-color: #ff7f50;
+  transition: all 0.1s ease;
 
-  > svg {
-    transform: translateY(5px);
-    font-size: 18px;
-    margin: 5px;
-    color: #333;
-    cursor: pointer;
+  &:hover {
+    background-color: #f56f3fff;
   }
 `;
