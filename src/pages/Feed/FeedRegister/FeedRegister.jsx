@@ -4,12 +4,14 @@ import * as s from "./styles";
 import { useFirebaseUpload } from "../../../hooks/useFirebaseUpload";
 import { addFeedReq } from "../../../services/feed/feedApis";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
+import { useLocationState } from "../../../stores/useLocationState";
 import { SlPicture } from "react-icons/sl";
 import { CiLocationOn } from "react-icons/ci";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
 import { FaCircleArrowUp } from "react-icons/fa6";
 import { BiSolidMessageSquareError } from "react-icons/bi";
 import { FaTimes } from "react-icons/fa";
+import { getSortedPlacesByDistance } from "../../../utils/locationUtils";
 
 function FeedRegister() {
   const [keywordPs, setKeywordPs] = useState(null);
@@ -29,6 +31,7 @@ function FeedRegister() {
   });
 
   const { principal } = usePrincipalState();
+  const { location: currentLocation } = useLocationState();
   const { uploadFile } = useFirebaseUpload();
 
   //카카오맵 불러오기
@@ -48,10 +51,14 @@ function FeedRegister() {
 
   //장소 검색 완료 시 호출되는 콜백 함수
   const placeSearchCB = (data, status) => {
-    setPlaces([]);
-
     if (status === window.kakao.maps.services.Status.OK) {
-      setPlaces(data); //검색 결과를 상태로 저장
+      // 가까운 순 정렬해서 저장
+      const currentLoc = {
+        latitude: currentLocation?.lat,
+        longitude: currentLocation?.lng,
+      };
+      const sortedData = getSortedPlacesByDistance(currentLoc, data);
+      setPlaces(sortedData);
     } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
       openModal("검색 결과가 없습니다.");
       return;
@@ -192,7 +199,10 @@ function FeedRegister() {
                     {place.category_name.split(" > ").slice(0, 2).join(" > ")}
                   </div>
                 </div>
-                <span>{place.address_name}</span>
+                <div css={s.addressAndDistance}>
+                  <span>{place.address_name}</span>
+                  <span>{place.distance.toFixed(2)}Km</span>
+                </div>
               </li>
             ))}
           </ul>

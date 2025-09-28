@@ -243,6 +243,17 @@ export const nameAndCategory = css`
   }
 `;
 
+export const addressAndDistance = css`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > span:nth-of-type(2) {
+    font-size: 13px;
+  }
+`;
+
 // --- 공유하기 버튼 ---
 export const submitButton = css`
   width: 100%;

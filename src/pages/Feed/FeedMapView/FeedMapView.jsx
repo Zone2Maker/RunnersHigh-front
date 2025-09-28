@@ -17,11 +17,13 @@ import FeedDetailModal from "../../../components/common/FeedDetailModal/FeedDeta
 import { addLikeReq, removeLikeReq } from "../../../services/like/likeApis.js";
 import { queryClient } from "../../../configs/queryClient.js";
 import { usePrincipalState } from "../../../stores/usePrincipalState.js";
+import { useLocationState } from "../../../stores/useLocationState.js";
 
 function FeedMapView({ onOpenModal }) {
   const { principal } = usePrincipalState();
+  const { location: currentLocation } = useLocationState();
   const CLUSTERER_VISIBLE_MIN_LEVEL = 8;
-  const [level, setLevel] = useState(13);
+  const [level, setLevel] = useState(11);
   const [center, setCenter] = useState({ lat: 35.57, lng: 128.15 });
   const [mapFeeds, setMapFeeds] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,21 +34,12 @@ function FeedMapView({ onOpenModal }) {
 
   // 내 위치 기준으로 지도 센터 잡기
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const newCenter = {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          };
-          setCenter(newCenter);
-          setLevel(11);
-        },
-        (err) => {
-          console.warn("위치 권한 거부 or 오류:", err);
-        }
-      );
-    }
+    const newCenter = {
+      lat: currentLocation?.lat,
+      lng: currentLocation?.lng,
+    };
+
+    setCenter(newCenter);
   }, []);
 
   // 피드 데이터 가져오기
