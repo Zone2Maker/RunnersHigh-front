@@ -179,34 +179,6 @@ export const selectRegion = css`
   }
 `;
 
-// export const regionList = (isDropDownOpen) => css`
-//   display: ${isDropDownOpen ? "block" : "none"};
-//   opacity: ${isDropDownOpen ? 1 : 0};
-//   transform: ${isDropDownOpen ? "translateY(0)" : "translateY(40px)"};
-//   transition: all 0.5s ease;
-//   position: absolute;
-//   top: 110%;
-//   right: -10px;
-//   width: 80px;
-//   height: 125px;
-//   border-radius: 10px;
-//   background-color: #fefefe;
-//   border: 1px solid #e9ecef;
-//   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-//   box-sizing: border-box;
-//   margin: 0;
-//   padding: 5px;
-//   list-style: none;
-//   z-index: 20;
-//   overflow-y: auto;
-//   cursor: pointer;
-
-//   // 스크롤바 숨기기
-//   &::-webkit-scrollbar {
-//     width: 0px;
-//   }
-// `;
-
 export const regionList = (isDropDownOpen) => css`
   display: ${isDropDownOpen ? "block" : "none"};
   opacity: ${isDropDownOpen ? 1 : 0};

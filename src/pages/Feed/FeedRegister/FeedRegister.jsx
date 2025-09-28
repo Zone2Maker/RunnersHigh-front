@@ -9,47 +9,41 @@ import { CiLocationOn } from "react-icons/ci";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
 import { FaCircleArrowUp } from "react-icons/fa6";
 import { BiSolidMessageSquareError } from "react-icons/bi";
+import { FaTimes } from "react-icons/fa";
 
 function FeedRegister() {
-  const [keywordPs, setKeywordPs] = useState(null); // 장소 검색 객체
-  const [searchKeyword, setSearchKeyword] = useState(""); // 검색할 장소 키워드
-  const [places, setPlaces] = useState([]); // 검색 결과 목록 배열
-  const [selectedPlace, setSelectedPlace] = useState(null); // 최종 선택된 장소
-  const [image, setImage] = useState(null); //실제 업로드할 이미지
-  const [imagePreview, setImagePreview] = useState(""); // 이미지 미리보기 URL
+  const [keywordPs, setKeywordPs] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [places, setPlaces] = useState([]);
+  const [selectedPlace, setSelectedPlace] = useState(null);
+
+  const [imageState, setImageState] = useState({
+    file: null,
+    previewUrl: "",
+  });
   const fileInputRef = useRef();
+
+  const [alertModal, setAlertModal] = useState({
+    isOpen: false,
+    message: "",
+  });
+
   const { principal } = usePrincipalState();
   const { uploadFile } = useFirebaseUpload();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
 
   //카카오맵 불러오기
   useEffect(() => {
-    if (window.kakao && window.kakao.maps) {
-      window.kakao.maps.load(() => {
-        const ps = new window.kakao.maps.services.Places();
-        setKeywordPs(ps);
-      });
-    } else {
+    if (!window.kakao || !window.kakao.maps) {
       console.error("카카오 SDK 로드 실패");
-    }
-  }, []);
-
-  // 키워드 검색
-  const searchBtnOnClickHandler = () => {
-    if (!searchKeyword.replace(/^\s+|\s+$/g, "")) {
-      setModalMessage("검색어를 입력해주세요.");
-      setIsModalOpen(true);
-      return false;
-    }
-
-    // 장소 검색 객체를 통해 키워드로 장소 검색 요청
-    if (!keywordPs) {
-      alert("오류가 발생했습니다. 다시 시도해주세요.");
       return;
     }
+    window.kakao.maps.load(() => {
+      setKeywordPs(new window.kakao.maps.services.Places());
+    });
+  }, []);
 
-    keywordPs.keywordSearch(searchKeyword, placeSearchCB);
+  const openModal = (message) => {
+    setAlertModal({ isOpen: true, message });
   };
 
   //장소 검색 완료 시 호출되는 콜백 함수
@@ -59,61 +53,61 @@ function FeedRegister() {
     if (status === window.kakao.maps.services.Status.OK) {
       setPlaces(data); //검색 결과를 상태로 저장
     } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-      setModalMessage("검색 결과가 없습니다.");
+      openModal("검색 결과가 없습니다.");
       return;
     }
   };
 
-  const searchInputOnChangeHandler = (e) => {
-    setSearchKeyword(e.target.value);
-  };
+  // 키워드 검색
+  const searchBtnOnClickHandler = () => {
+    const keyword = searchKeyword.trim();
 
-  const searchInputOnKeyDownHandler = (e) => {
-    if (e.key !== "Enter") {
+    if (!keyword) {
+      openModal("검색어를 입력해주세요.");
       return;
     }
-    searchBtnOnClickHandler();
+
+    if (!keywordPs) {
+      openModal("오류가 발생했습니다. 다시 시도해주세요.");
+      return;
+    }
+
+    keywordPs.keywordSearch(searchKeyword, placeSearchCB);
   };
 
-  // 검색 결과 목록에서 장소를 클릭했을 때 실행되는 함수
   const placeOnClickHandler = (place) => {
-    setSelectedPlace(place); // 선택된 장소 정보 전체를 저장
+    setSelectedPlace(place);
     setPlaces([]);
   };
 
   //이미지 등록
   const imageOnChangeHandler = (e) => {
-    const file = e.target.files[0]; // file 객체로 가져와야함 ->
+    const file = e.target.files[0];
+    const MAX_SIZE = 5 * 1024 * 1024; // 1024 = 1KB
 
-    if (file) {
-      // 올린 파일의 크기가 5MB가 넘으면 return
-      const maxSize = 5 * 1024 * 1024; // 1024 = 1KB
-      const fileSize = file.size;
+    if (!file) return;
 
-      if (fileSize > maxSize) {
-        setModalMessage("5MB이내의 사진만 업로드 가능합니다.");
-        setIsModalOpen(true);
-        e.target.value = "";
-        return;
-      }
-
-      const previewUrl = URL.createObjectURL(file);
-      setImage(file);
-      setImagePreview(previewUrl);
-    }
-  };
-
-  // 공유하기 버튼 클릭 시  - submit 핸들러
-  const handleFeedSubmit = async () => {
-    if (!principal) {
-      setModalMessage("로그인 후 피드를 등록할 수 있습니다.");
-      setIsModalOpen(true);
+    if (file.size > MAX_SIZE) {
+      openModal("5MB이내의 사진만 업로드 가능합니다.");
+      e.target.value = "";
+      setImageState({ file: null, previewUrl: "" });
       return;
     }
 
+    const previewUrl = URL.createObjectURL(file);
+    setImageState({ file, previewUrl });
+  };
+
+  // 공유하기 버튼 클릭 시  - submit 핸들러
+  const submitBtnOnClickHandler = async () => {
+    if (!principal) {
+      openModal("로그인 후 피드를 등록할 수 있습니다.");
+      return;
+    }
+    if (isButtonDisabled) return;
+
     try {
-      //백엔드에 요청 보낼 데이터 객체
-      const firebaseUrl = await uploadFile(image, "feed-img");
+      const firebaseUrl = await uploadFile(imageState.file, "feed-img");
 
       const data = {
         userId: principal.userId,
@@ -125,58 +119,67 @@ function FeedRegister() {
 
       const response = await addFeedReq(data);
       if (response.data.status === "success") {
-        setModalMessage("피드가 등록되었습니다.");
-        isModalOpen(true);
+        openModal("피드가 등록되었습니다.");
 
         // 입력 초기화
-        setImage(null);
-        setImagePreview("");
+        setImageState({ file: null, previewUrl: "" });
         setSelectedPlace(null);
         setSearchKeyword("");
       } else {
-        setModalMessage(response.data.status);
-        isModalOpen(true);
+        openModal(
+          response.data.message ||
+            "피드 등록에 실패했습니다. 다시 시도해주세요."
+        );
       }
     } catch (error) {
-      console.log(error);
-      setModalMessage("피드 등록에 실패했습니다. 다시 시도해주세요.");
-      isModalOpen(true);
+      console.error(error);
+      openModal("피드 등록 중 시스템 오류가 발생했습니다.");
     }
   };
 
   // 이미지와 장소가 모두 선택되었는지 여부
-  const isButtonDisabled = !image || !selectedPlace;
+  const isButtonDisabled = !imageState.file || !selectedPlace;
 
   return (
     <div css={s.container}>
       {/* 메인 콘텐츠 영역 */}
       <div css={s.mainContainer}>
-        {/* 장소 검색창 */}
-        <div css={s.inputBox}>
-          <input
-            css={s.searchInput}
-            type="text"
-            value={searchKeyword}
-            placeholder="장소 검색"
-            onChange={searchInputOnChangeHandler}
-            onKeyDown={searchInputOnKeyDownHandler}
-          />
-          <FaCircleArrowUp
-            css={s.searchIcon}
-            onClick={searchBtnOnClickHandler}
-          />
-        </div>
-        {selectedPlace && (
-          <div css={s.selectedLocation}>
-            <CiLocationOn />
-            <span css={s.selectedPlace}>{selectedPlace.place_name}</span>
+        {!selectedPlace && (
+          <div css={s.inputBox}>
+            <input
+              css={s.searchInput}
+              type="text"
+              value={searchKeyword}
+              placeholder="장소 검색"
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") searchBtnOnClickHandler();
+              }}
+            />
+            <FaCircleArrowUp
+              css={s.searchIcon}
+              onClick={searchBtnOnClickHandler}
+            />
           </div>
         )}
-        {/* 검색 결과가 있을 때만 목록을 보여줌 */}
-
+        {selectedPlace && (
+          <div css={s.selectedLocation}>
+            <div>
+              <CiLocationOn />
+              <span css={s.selectedPlace}>{selectedPlace.place_name}</span>
+            </div>
+            <button
+              onClick={() => {
+                setSelectedPlace(null);
+              }}
+            >
+              <FaTimes />
+            </button>
+          </div>
+        )}
         {places.length > 0 && (
           <ul css={s.placeList}>
-            {/* places 배열에 저장된 검색된 장소 map 이용 - 리스트 */}
+            <div css={s.sourceInfo}>검색 결과 제공: 카카오맵(KakaoMap)</div>
             {places.map((place) => (
               <li
                 key={place.id}
@@ -198,13 +201,17 @@ function FeedRegister() {
           css={s.imageUploadSection}
           onClick={() => fileInputRef.current.click()}
         >
-          {imagePreview ? (
-            <img src={imagePreview} alt="미리보기" css={s.previewImage} />
+          {imageState.previewUrl ? (
+            <img
+              src={imageState.previewUrl}
+              alt="미리보기"
+              css={s.previewImage}
+            />
           ) : (
             // 에러 발생 시 보여줄 UI
             <div css={s.feedNoImageBox}>
               <SlPicture />
-              <p>러닝 인증샷을 공유해보세요!</p>
+              <p>오늘의 러닝 인증샷을 공유해보세요!</p>
             </div>
           )}
           <input
@@ -214,21 +221,19 @@ function FeedRegister() {
             onChange={imageOnChangeHandler}
           />
         </div>
-
-        {/* 공유하기 버튼 */}
-        <button
-          css={s.submitButton(isButtonDisabled)}
-          disabled={isButtonDisabled}
-          onClick={handleFeedSubmit}
-        >
-          공유하기
-        </button>
+        <div css={s.submitButton}>
+          <button disabled={isButtonDisabled} onClick={submitBtnOnClickHandler}>
+            공유하기
+          </button>
+        </div>
       </div>
       <div css={s.dummyContainer}></div>
-      {isModalOpen && (
-        <AlertModal onClose={() => setIsModalOpen(false)}>
+      {alertModal.isOpen && (
+        <AlertModal
+          onClose={() => setAlertModal({ isOpen: false, message: "" })}
+        >
           <BiSolidMessageSquareError size={60} style={{ fill: "#ff4d4d" }} />
-          <strong>{modalMessage}</strong>
+          <strong>{openModal.modalMessage}</strong>
         </AlertModal>
       )}
     </div>
