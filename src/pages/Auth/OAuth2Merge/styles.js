@@ -14,7 +14,7 @@ export const container = css`
 export const titleContainer = css`
   margin: 0;
   padding: 0;
-  margin-bottom: 37px;
+  margin-bottom: 20px;
 
   & > p {
     margin-top: 10px;
