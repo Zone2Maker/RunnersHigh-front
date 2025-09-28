@@ -1,74 +1,90 @@
 import { css } from "@emotion/react";
 
-export const modalBody = css`
+export const container = css`
+  width: 400px;
+  height: 460px;
+  padding: 40px 25px 25px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
+  background-color: #f9f9f9;
 `;
 
-export const modalHeader = css`
-  font-size: 14px;
-  color: #6b7280;
-  margin-top: 40px;
+export const date = css`
+  font-size: 15px;
+  font-weight: 500;
+  color: #555;
 `;
 
-export const modalTitle = css`
-  font-size: 22px;
-  font-weight: bold;
-  color: #111827;
+export const title = css`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
   margin: 0;
-`;
+  margin-bottom: 5px;
 
-export const modalText = css`
-  width: 100%;
-  min-height: 250px;
-  padding: 16px;
-  background-color: #f3f4f6;
-  border-radius: 12px;
-  font-size: 16px;
-  color: #374151;
-  white-space: pre-wrap;
-  line-height: 1.6;
-  text-align: left;
-`;
+  & > span {
+    font-size: 24px;
+    font-weight: 700;
+  }
 
-export const modalTextarea = css`
-  width: 360px;
-  height: 250px;
-  padding: 16px;
-  background-color: #f3f4f6;
-  border-radius: 12px;
-  font-size: 16px;
-  color: #374151;
-  line-height: 1.6;
-  border: none;
-  resize: none;
-  outline: none;
-
-  &::placeholder {
-    color: #9ca3af;
+  & > svg {
+    font-size: 21px;
+    color: #00296b;
+    stroke-width: 2.3;
+    transform: translateY(1px);
   }
 `;
 
-export const modalActions = css`
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 20px;
+export const text = css`
+  width: 100%;
+  height: 100%;
+  background-color: #eeeeee;
+  border-radius: 12px;
+  padding: 20px;
 `;
 
-export const saveButton = css`
-  padding: 8px 16px;
+export const textarea = css`
+  width: 100%;
+  height: 100%;
+  font-size: 17px;
+  font-family: inherit;
+  white-space: pre-wrap;
+  line-height: 1.4;
+  text-align: left;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  background-color: #e5e7eb;
-  transition: background-color 0.2s;
+  resize: none;
+  outline: none;
+  background-color: transparent;
 
-  &:hover {
-    background-color: #d1d5db;
+  &::placeholder {
+    color: #888;
+  }
+`;
+
+export const saveBtn = css`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+
+  & > button {
+    font-size: 14px;
+    font-weight: 600;
+    color: #eeeeee;
+    background-color: #00296b;
+    padding: 7px 26px;
+    outline: none;
+    border: none;
+    border-radius: 23px;
+    transition: all 0.2s;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f57c00;
+    }
   }
 `;

@@ -5,7 +5,7 @@ export const container = css`
   flex-grow: 1;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 `;
 
 export const feed = css`
@@ -19,6 +19,14 @@ export const feed = css`
     aspect-ratio: 1;
     object-fit: cover;
   }
+`;
+
+export const feedContainer = css`
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 `;
 
 export const empty = css`

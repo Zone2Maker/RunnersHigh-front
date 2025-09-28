@@ -3,43 +3,11 @@ import { css } from "@emotion/react";
 // 전체 페이지 레이아웃
 export const container = css`
   display: flex;
-  justify-content: center; 
-  align-items: flex-start; 
-  width: 100%;
-  min-height: 100vh;
-  padding-top: 50px; 
-  box-sizing: border-box;
-  background-color: #f9fafb;
-`;
-
-// 모달 배경
-export const backdrop = css`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
   justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
-// 모달 본문 영역
-export const modalContent = css`
-  position: relative;
-  width: 90%;
-  max-width: 480px;
-  height: auto;
-  max-height: 80%;
-  background-color: #fff;
-  border-radius: 20px;
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  overflow-y: auto;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fefefe;
 `;
 
 // 닫기 버튼 (X)
@@ -76,7 +44,6 @@ export const detailDate = css`
 export const detailContent = css`
   font-size: 14px;
   line-height: 1.6;
-  color: #222;
   white-space: pre-wrap; /* 줄바꿈 반영 */
   padding: 12px;
   border-radius: 8px;
