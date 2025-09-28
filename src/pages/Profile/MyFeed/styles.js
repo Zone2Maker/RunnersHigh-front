@@ -5,7 +5,7 @@ export const container = css`
   flex-grow: 1;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 `;
 
 export const feed = css`
@@ -21,6 +21,14 @@ export const feed = css`
   }
 `;
 
+export const feedContainer = css`
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+`;
+
 export const empty = css`
   width: 100%;
   flex-grow: 1;
@@ -28,6 +36,7 @@ export const empty = css`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   color: #888;
   opacity: 0.8;
   font-size: 20px;

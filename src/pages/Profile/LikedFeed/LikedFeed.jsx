@@ -80,7 +80,9 @@ function LikedFeed() {
             <p>다시 시도해주세요.</p>
           </AlertModal>
         ) : feedList && feedList.length > 0 ? (
-          <FeedContainer feeds={feedList} isLoading={isLoading} />
+          <div css={s.feedContainer}>
+            <FeedContainer feeds={feedList} isLoading={isLoading} />
+          </div>
         ) : (
           <div css={s.empty}>
             <AiOutlinePicture />

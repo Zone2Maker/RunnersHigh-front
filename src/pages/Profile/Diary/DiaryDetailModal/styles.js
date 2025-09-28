@@ -1,55 +1,57 @@
 import { css } from "@emotion/react";
 
-export const modalBody = css`
+export const container = css`
+  width: 400px;
+  height: 460px;
+  padding: 40px 25px 25px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
+  background-color: #f9f9f9;
 `;
 
-export const modalHeader = css`
-  font-size: 14px;
-  color: #6b7280;
-  margin-top: 40px;
+export const date = css`
+  font-size: 15px;
+  font-weight: 500;
+  color: #555;
 `;
 
-export const modalTitle = css`
-  font-size: 22px;
-  font-weight: bold;
-  color: #111827;
+export const title = css`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
   margin: 0;
+  margin-bottom: 5px;
+
+  & > span {
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  & > svg {
+    font-size: 21px;
+    color: #00296b;
+  }
 `;
 
-export const modalText = css`
-  font-size: 16px;
-  color: #1f2937;
-  width: 360px;
-  height: 350px;
+export const content = css`
+  width: 100%;
+  height: 100%;
+  font-size: 17px;
+  font-weight: 500;
   margin: 0;
-  white-space: pre-wrap;
-  padding: 16px;
-  background-color: #f3f4f6; 
+  padding: 20px;
+  background-color: #eeeeee;
   border-radius: 12px;
   text-align: left;
+
+  & > p {
+    margin: 0;
+    white-space: pre-wrap;
+    line-height: 1.4;
+  }
 `;
-
-export const modalTextarea = css`
-  width: 100%;
-  min-height: 120px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 1rem;
-  resize: vertical;
-  box-sizing: border-box;
-`;
-
-export const modalActions = css`
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 20px;
-`;
-
-
