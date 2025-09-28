@@ -4,6 +4,7 @@ export const container = css`
   width: 100%;
   flex-grow: 1;
   z-index: 10;
+  background-color: #f8f9fa;
 `;
 
 // --- 메인 콘텐츠 ---
@@ -15,6 +16,7 @@ export const mainContainer = css`
   gap: 10px;
   position: relative;
   box-sizing: border-box;
+  background-color: #f8f9fa;
 `;
 
 // --- 장소 검색 ---
@@ -32,7 +34,7 @@ export const searchInput = css`
   box-sizing: border-box;
   font-family: inherit;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
   border: none;
   border-radius: 50px;
   outline: 2px solid #cdcdcd;
@@ -71,26 +73,61 @@ export const searchIcon = css`
 
 export const selectedLocation = css`
   width: 100%;
+  height: 48px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 2px;
+  padding: 0 4px;
 
-  & > svg {
-    font-size: 28px;
-    stroke-width: 1px;
-    color: #0d47a1;
+  & > div {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+
+    & > svg {
+      font-size: 28px;
+      stroke-width: 1.2;
+      color: #00296b;
+    }
+  }
+
+  & > button {
+    margin: 0;
+    padding: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: 2px solid #00296b;
+    border: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #00296b;
+    font-size: 22px;
+    cursor: pointer;
+
+    & > svg {
+    }
+
+    &:hover {
+      background-color: #00296b;
+      color: #fefefe;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
   }
 `;
 
 export const selectedPlace = css`
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 21px;
+  font-weight: 600;
 `;
 
 // --- 이미지 업로드 ---
 export const imageUploadSection = css`
-  flex-grow: 1;
-  aspect-ratio: 1;
+  width: 100%;
+  height: 470px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -129,44 +166,32 @@ export const feedInput = css`
   display: none;
 `;
 
-// ---- 검색 결과 목록 -----
-export const placeContainer = css`
-  width: 480px;
-  height: 550px;
-  border-radius: 15px;
-  background-color: #f4f4f4;
-  position: absolute;
-  top: 65px;
-  z-index: 1;
+export const sourceInfo = css`
+  width: 100%;
+  text-align: right;
+  padding: 0 10px;
+  margin-top: 3px;
+  font-size: 12px;
+  color: #aaa;
 `;
 
 export const placeList = css`
   width: 480px;
-  height: 550px;
+  height: 540px;
   list-style: none;
   overflow-y: auto;
-  border-top-left-radius: 15px;
-  border-bottom-left-radius: 15px;
-  background-color: #efefef;
+  border-radius: 15px;
+  background-color: #fefefe;
   padding: 0;
   position: absolute;
-  top: 55px;
+  top: 50px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   z-index: 1;
+  box-sizing: border-box;
 
   //스크롤바 커스텀
   &::-webkit-scrollbar {
-    width: 6px;
-    background-color: #efefef;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: #efefef; /* 스크롤 트랙 색 */
-    border-radius: 6px;
+    width: 0px;
   }
 
   & > li:last-of-type {
@@ -176,7 +201,7 @@ export const placeList = css`
 
 export const placeInfo = css`
   width: 100%;
-  padding: 8px 12px;
+  padding: 8px 15px;
   box-sizing: border-box;
   border-bottom: 1px solid #d6d6d6;
   display: flex;
@@ -184,13 +209,19 @@ export const placeInfo = css`
   justify-content: center;
   cursor: pointer;
   gap: 5px;
+  transition: all 0.2s ease;
 
   &:hover {
-    background-color: #d9d9d9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    color: #01255fff;
   }
+
   & > span {
     margin: 0;
     padding: 0;
+    font-weight: 500;
+    color: #444;
   }
 `;
 
@@ -209,27 +240,33 @@ export const nameAndCategory = css`
 
   & > div {
     font-size: 14px;
-    color: #555;
   }
 `;
 
 // --- 공유하기 버튼 ---
-export const submitButton = (isButtonDisabled) => css`
-  padding: 12px 14px;
-  border: none;
-  outline: none;
-  background-color: ${isButtonDisabled ? "#d9d9d9" : "#00296b"};
-  color: ${isButtonDisabled ? "#888" : "#eeeeee"};
-  font-size: 18px;
-  font-weight: 600;
-  border-radius: 15px;
-  cursor: ${!isButtonDisabled && "pointer"};
+export const submitButton = css`
+  width: 100%;
+  display: flex;
 
-  &:hover {
-    background-color: ${!isButtonDisabled && "#f57c00"};
+  & > button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #efefef;
+    background-color: #00296b;
+    box-sizing: border-box;
+    color: #fefefe;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f57c00;
+    }
   }
 `;
 
 export const dummyContainer = css`
-  height: 60px;
+  height: 58px;
 `;
