@@ -10,6 +10,7 @@ import {
   getMessageListReq,
   updateLastReadMessageIdReq,
 } from "../../../../services/message/messageApis";
+import { connectStomp, disconnectStomp } from "../../../../configs/stompClient";
 
 function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
   const SIZE = 50;
@@ -28,10 +29,38 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
   const prevScrollHeightRef = useRef(0);
   const isInitialScrolled = useRef(false);
   const isLoadingRef = useRef(false); // ref는 값이 바뀌어도 재렌더링x
+  const isSocketRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const topObserver = useRef(null);
   const bottomObserver = useRef(null);
+
+  // 웹소켓 연결
+  const [pendingMessageList, setPendingMessageList] = useState([]);
+
+  useEffect(() => {
+    if (!principal?.crewId) {
+      return;
+    }
+
+    // 메시지 받으면 실행할 것
+    connectStomp(principal?.crewId, (payload) => {
+      setPendingMessageList((prev) => [...prev, payload.data]);
+      updateAndSortMessages([payload.data]);
+      isSocketRef.current = true;
+    });
+
+    return () => {
+      disconnectStomp();
+    };
+  }, [principal]);
+
+  useEffect(() => {
+    if (isSocketRef.current === true) {
+      chatMainRef.current.scrollTop = chatMainRef.current.scrollHeight;
+      isSocketRef.current = false;
+    }
+  }, [messages]);
 
   // 마운트 시 메시지 목록 최초 요청
   useEffect(() => {
@@ -122,8 +151,9 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
                 setAlertModal(true, response.data.message, "fail");
               }
               setPrevCursorId(response.data.data.newCursorId);
-              const reversedMessages = response.data.data.messages.reverse();
-              setMessages((prev) => [...reversedMessages, ...prev]);
+              const newMessages = response.data.data.messages;
+              const sortedMessages = updateAndSortMessages(newMessages);
+              setMessages(sortedMessages);
             })
             .finally(() => {
               setIsLoading(false);
@@ -163,8 +193,10 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
 
             setNextCursorId(response.data.data.newCursorId);
             const newMessages = response.data.data.messages;
+            const sortedMessages = updateAndSortMessages(newMessages);
+            setMessages(sortedMessages);
 
-            setMessages((prev) => [...prev, ...newMessages]);
+            setMessages(updateAndSortMessages(newMessages));
           });
         }
       },
@@ -212,10 +244,26 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
     }
   }, [messages, lastReadMessageRef]);
 
+  // 새 메시지 목록 합치기 + 정렬 함수
+  const updateAndSortMessages = (newMessages) => {
+    setMessages((prev) => {
+      console.log(prev);
+      const combined = [...prev, ...newMessages];
+
+      const uniqueMessages = Array.from(
+        new Map(combined.map((msg) => [msg.messageId, msg])).values()
+      );
+
+      uniqueMessages.sort((a, b) => a.messageId - b.messageId);
+
+      return uniqueMessages;
+    });
+  };
+
   return (
     <div css={s.chatMain(isLeaveConfirmOpen)} ref={chatMainRef}>
       <div ref={topObserver} css={s.observer} />
-      {messages.map((message) => {
+      {messages?.map((message) => {
         const isSystem = SYSTEM_MESSAGE_TYPE.includes(message.messageType);
         const isMine = principal.userId === message.userId;
         // message의 Id가 lastReadId와 같으면 마지막으로 읽은 메시지

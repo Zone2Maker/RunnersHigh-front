@@ -10,13 +10,13 @@ import MyChattingRoom from "../MyChattingRoom/MyChattingRoom";
 import { HiOutlineChatBubbleOvalLeftEllipsis } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
 
-function MyChattingButton({ pendingMessageList, setPendingMessageList }) {
+function MyChattingButton({}) {
   const { principal } = usePrincipalState();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [crewInfo, setCrewInfo] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  //   const [unreadMessageCnt, setUnreadMessageCnt] = useState(0);
+  const [unreadMessageCnt, setUnreadMessageCnt] = useState(0);
 
   // getUnreadMessageCountReq(principal?.crewId).then((response) => {
   //   console.log(response.data.data);
@@ -41,8 +41,8 @@ function MyChattingButton({ pendingMessageList, setPendingMessageList }) {
     <>
       {isChatOpen && (
         <MyChattingRoom
-          pendingMessageList={pendingMessageList}
-          setPendingMessageList={setPendingMessageList}
+          // pendingMessageList={pendingMessageList}
+          // setPendingMessageList={setPendingMessageList}
           crewInfo={crewInfo}
           isChatOpen={isChatOpen}
           setIsChatOpen={setIsChatOpen}
@@ -55,7 +55,7 @@ function MyChattingButton({ pendingMessageList, setPendingMessageList }) {
           </div>
         ) : (
           <div css={s.openBtn}>
-            {pendingMessageList.length > 0 && <MdCircle css={s.dot} />}
+            {/* {pendingMessageList.length > 0 && <MdCircle css={s.dot} />} */}
             <HiOutlineChatBubbleOvalLeftEllipsis css={s.bubble} />
           </div>
         )}

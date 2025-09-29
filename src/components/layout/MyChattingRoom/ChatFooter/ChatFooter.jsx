@@ -3,8 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import * as s from "./styles";
 import { publishStomp } from "../../../../configs/stompClient";
 import { VscSend } from "react-icons/vsc";
+import { usePrincipalState } from "../../../../stores/usePrincipalState";
 
 function ChatFooter({ crewId, isLeaveModalOpen }) {
+  const { principal } = usePrincipalState();
   const textareaRef = useRef();
   const [sendMessageValue, setSendMessageValue] = useState("");
 
@@ -30,9 +32,11 @@ function ChatFooter({ crewId, isLeaveModalOpen }) {
       message: sendMessageValue,
       messageType: "CHAT",
     };
+    console.log(newMessage);
+    console.log(typeof principal.crewId);
 
     // 메시지 전송 API
-    publishStomp(crewId, newMessage);
+    publishStomp(principal.crewId, newMessage);
   };
 
   return (
@@ -43,7 +47,9 @@ function ChatFooter({ crewId, isLeaveModalOpen }) {
         value={sendMessageValue}
         onChange={(e) => setSendMessageValue(e.target.value)}
         onKeyDown={(e) => {
+          // 엔터 누르면 줄바꿈 \n도 같이 감 ㅜ
           if (e.key === "Enter") {
+            setSendMessageValue("");
             sendBtnOnClickHandler();
           }
         }}
@@ -54,6 +60,10 @@ function ChatFooter({ crewId, isLeaveModalOpen }) {
         disabled={
           sendMessageValue.trim() === "" || sendMessageValue.length === 0
         }
+        onClick={() => {
+          sendBtnOnClickHandler();
+          setSendMessageValue("");
+        }}
       >
         <VscSend />
       </button>
