@@ -28,15 +28,7 @@ export const chatMain = (isLeaveConfirmOpen) => css`
   }
 `;
 
-export const obserber = css`
-  padding: 1px;
-`;
-
-export const lastReadMessageBox = (isLeaveConfirmOpen) => css`
+export const observer = css`
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
-  filter: ${isLeaveConfirmOpen && "blur(0.5px)"};
+  height: 1px;
 `;

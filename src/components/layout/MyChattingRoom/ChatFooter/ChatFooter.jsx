@@ -4,7 +4,7 @@ import * as s from "./styles";
 import { publishStomp } from "../../../../configs/stompClient";
 import { VscSend } from "react-icons/vsc";
 
-function ChatFooter({ crewId, isLeaveConfirmOpen }) {
+function ChatFooter({ crewId, isLeaveModalOpen }) {
   const textareaRef = useRef();
   const [sendMessageValue, setSendMessageValue] = useState("");
 
@@ -36,7 +36,7 @@ function ChatFooter({ crewId, isLeaveConfirmOpen }) {
   };
 
   return (
-    <div css={s.chatFooter(isLeaveConfirmOpen)}>
+    <div css={s.chatFooter(isLeaveModalOpen)}>
       <textarea
         css={s.textarea}
         placeholder="메세지를 입력해주세요."

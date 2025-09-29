@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
+import { forwardRef } from "react";
 import * as s from "./styles";
 
-function MyMessage({ message }) {
+function MyMessage({ message }, ref) {
   return (
-    <div css={s.messageContainer}>
+    <div css={s.messageContainer} ref={ref}>
       <div css={s.timeBox}>
         <p>
           {new Intl.DateTimeFormat("ko-KR", {
@@ -14,12 +15,11 @@ function MyMessage({ message }) {
         </p>
       </div>
       <div>
-        <div css={s.messageBox}>
-          <p>{message.message}</p>
-        </div>
+        <div css={s.messageBox}>{message.message}</div>
       </div>
     </div>
   );
 }
 
-export default MyMessage;
+// props로 받은 ref를 실제 DOM 요소에 연결시키기 위한 forwardRef
+export default forwardRef(MyMessage);

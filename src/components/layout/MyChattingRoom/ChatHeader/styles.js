@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 
-export const chatHeader = (isLeaveConfirmOpen) => css`
+export const chatHeader = (isLeaveModalOpen) => css`
   width: 100%;
   height: 65px;
   flex-shrink: 0;
@@ -15,7 +15,7 @@ export const chatHeader = (isLeaveConfirmOpen) => css`
   padding: 12px 15px 7px;
   box-sizing: border-box;
 
-  filter: ${isLeaveConfirmOpen && "blur(0.5px)"};
+  filter: ${isLeaveModalOpen && "blur(0.5px)"};
 
   & > svg {
     font-size: 21px;

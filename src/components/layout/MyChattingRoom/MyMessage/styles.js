@@ -20,17 +20,13 @@ export const messageBox = css`
   padding: 5px 10px;
   max-width: 250px;
   box-sizing: border-box;
-
-  & > p {
-    color: #f2f2f2;
-    margin: 0;
-    word-break: break-all;
-    word-wrap: break-word;
-    font-size: 15px;
-    font-weight: 400;
-    letter-spacing: 0.3px;
-    line-height: 20px;
-  }
+  color: #f2f2f2;
+  word-break: break-all;
+  word-wrap: break-word;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  line-height: 20px;
 `;
 
 export const timeBox = css`

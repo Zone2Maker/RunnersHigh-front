@@ -2,9 +2,9 @@
 import { IoExitOutline, IoPeopleOutline } from "react-icons/io5";
 import * as s from "./styles";
 
-function ChatHeader({ crewInfo, isLeaveConfirmOpen, setIsLeaveConfirmOpen }) {
+function ChatHeader({ crewInfo, isLeaveModalOpen, setIsLeaveModalOpen }) {
   return (
-    <div css={s.chatHeader(isLeaveConfirmOpen)}>
+    <div css={s.chatHeader(isLeaveModalOpen)}>
       <div css={s.crewProfile}>
         <img src={crewInfo.crewImgUrl} alt="크루 대표사진" />
         <div css={s.crewInfo}>
@@ -14,7 +14,7 @@ function ChatHeader({ crewInfo, isLeaveConfirmOpen, setIsLeaveConfirmOpen }) {
           </span>
         </div>
       </div>
-      <IoExitOutline onClick={setIsLeaveConfirmOpen} />
+      <IoExitOutline onClick={setIsLeaveModalOpen} />
     </div>
   );
 }

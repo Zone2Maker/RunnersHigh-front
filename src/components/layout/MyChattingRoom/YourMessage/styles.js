@@ -25,21 +25,18 @@ export const messageContainer = css`
 `;
 
 export const messageBox = css`
+  width: fit-content;
   background-color: #f0f0f0;
   border-radius: 0 10px 10px 10px;
   padding: 5px 10px;
   max-width: 250px;
   box-sizing: border-box;
-  display: flex;
-
-  & > p {
-    margin: 0;
-    word-break: break-all;
-    word-wrap: break-word;
-    font-size: 15px;
-    line-height: 19px;
-    font-weight: 500;
-  }
+  display: block;
+  word-break: break-all;
+  word-wrap: break-word;
+  font-size: 15px;
+  line-height: 19px;
+  font-weight: 500;
 `;
 
 export const timeBox = css`

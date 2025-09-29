@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 
-export const chatFooter = (isLeaveConfirmOpen) => css`
+export const chatFooter = (isLeaveModalOpen) => css`
   width: 100%;
   min-height: 90px;
   max-height: 160px;
@@ -12,7 +12,7 @@ export const chatFooter = (isLeaveConfirmOpen) => css`
   z-index: 50;
   gap: 10px;
 
-  filter: ${isLeaveConfirmOpen && "blur(0.5px)"};
+  filter: ${isLeaveModalOpen && "blur(0.5px)"};
 
   > svg {
     transform: translateY(5px);

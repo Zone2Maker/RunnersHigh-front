@@ -3,30 +3,31 @@ import * as s from "./styles";
 import MyMessage from "../MyMessage/MyMessage";
 import YourMessage from "../YourMessage/YourMessage";
 import SystemMessage from "../SystemMessage/SystemMessage";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
 import {
-  getInitialMessageListReq,
   getLastReadMessageIdReq,
   getMessageListReq,
   updateLastReadMessageIdReq,
 } from "../../../../services/message/messageApis";
 
-function ChatMain({ isLeaveConfirmOpen, setIsChatOpen }) {
+function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
   const SIZE = 50;
-  const principal = usePrincipalState();
+  const SYSTEM_MESSAGE_TYPE = ["ENTER", "LEAVE"];
+  const { principal } = usePrincipalState();
   const [messages, setMessages] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [lastReadId, setLastReadId] = useState(0);
-  const [prevCursorId, setPrevCursorId] = useState(0); // 상향 ID
-  const [nextCursorId, setNextCursorId] = useState(0); // 하향 ID
+  const [lastReadId, setLastReadId] = useState(null);
+  const [prevCursorId, setPrevCursorId] = useState(null); // 상향 ID
+  const [nextCursorId, setNextCursorId] = useState(null); // 하향 ID
+  const [isInitialized, setIsInitialized] = useState(false); // 초기 세팅 관리
 
   // ref
+  const initialLoadRef = useRef(false); // 컴포넌트 마운트 상태 추적
   const chatMainRef = useRef(null);
   const lastReadMessageRef = useRef(null);
-  // const [isScrolled, setIsScrolled] = useState(false);
   const prevScrollHeightRef = useRef(0);
   const isInitialScrolled = useRef(false);
+  const isLoadingRef = useRef(false); // ref는 값이 바뀌어도 재렌더링x
   const [isLoading, setIsLoading] = useState(false);
 
   const topObserver = useRef(null);
@@ -34,100 +35,124 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen }) {
 
   // 마운트 시 메시지 목록 최초 요청
   useEffect(() => {
-    getLastReadMessageIdReq(principal.crewId).then((resp) => {
-      const lastReadId = resp.data.data;
-      setLastReadId(resp);
+    // react의 strict mode (최초 useEffect 중복 요청) 방지
+    // true면 이미 호출됨!
+    if (initialLoadRef.current) {
+      return;
+    }
 
-      console.log(lastReadId);
-      getInitialMessageListReq(principal.crewId, resp.data.data, SIZE).then(
-        (resp) => {
-          if (resp.data.status === "failed") {
-            setIsChatOpen();
-            setErrorMessage(resp.data.message);
-            return;
-          }
+    const initializeChat = async () => {
+      try {
+        // 첫 API 호출 직전에 플래그 설정
+        initialLoadRef.current = true;
 
-          const newMessages = resp.data.data.messages;
-          console.log(newMessages);
+        // 마지막으로 읽은 메시지ID를 가져오기
+        const lastReadResp = await getLastReadMessageIdReq(principal.crewId);
+        const lastReadId = lastReadResp.data.data;
+        setLastReadId(lastReadId); // 상태 업데이트
+        console.log("마지막으로 읽은 메시지ID: ", lastReadId);
 
-          let slicedMessages = null;
+        // 2. lastReadId를 기준으로 이전/이후 메시지 동시에 가져오기(Promise.all 병렬 처리 가능)
+        const [prevResp, nextResp] = await Promise.all([
+          getMessageListReq(principal.crewId, lastReadId, "prev", SIZE),
+          getMessageListReq(principal.crewId, lastReadId, "next", SIZE),
+        ]);
+        console.log(prevResp);
+        console.log(nextResp);
 
-          if (newMessages.length < 100) {
-            // 첫 요청의 메시지 개수가 100개 미만일 때
-            if (newMessages[50].messageId > lastReadId) {
-              // 메시지 목록의 50번 메시지의 messageId가 lastReadId보다 크다면
-              // newMessages[0] 이전의 메시지가 없는 것
-              // => 즉, 이전 채팅은 더 불러올 게 없음
-              setPrevCursorId(null);
-              setNextCursorId(newMessages[newMessages.length - 1].messageId);
-              slicedMessages = newMessages.slice(0, newMessages.length - 1);
-            } else if (newMessages[50].messageId === lastReadId) {
-              // 메시지 목록의 50번 메시지의 messageId가 lastReadId와 같다면
-              // 이전 메세지는 50개 다 가져온 것이므로 newMessages 이후의 메시지가 없는 것
-              // => 즉, 이후 채팅은 더 불러올 게 없음
-              setPrevCursorId(newMessages[0].messageId);
-              setNextCursorId(null);
-              slicedMessages = newMessages.slice(1, newMessages.length);
-            }
-          } else {
-            // 첫 요청의 메시지 개수가 100개일 때
-            // 이전 / 이후 채팅 더 있음
-            setPrevCursorId(newMessages[0].messageId);
-            setNextCursorId(newMessages[newMessages.length - 1].messageId);
-            slicedMessages = newMessages.slice(1, newMessages.length - 1);
-          }
+        // 3. 받아온 메시지들 합쳐서 messages 업데이트
+        const prevMessages = prevResp.data.data.messages;
+        const nextMessages = nextResp.data.data.messages;
+        // lastReadId를 포함해서 각각 50개씩 가져오기 때문에 중간에 하나 중복됨
+        const initialMessages = [
+          ...prevMessages.reverse(),
+          ...nextMessages.slice(1, nextMessages.length),
+        ];
+        setMessages(initialMessages);
 
-          setMessages(slicedMessages);
-        }
-      );
-    });
+        // 4. prev,nextCursorId 업데이트
+        setPrevCursorId(prevResp.data.data.newCursorId);
+        setNextCursorId(nextResp.data.data.newCursorId);
 
-    return () => {
-      updateLastReadMessageIdReq(principal.crewId).then((response) =>
-        console.log(response)
-      );
+        // 5. 초기 세팅 끝!
+        setIsInitialized(true);
+      } catch (error) {
+        console.error("채팅 목록 불러오기 실패", error);
+        setIsChatOpen();
+        setAlertModal(true, "채팅 데이터 로드에 실패했습니다.", "fail");
+      }
     };
+
+    initializeChat();
+
+    // 클린업 함수, 채팅방 언마운트시 마지막으로 읽은 메시지ID 업데이트
+    // return () => {
+    // updateLastReadMessageIdReq(principal.crewId).then((response) =>
+    //   console.log(response)
+    // );
+    // };
   }, []);
 
-  useLayoutEffect(() => {
-    // if (isScrolled) return;
-    if (!chatMainRef.current || messages.length === 0) {
-      return;
-    }
-    // 맨 처음 실행
-    if (lastReadMessageRef.current && !isInitialScrolled.current) {
-      lastReadMessageRef.current.scrollIntoView({
-        behavior: "auto",
-        block: "start",
-      });
-      isInitialScrolled.current = true;
-      return;
-    }
-
-    // 나머지 실행
-    // 이전 메시지 로딩 했음
-    if (prevScrollHeightRef > 0) {
-      const scrollOffset =
-        chatMainRef.current.scrollHeight - prevScrollHeightRef;
-      chatMainRef.current.scrollTop += scrollOffset;
-      prevScrollHeightRef.current = 0;
-    }
-
-    // requestAnimationFrame(() => setIsScrolled(true));
-    // requestAnimationFrame(() => setIsScrolled(true));
-  }, [messages, lastReadMessageRef]);
-
   useEffect(() => {
-    // if (!isScrolled) return;
-    if (!messages || !chatMainRef.current) return;
+    // 초기 세팅이 되지 않았을 경우, 이전 요청을 수행하고 있을 경우
+    // 옵저버의 감지 막기
+    // isLoading은 재렌더링을 예약할 뿐 실행중인 코드를 멈추진 않음
+    // 근데 또 재렌더링 하기 전에 옵저버가 여서 콜백함수를 또 실행해버리면?
+    // 무한.. => ref로 막기
+    if (!isInitialized) {
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && prevCursorId !== null && !isLoading) {
-          // 요청 직전
+        if (
+          entries[0].isIntersecting &&
+          prevCursorId !== null &&
+          !isLoadingRef.current
+        ) {
+          // 요청 직전에 현재 DOM 요소의 높이 저장해두기
           prevScrollHeightRef.current = chatMainRef.current.scrollHeight;
           setIsLoading(true);
+          isLoadingRef.current = true;
+
           const direction = "prev";
+
+          getMessageListReq(principal.crewId, prevCursorId, direction, SIZE)
+            .then((response) => {
+              if (response.data.status === "failed") {
+                setIsChatOpen();
+                setAlertModal(true, response.data.message, "fail");
+              }
+              console.log("이전메시지가져옴");
+              setPrevCursorId(response.data.data.newCursorId);
+              const reversedMessages = response.data.data.messages.reverse();
+              setMessages((prev) => [...reversedMessages, ...prev]);
+            })
+            .finally(() => {
+              setIsLoading(false);
+              isLoadingRef.current = false;
+            });
+        }
+      },
+      {
+        root: chatMainRef.current,
+        threshold: 0.1,
+        rootMargin: "14px 0px 0px 0px",
+      }
+    );
+    observer.observe(topObserver.current);
+    return () => observer.disconnect();
+  }, [prevCursorId, isInitialized]);
+
+  useEffect(() => {
+    if (!isInitialized) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && prevCursorId !== null) {
+          const direction = "next";
           getMessageListReq(
             principal.crewId,
             prevCursorId,
@@ -136,103 +161,99 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen }) {
           ).then((response) => {
             if (response.data.status === "failed") {
               setIsChatOpen(false);
-              setErrorMessage(response.data.message);
+              setAlertModal(true, response.data.message, "fail");
             }
 
-            console.log(response);
-            setPrevCursorId(response.data.data.newCursorId);
-            const reversedMessages = response.data.data.messages.reverse();
-            console.log(reversedMessages);
-            setMessages((prev) => [...reversedMessages, ...prev]);
-            setIsLoading(false);
+            setNextCursorId(response.data.data.newCursorId);
+            const newMessages = response.data.data.messages;
+
+            setMessages((prev) => [...prev, ...newMessages]);
           });
         }
       },
       {
         root: chatMainRef.current,
         threshold: 0.1,
+        rootMargin: "0px 0px 14px 0px",
       }
-    );
-    observer.observe(topObserver.current);
-    return () => observer.disconnect();
-    // }, [messageList, prevCursorId, principal, setIsChatOpen, isScrolled]);
-  }, [messages, prevCursorId, principal, setIsChatOpen, isLoading]);
-
-  useEffect(() => {
-    // if (!isScrolled) return;
-    if (!messages || !chatMainRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && nextCursorId !== null) {
-          const direction = "next";
-          getMessageListReq(
-            principal.crewId,
-            nextCursorId,
-            direction,
-            SIZE
-          ).then((response) => {
-            if (response.data.status === "failed") {
-              setIsChatOpen(false);
-              setErrorMessage(response.data.message);
-            }
-
-            setPrevCursorId(response.data.data.newCursorId);
-            const newMessages = response.data.data.messages;
-            setMessages((prev) => [...prev, ...newMessages]);
-          });
-        }
-      },
-      { root: chatMainRef.current, threshold: 0.1 }
     );
     observer.observe(bottomObserver.current);
     return () => observer.disconnect();
-  }, [messages, nextCursorId, principal, setIsChatOpen]);
-  // }, [messageList, nextCursorId, principal, setIsChatOpen, isScrolled]);
+  }, [nextCursorId, isInitialized]);
+
+  // 렌더링 직전 실행
+  useLayoutEffect(() => {
+    // 이전 높이 기록이 없거나, 스크롤 컨테이너가 없으면
+    if (prevScrollHeightRef.current === 0 || !chatMainRef.current) {
+      return;
+    }
+
+    // 현재 렌더링된 chatMain이라는 DOM 요소의 높이 - 이전 DOM 요소의 높이
+    // 즉, 새로 쌓인 메세지의 높이
+    const scrollOffset =
+      chatMainRef.current.scrollHeight - prevScrollHeightRef.current;
+
+    chatMainRef.current.scrollTop = scrollOffset;
+
+    // 리셋
+    prevScrollHeightRef.current = 0;
+  }, [messages]);
+
+  useLayoutEffect(() => {
+    // 초기화 후 스크롤 안했을 때
+    if (isInitialized && !isInitialScrolled) {
+      // 여기까지 읽었습니다 위치로 한 번만 이동
+      // '마지막으로 읽은 메시지'를 가리키는 ref가 DOM에 연결되어 있으며
+      // '최초 스크롤을 실행한 적이 없다면'
+      // => 마지막으로 읽은 메시지가 화면에 존재하고, 그 위치로 자동 스크롤을 시킨 적이 없다면
+      if (lastReadMessageRef.current) {
+        lastReadMessageRef.current.scrollIntoView({
+          behavior: "auto",
+          block: "start",
+        });
+        isInitialScrolled.current = true;
+      }
+    }
+  }, [isInitialized]); // 초기화되었을 때 한 번만 실행
 
   return (
     <div css={s.chatMain(isLeaveConfirmOpen)} ref={chatMainRef}>
-      <div ref={topObserver} css={s.obserber} />
+      <div ref={topObserver} css={s.observer} />
       {messages.map((message) => {
-        if (
-          message.messageType === "ENTER" ||
-          message.messageType === "LEAVE"
-        ) {
-          return (
-            <div key={message.messageId}>
-              <SystemMessage message={message.message} />
-            </div>
-          );
-        }
+        const isSystem = SYSTEM_MESSAGE_TYPE.includes(message.messageType);
         const isMine = principal.userId === message.userId;
+        // message의 Id가 lastReadId와 같으면 마지막으로 읽은 메시지
         const isLastRead = message.messageId === lastReadId;
-
-        if (isLastRead) {
-          return (
-            <div
-              key={message.messageId}
-              ref={lastReadMessageRef}
-              css={s.lastReadMessageBox(isLeaveConfirmOpen)}
-            >
-              {isMine ? (
-                <MyMessage message={message} />
-              ) : (
-                <YourMessage message={message} />
-              )}
-              {nextCursorId !== null && (
-                <SystemMessage message={"여기까지 읽었습니다."} />
-              )}
-            </div>
-          );
+        // 실제 컴포넌트를 변수에 담기
+        let MessageType;
+        if (isSystem) {
+          MessageType = SystemMessage;
+        } else if (isMine) {
+          MessageType = MyMessage;
+        } else {
+          MessageType = YourMessage;
         }
 
-        return isMine ? (
-          <MyMessage key={message.messageId} message={message} />
-        ) : (
-          <YourMessage key={message.messageId} message={message} />
+        return (
+          // 리액트 입장에서는 각 배열이 [<>,<>,<>,...]
+          // 각 아이템인 <> 자체에 키가 없기 때문에.. <>에 key를 붙여달라는 오류가 뜸
+          // Fragment를 직접 쓰면 자식 요소에는 키를 주지 않아도 된다.
+          <Fragment key={message.messageId}>
+            {/* ref를 컴포넌트에 넘겨주기만 하면 안됨
+              리액트는 ref를 DOM 요소에 직접 연결하려고 하는데 MessageType(My,Your)은 컴포넌트(함수)이지 DOM 요소가 아님
+              그래서 각각의 컴포넌트에 forwardRef를 줘야한다.
+            */}
+            <MessageType
+              message={isSystem ? message.message : message}
+              ref={isLastRead ? lastReadMessageRef : null}
+            />
+            {isLastRead && nextCursorId !== null && (
+              <SystemMessage message={"여기까지 읽었습니다."} />
+            )}
+          </Fragment>
         );
       })}
-      <div ref={bottomObserver} css={s.obserber} />
+      <div ref={bottomObserver} css={s.observer} />
     </div>
   );
 }

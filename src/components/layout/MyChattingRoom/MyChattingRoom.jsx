@@ -17,31 +17,31 @@ function MyChattingRoom({
   setIsChatOpen,
 }) {
   const { principal } = usePrincipalState();
-  const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
-  const [openModal, setOpenModal] = useState({
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const [alertModal, setAlertModal] = useState({
     isOpen: false,
     message: "",
     status: null,
   });
 
   const leaveBtnOnClickHandler = () => {
-    setOpenModal({ isOpen: false, message: null, status: null });
+    setAlertModal({ isOpen: false, message: null, status: null });
     // 탈퇴 API
     leaveCrewReq({ crewId: crewInfo.crewId, userId: principal.userId })
       .then((resp) => {
         if (resp.data.status === "success") {
-          setOpenModal(true, "크루를 탈퇴했습니다.", "success");
+          setAlertModal(true, "크루를 탈퇴했습니다.", "success");
 
           // 사용자 정보 무효화
           queryClient.invalidateQueries("principal");
         } else {
           // 탈퇴 실패 모달 띄우기
-          setOpenModal(true, resp.data.message, "fail");
+          setAlertModal(true, resp.data.message, "fail");
         }
       })
       .catch((error) => {
         console.error("서버 오류 발생");
-        setOpenModal(
+        setAlertModal(
           true,
           "서버에 오류가 발생했습니다. 다시 시도해주세요.",
           "fail"
@@ -54,29 +54,27 @@ function MyChattingRoom({
     <div css={s.chatContainer(isChatOpen)}>
       <ChatHeader
         crewInfo={crewInfo}
-        isLeaveConfirmOpen={isLeaveConfirmOpen}
-        setIsLeaveConfirmOpen={() => setIsLeaveConfirmOpen(true)}
+        isLeaveModalOpen={isLeaveModalOpen}
+        setIsLeaveModalOpen={() => isLeaveModalOpen(true)}
       />
       <ChatMain
-        isLeaveConfirmOpen={isLeaveConfirmOpen}
+        isLeaveModalOpen={isLeaveModalOpen}
         setIsChatOpen={() => {
           setIsChatOpen(false);
         }}
+        setAlertModal={setAlertModal}
       />
 
-      <ChatFooter
-        crewId={crewInfo.crew}
-        isLeaveConfirmOpen={isLeaveConfirmOpen}
-      />
+      <ChatFooter crewId={crewInfo.crew} isLeaveModalOpen={isLeaveModalOpen} />
 
       {/* 탈퇴 버튼 */}
-      {isLeaveConfirmOpen && (
+      {isLeaveModalOpen && (
         <div css={s.leaveConfirm}>
           <p>크루를 탈퇴하시겠습니까?</p>
           <div css={s.btnContainer}>
             <button
               css={[s.confirmBtn, s.cancelBtn]}
-              onClick={() => setIsLeaveConfirmOpen(false)}
+              onClick={() => setIsLeaveModalOpen(false)}
             >
               취소
             </button>
@@ -90,18 +88,18 @@ function MyChattingRoom({
         </div>
       )}
 
-      {openModal.isOpen && (
+      {alertModal.isOpen && (
         <AlertModal
           onClose={() => {
-            setOpenModal({});
+            setAlertModal({});
           }}
         >
-          {openModal.status === "success" ? (
+          {alertModal.status === "success" ? (
             <BiSolidMessageSquareCheck size={60} style={{ color: "#125bc8" }} />
           ) : (
             <BiSolidMessageSquareError size={60} style={{ color: "#ff4d4d" }} />
           )}
-          <strong>{openModal.message}</strong>
+          <strong>{alertModal.message}</strong>
         </AlertModal>
       )}
     </div>
