@@ -10,6 +10,7 @@ export const container = css`
   & > img {
     width: 100%;
     height: 100%;
+    opacity: 0.8;
     object-fit: cover;
   }
 `;
@@ -18,7 +19,6 @@ export const comment = css`
   position: absolute;
   bottom: 12px;
   left: 12px;
-
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 700;
 `;

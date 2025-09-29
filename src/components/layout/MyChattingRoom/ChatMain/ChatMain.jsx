@@ -57,8 +57,6 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
           getMessageListReq(principal.crewId, lastReadId, "prev", SIZE),
           getMessageListReq(principal.crewId, lastReadId, "next", SIZE),
         ]);
-        console.log(prevResp);
-        console.log(nextResp);
 
         // 3. 받아온 메시지들 합쳐서 messages 업데이트
         const prevMessages = prevResp.data.data.messages;
@@ -86,11 +84,11 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
     initializeChat();
 
     // 클린업 함수, 채팅방 언마운트시 마지막으로 읽은 메시지ID 업데이트
-    // return () => {
-    // updateLastReadMessageIdReq(principal.crewId).then((response) =>
-    //   console.log(response)
-    // );
-    // };
+    return () => {
+      updateLastReadMessageIdReq(principal.crewId).then((response) =>
+        console.log(response)
+      );
+    };
   }, []);
 
   useEffect(() => {
@@ -123,7 +121,6 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
                 setIsChatOpen();
                 setAlertModal(true, response.data.message, "fail");
               }
-              console.log("이전메시지가져옴");
               setPrevCursorId(response.data.data.newCursorId);
               const reversedMessages = response.data.data.messages.reverse();
               setMessages((prev) => [...reversedMessages, ...prev]);
@@ -136,13 +133,13 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
       },
       {
         root: chatMainRef.current,
-        threshold: 0.1,
-        rootMargin: "14px 0px 0px 0px",
+        threshold: 0.0,
+        rootMargin: "0px 0px 14px 0px",
       }
     );
     observer.observe(topObserver.current);
     return () => observer.disconnect();
-  }, [prevCursorId, isInitialized]);
+  }, [prevCursorId, isInitialized, principal]);
 
   useEffect(() => {
     if (!isInitialized) {
@@ -151,11 +148,11 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && prevCursorId !== null) {
+        if (entries[0].isIntersecting && nextCursorId !== null) {
           const direction = "next";
           getMessageListReq(
             principal.crewId,
-            prevCursorId,
+            nextCursorId,
             direction,
             SIZE
           ).then((response) => {
@@ -173,48 +170,47 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
       },
       {
         root: chatMainRef.current,
-        threshold: 0.1,
-        rootMargin: "0px 0px 14px 0px",
+        threshold: 0.0,
+        rootMargin: "14px 0px 0px 0px",
       }
     );
     observer.observe(bottomObserver.current);
     return () => observer.disconnect();
-  }, [nextCursorId, isInitialized]);
+  }, [nextCursorId, isInitialized, principal]);
 
   // 렌더링 직전 실행
   useLayoutEffect(() => {
-    // 이전 높이 기록이 없거나, 스크롤 컨테이너가 없으면
-    if (prevScrollHeightRef.current === 0 || !chatMainRef.current) {
+    // chatMainRef가 false거나 messages가 없으면 실행xx
+    if (!chatMainRef.current || !messages) {
+      return;
+    }
+    // 여기까지 읽었습니다 위치로 한 번만 이동
+    // '마지막으로 읽은 메시지'를 가리키는 ref가 DOM에 연결되어 있으며
+    // '최초 스크롤을 실행한 적이 없다면'
+    // => 마지막으로 읽은 메시지가 화면에 존재하고, 그 위치로 자동 스크롤을 시킨 적이 없다면
+    if (lastReadMessageRef.current && !isInitialScrolled.current) {
+      // scrollIntoView(): 해당 요소를 뷰안으로 스크롤
+      // 즉, '마지막으로 읽은 메세지'를 가리키는 ref를 화면의 최상단(start)에
+      lastReadMessageRef.current.scrollIntoView({
+        behavior: "auto",
+        block: "start",
+      });
+      isInitialScrolled.current = true;
       return;
     }
 
-    // 현재 렌더링된 chatMain이라는 DOM 요소의 높이 - 이전 DOM 요소의 높이
-    // 즉, 새로 쌓인 메세지의 높이
-    const scrollOffset =
-      chatMainRef.current.scrollHeight - prevScrollHeightRef.current;
-
-    chatMainRef.current.scrollTop = scrollOffset;
-
-    // 리셋
-    prevScrollHeightRef.current = 0;
-  }, [messages]);
-
-  useLayoutEffect(() => {
-    // 초기화 후 스크롤 안했을 때
-    if (isInitialized && !isInitialScrolled) {
-      // 여기까지 읽었습니다 위치로 한 번만 이동
-      // '마지막으로 읽은 메시지'를 가리키는 ref가 DOM에 연결되어 있으며
-      // '최초 스크롤을 실행한 적이 없다면'
-      // => 마지막으로 읽은 메시지가 화면에 존재하고, 그 위치로 자동 스크롤을 시킨 적이 없다면
-      if (lastReadMessageRef.current) {
-        lastReadMessageRef.current.scrollIntoView({
-          behavior: "auto",
-          block: "start",
-        });
-        isInitialScrolled.current = true;
-      }
+    // 스크롤 위치 보정 로직, 최상단이 0
+    // 이전 스크롤 위치가 있다면.
+    if (prevScrollHeightRef.current > 0) {
+      // 현재 렌더링된 chatMain이라는 DOM 요소의 높이 - 이전 DOM 요소의 높이
+      // 즉, 새로 쌓인 메세지의 높이
+      const scrollOffset =
+        chatMainRef.current.scrollHeight - prevScrollHeightRef.current;
+      // chatMainRef의 스크롤을 높이 차만큼 더해주기 (최상단이 0이니까)
+      chatMainRef.current.scrollTop = scrollOffset;
+      prevScrollHeightRef.current = 0;
     }
-  }, [isInitialized]); // 초기화되었을 때 한 번만 실행
+  }, [messages, lastReadMessageRef]);
 
   return (
     <div css={s.chatMain(isLeaveConfirmOpen)} ref={chatMainRef}>

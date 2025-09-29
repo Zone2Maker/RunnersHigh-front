@@ -41,7 +41,7 @@ export const textarea = css`
   }
 
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 3px;
     height: auto;
   }
 
