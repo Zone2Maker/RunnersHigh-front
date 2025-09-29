@@ -6,39 +6,37 @@ export const messageContainer = css`
   justify-content: left;
   gap: 5px;
 
-  > img {
-    width: 22px;
-    height: 22px;
+  & > img {
+    width: 30px;
+    height: 30px;
     object-fit: cover;
     border-radius: 50%;
   }
 
-  > div {
+  & > div {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 3px;
 
     > span {
-      font-size: 14px;
+      font-size: 13px;
     }
   }
 `;
 
 export const messageBox = css`
-  background-color: #d3d3d3;
-  border-radius: 0 8px 8px 8px;
+  width: fit-content;
+  background-color: #f0f0f0;
+  border-radius: 0 10px 10px 10px;
   padding: 5px 10px;
   max-width: 250px;
   box-sizing: border-box;
-  display: flex;
-
-  > p {
-    margin: 0;
-    word-break: keep-all;
-    word-wrap: break-word;
-    font-size: 15px;
-    line-height: 20px;
-  }
+  display: block;
+  word-break: break-all;
+  word-wrap: break-word;
+  font-size: 15px;
+  line-height: 19px;
+  font-weight: 500;
 `;
 
 export const timeBox = css`
@@ -49,5 +47,6 @@ export const timeBox = css`
   > p {
     margin: 0;
     font-size: 10px;
+    color: #555;
   }
 `;

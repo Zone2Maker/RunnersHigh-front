@@ -1,14 +1,16 @@
 /** @jsxImportSource @emotion/react */
+import { forwardRef } from "react";
 import * as s from "./styles";
 
-function YourMessage({ message }) {
+function YourMessage({ message }, ref) {
   return (
-    <div css={s.messageContainer}>
+    <div css={s.messageContainer} ref={ref}>
       <img src={message.profileImgUrl} alt="유저 프로필사진" />
       <div>
         <span>{message.nickname}</span>
         <div css={s.messageBox}>
-          <p>{message.message}</p>
+          {message.messageId}
+          {message.message}
         </div>
       </div>
       <div css={s.timeBox}>
@@ -23,4 +25,4 @@ function YourMessage({ message }) {
     </div>
   );
 }
-export default YourMessage;
+export default forwardRef(YourMessage);
