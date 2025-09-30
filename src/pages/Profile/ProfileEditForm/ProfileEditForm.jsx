@@ -223,7 +223,7 @@ function ProfileEditForm({ principal, onCancel }) {
               !isChanged // 닉네임, 이미지 둘 다 변경사항이 없으면
             }
           >
-            {isProfileImgUploading ? `${imgUploadingProgress}%` : "저장"}
+            {isProfileImgUploading ? "저장중.." : "저장"}
           </button>
         </div>
       </div>

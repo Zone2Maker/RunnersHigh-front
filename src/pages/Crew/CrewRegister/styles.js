@@ -6,7 +6,7 @@ export const container = css`
   padding: 15px 20px 80px 20px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
   box-sizing: border-box;
   background-color: #f8f9fa;
   overflow-y: hidden;
@@ -146,21 +146,22 @@ export const region = css`
 `;
 
 export const dropdownMenu = (isDropDownOpen) => css`
-  width: 100%;
+  width: 101%;
   height: 200px;
   display: ${isDropDownOpen ? "block" : "none"};
   margin: 0;
-  padding: 9px 15px;
+  padding: 0;
   background-color: #fefefe;
   border-radius: 15px;
   position: absolute;
-  left: 0;
+  left: -2px;
   bottom: 0;
   transition: all 0.4s ease;
   box-sizing: border-box;
   list-style: none;
-  z-index: 20;
+  z-index: 1;
   overflow-y: auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 
   // 스크롤바 숨기기
@@ -169,13 +170,22 @@ export const dropdownMenu = (isDropDownOpen) => css`
   }
 
   > li {
-    color: inherit;
+    width: 100%;
+    font-weight: 500;
     text-align: center;
-    border-bottom: 1.5px solid #d0d0d0;
-    padding: 10px 0px;
+    border-bottom: 1.5px solid #d6d6d6;
+    padding: 8px 15px;
+    margin: 0;
+    transition: all 0.2s ease;
 
     &:last-of-type {
       border-bottom: none;
+    }
+
+    &:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+      color: #01255fff;
     }
   }
 `;
