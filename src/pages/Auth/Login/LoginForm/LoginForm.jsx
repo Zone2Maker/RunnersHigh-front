@@ -28,6 +28,8 @@ function LoginForm({ openModal }) {
       if (response.data.status === "success") {
         localStorage.setItem("accessToken", response.data.data);
         window.location.replace("/");
+      } else if (response.data.status === "failed") {
+        openModal(response.data.message, "fail");
       }
     } catch (error) {
       openModal(
