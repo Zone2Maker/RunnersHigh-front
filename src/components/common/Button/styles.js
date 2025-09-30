@@ -5,17 +5,17 @@ export const button = css`
   padding: 12px;
   border-radius: 10px;
   border: none;
-  background-color: #5a5a5a;
   color: #efefef;
   font-size: 18px;
+  letter-spacing: 0.7px;
+  font-weight: 600;
   box-sizing: border-box;
 
-  &:hover {
-    background-color: #333;
-  }
+  cursor: pointer;
+  background-color: #06409eff;
+  transition: all 0.2s ease;
 
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+  &:hover {
+    background-color: #0c4dadff;
   }
 `;

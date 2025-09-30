@@ -201,12 +201,12 @@ function Diary() {
             {alertType === "success" ? (
               <BiSolidMessageSquareCheck
                 size={60}
-                style={{ color: "#125bc8" }}
+                style={{ color: "#00296b" }}
               />
             ) : (
               <BiSolidMessageSquareError
                 size={60}
-                style={{ color: "#ff4d4d" }}
+                style={{ color: "#f57c00" }}
               />
             )}
 

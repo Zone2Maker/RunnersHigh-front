@@ -29,6 +29,7 @@ export const joinButton = css`
   margin-top: 10px;
   margin-right: 10px;
   font-size: 15px;
+  font-weight: 500;
 
   a {
     color: #444;
@@ -38,7 +39,7 @@ export const joinButton = css`
 
     &:hover {
       color: #f57c00;
-      font-weight: 500;
+      font-weight: 600;
     }
   }
 `;

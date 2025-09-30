@@ -11,7 +11,7 @@ import { BiSolidMessageSquareError } from "react-icons/bi";
 
 function ProfileEditForm({ principal, onCancel }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isChanged, setIsChanged] = useState(false); // 닉네임, 프로필 변경 사항이 상태 관리
+  const [isChanged, setIsChanged] = useState(false); // 닉네임, 프로필 변경 사항 상태 관리
 
   const [nickname, setNickname] = useState(principal?.username);
   const [profileImageFile, setProfileImageFile] = useState(null); // 새로 선택한 파일 객체
@@ -231,7 +231,7 @@ function ProfileEditForm({ principal, onCancel }) {
         <AlertModal onClose={() => setIsModalOpen(false)}>
           <BiSolidMessageSquareError
             size={"60px"}
-            style={{ fill: "#ff4d4d" }}
+            style={{ fill: "#f57c00" }}
           />
           <strong>5MB이내의 사진만 업로드 가능합니다.</strong>
         </AlertModal>
