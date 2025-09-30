@@ -54,7 +54,7 @@ export const publishStomp = (crewId, data) => {
 
 //서버 연결 비활성화
 export const disconnectStomp = () => {
-  //구독취소
+  // 구독 취소
   if (subscription) {
     subscription.unsubscribe();
     subscription = null;
