@@ -32,8 +32,6 @@ function ChatFooter({ crewId, isLeaveModalOpen }) {
       message: sendMessageValue,
       messageType: "CHAT",
     };
-    console.log(newMessage);
-    console.log(typeof principal.crewId);
 
     // 메시지 전송 API
     publishStomp(principal.crewId, newMessage);
@@ -49,6 +47,14 @@ function ChatFooter({ crewId, isLeaveModalOpen }) {
         onKeyDown={(e) => {
           // 엔터 누르면 줄바꿈 \n도 같이 감 ㅜ
           if (e.key === "Enter") {
+            console.log(sendMessageValue);
+            if (
+              sendMessageValue.length === 0 ||
+              sendMessageValue.trim() === ""
+            ) {
+              setSendMessageValue("");
+              return;
+            }
             setSendMessageValue("");
             sendBtnOnClickHandler();
           }

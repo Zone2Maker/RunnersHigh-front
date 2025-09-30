@@ -29,7 +29,7 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
   const prevScrollHeightRef = useRef(0);
   const isInitialScrolled = useRef(false);
   const isLoadingRef = useRef(false); // ref는 값이 바뀌어도 재렌더링x
-  const isSocketRef = useRef(false);
+  const scrollToBottomRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const topObserver = useRef(null);
@@ -45,9 +45,17 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
 
     // 메시지 받으면 실행할 것
     connectStomp(principal?.crewId, (payload) => {
-      setPendingMessageList((prev) => [...prev, payload.data]);
+      const isAtBottom = isUserAtBottom();
+
+      // 내가 보낸 메시지
+      const isMyMessage = payload.data.userId === principal.userId;
+
+      // 내가 보낸 메시지이거나, 내가 이미 맨 아래에 있을 때 자동으로 스크롤
+      if (isMyMessage || isAtBottom) {
+        scrollToBottomRef.current = true;
+      }
+
       updateAndSortMessages([payload.data]);
-      isSocketRef.current = true;
     });
 
     return () => {
@@ -56,11 +64,22 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
   }, [principal]);
 
   useEffect(() => {
-    if (isSocketRef.current === true) {
+    if (scrollToBottomRef.current === true) {
       chatMainRef.current.scrollTop = chatMainRef.current.scrollHeight;
-      isSocketRef.current = false;
+      scrollToBottomRef.current = false;
     }
   }, [messages]);
+
+  const isUserAtBottom = () => {
+    const chatContainer = chatMainRef.current;
+    if (!chatContainer) return false;
+
+    // 총 콘텐츠 높이 - 스크롤된 거리 <= 보이는 영역 높이 + 5
+    return (
+      chatContainer.scrollHeight - chatContainer.scrollTop <=
+      chatContainer.clientHeight + 5
+    );
+  };
 
   // 마운트 시 메시지 목록 최초 요청
   useEffect(() => {
@@ -79,7 +98,6 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
         const lastReadResp = await getLastReadMessageIdReq(principal.crewId);
         const lastReadId = lastReadResp.data.data;
         setLastReadId(lastReadId); // 상태 업데이트
-        console.log("마지막으로 읽은 메시지ID: ", lastReadId);
 
         // 2. lastReadId를 기준으로 이전/이후 메시지 동시에 가져오기(Promise.all 병렬 처리 가능)
         const [prevResp, nextResp] = await Promise.all([
@@ -152,8 +170,7 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
               }
               setPrevCursorId(response.data.data.newCursorId);
               const newMessages = response.data.data.messages;
-              const sortedMessages = updateAndSortMessages(newMessages);
-              setMessages(sortedMessages);
+              updateAndSortMessages(newMessages);
             })
             .finally(() => {
               setIsLoading(false);
@@ -193,10 +210,7 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
 
             setNextCursorId(response.data.data.newCursorId);
             const newMessages = response.data.data.messages;
-            const sortedMessages = updateAndSortMessages(newMessages);
-            setMessages(sortedMessages);
-
-            setMessages(updateAndSortMessages(newMessages));
+            updateAndSortMessages(newMessages);
           });
         }
       },
@@ -247,7 +261,6 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
   // 새 메시지 목록 합치기 + 정렬 함수
   const updateAndSortMessages = (newMessages) => {
     setMessages((prev) => {
-      console.log(prev);
       const combined = [...prev, ...newMessages];
 
       const uniqueMessages = Array.from(
@@ -286,7 +299,7 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
             {/* ref를 컴포넌트에 넘겨주기만 하면 안됨
               리액트는 ref를 DOM 요소에 직접 연결하려고 하는데 MessageType(My,Your)은 컴포넌트(함수)이지 DOM 요소가 아님
               그래서 각각의 컴포넌트에 forwardRef를 줘야한다.
-            */}
+              */}
             <MessageType
               message={isSystem ? message.message : message}
               ref={isLastRead ? lastReadMessageRef : null}
