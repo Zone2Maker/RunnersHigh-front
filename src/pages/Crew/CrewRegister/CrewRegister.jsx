@@ -201,7 +201,7 @@ function CrewRegister() {
           onChange={(e) =>
             setCrewValue({ ...crewValue, crewDetail: e.target.value })
           }
-          placeholder="우리 크루를 소개할 문구를 입력해주세요. (100자 이내)"
+          placeholder="크루를 소개할 문구를 입력해주세요. (100자 이내)"
           maxLength="100"
           spellCheck="false"
           rows={5}

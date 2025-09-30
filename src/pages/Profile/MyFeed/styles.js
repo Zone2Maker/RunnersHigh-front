@@ -5,13 +5,12 @@ export const container = css`
   flex-grow: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 export const feed = css`
   aspect-ratio: 1;
-  /* background-color: #fafafaff; */
-  background-color: whitesmoke;
+  background-color: #f7f9fa;
 
   & > img {
     display: block;

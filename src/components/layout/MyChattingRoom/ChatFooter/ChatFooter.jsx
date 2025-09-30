@@ -44,10 +44,9 @@ function ChatFooter({ crewId, isLeaveModalOpen }) {
         placeholder="메세지를 입력해주세요."
         value={sendMessageValue}
         onChange={(e) => setSendMessageValue(e.target.value)}
-        onKeyDown={(e) => {
+        onKeyUp={(e) => {
           // 엔터 누르면 줄바꿈 \n도 같이 감 ㅜ
           if (e.key === "Enter") {
-            console.log(sendMessageValue);
             if (
               sendMessageValue.length === 0 ||
               sendMessageValue.trim() === ""

@@ -3,6 +3,7 @@ import * as s from "./styles.js";
 import PromptModal from "../PromptModal/PromptModal.jsx";
 import { FaHeart } from "react-icons/fa";
 import { SlPicture } from "react-icons/sl";
+import { usePrincipalState } from "../../../stores/usePrincipalState.js";
 
 function FeedDetailModal({
   isOpen,

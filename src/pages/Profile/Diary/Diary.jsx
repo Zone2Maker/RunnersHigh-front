@@ -39,17 +39,28 @@ function Diary() {
   const { principal } = usePrincipalState();
   const lastDayOfCurMonth = moment().endOf("month").toDate();
 
+  console.log(new Date(principal.createDt.split("T")[0]));
+
   //알림 모달 상태
-  const [alertModalOpen, setAlertModalOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertType, setAlertType] = useState(null);
+  console.log(principal);
+  const [modal, setModal] = useState({
+    isOpen: false,
+    type: "",
+    message: "",
+    status: "",
+  });
+
+  const openModal = (type, message, status) => {
+    setModal({ isOpen: true, type, message, status });
+  };
+
+  const closeModal = () => {
+    setModal({ isOpen: false, type: "", message: "", status: "" });
+  };
 
   //달력에 . 표시할 데이터 가져오기 - 현재 년월을 기준으로
   //---------------------------월 이동 시 실행--------------------------
   useEffect(() => {
-    setAlertMessage("");
-    setAlertType(null);
-
     const fetchMarkedDates = async () => {
       if (!principal) return;
       setIsLoading(true);
@@ -64,10 +75,12 @@ function Diary() {
         const formattedDates = dates.map((d) => moment(d).format("YYYY-MM-DD"));
         setMarkedDates(formattedDates);
       } catch (error) {
-        setAlertMessage("기록 조회에 실패했습니다. 다시 시도해주세요.");
-        setAlertType("fail");
+        openModal(
+          "alert",
+          "기록 조회에 실패했습니다. 다시 시도해주세요.",
+          "fail"
+        );
         setMarkedDates([]);
-        setIsModalOpen(true);
       } finally {
         setIsLoading(false);
       }
@@ -79,43 +92,37 @@ function Diary() {
   //------------------날짜 클릭 시 실행 -> 상세 조회 or 모달-----------------
   const dateClickHandler = async (clickedDate) => {
     setDiaryDetail(null);
-    setAlertMessage("");
-    setAlertType(null);
 
     const formattedDate = moment(clickedDate).format("YYYY-MM-DD");
+
     setSelectedDate(formattedDate);
 
     const hasDiary = markedDates.includes(formattedDate);
     if (hasDiary) {
-      setModalMode("view");
-
       try {
         const resp = await getDiaryDetailByDateReq(formattedDate);
 
         if (resp.data.status === "success") {
           setDiaryDetail(resp.data.data);
-          setIsModalOpen(true);
+          openModal("view", "", "");
         }
       } catch (error) {
-        setAlertMessage("일지 조회에 실패했습니다. 다시 시도해주세요.");
-        setAlertType("fail");
-        setIsModalOpen(true);
+        openModal(
+          "alert",
+          "일지 조회에 실패했습니다. 다시 시도해주세요.",
+          "fail"
+        );
       }
     } else {
-      setModalMode("write");
+      openModal("write", "", "");
       setNewDiaryContent("");
-      setIsModalOpen(true);
     }
   };
 
   //---------------------2. 작성 모드 모달 - 저장 버튼 클릭--------------------
   const saveDiaryHandler = async () => {
-    setAlertMessage("");
-    setAlertType(null);
-
     if (!newDiaryContent.trim()) {
-      setAlertMessage("일지를 작성해주세요.");
-      setAlertModalOpen(true);
+      openModal("alert", "일지를 작성해주세요.", "fail");
       return;
     }
 
@@ -129,21 +136,24 @@ function Diary() {
     try {
       const resp = await addDiaryReq(diaryData);
       if (resp.data.status === "success") {
-        setAlertMessage("일지가 성공적으로 등록되었습니다.");
-        setAlertType("success");
+        openModal("alert", "일지를 등록했습니다.", "success");
 
         setMarkedDates((prev) => [...prev, selectedDate]);
         setDiaryDetail({ diaryContent: newDiaryContent });
-        setIsModalOpen(false);
       } else {
-        setAlertMessage("일지 저장에 실패했습니다.");
-        setAlertType("success");
+        openModal(
+          "alert",
+          "서버에 오류가 발생했습니다. 다시 시도해주세요.",
+          "fail"
+        );
         return;
       }
     } catch (error) {
-      console.error("서버 오류 발생");
-    } finally {
-      setAlertModalOpen(true);
+      openModal(
+        "alert",
+        "서버에 오류가 발생했습니다. 다시 시도해주세요.",
+        "fail"
+      );
     }
   };
 
@@ -152,7 +162,6 @@ function Diary() {
     if (view === "month") {
       const compareDates = moment(date).format("YYYY-MM-DD");
       const hasDiary = markedDates.includes(compareDates);
-      // DB에서 가져온 diaryDates 배열에 해당 날짜가 있는지 확인
       if (hasDiary) {
         return <div className="dot"></div>;
       }
@@ -167,7 +176,8 @@ function Diary() {
           locale="ko-KR" // 요일/월 한국어로
           onChange={dateClickHandler}
           value={today}
-          maxDate={lastDayOfCurMonth}
+          minDate={new Date(principal.createDt.split("T")[0])}
+          maxDate={today}
           view="month" // 월별, 연도별 보기 year, month
           calendarType="hebrew" // 주의 시작 월요일
           formatDay={(locale, date) => moment(date).format("DD")} // 일 떼기
@@ -178,40 +188,45 @@ function Diary() {
           }}
         />
 
-        {isModalOpen && (
-          <PromptModal onClose={() => setIsModalOpen(false)}>
-            {modalMode === "view" ? (
-              <DiaryDetailModal
-                selectedDate={selectedDate}
-                diaryDetail={diaryDetail}
-              />
-            ) : (
-              <DiaryWriteModal
-                selectedDate={selectedDate}
-                newDiaryContent={newDiaryContent}
-                setNewDiaryContent={setNewDiaryContent}
-                onClose={() => setIsModalOpen(false)}
-                saveDiaryHandler={saveDiaryHandler}
-              />
-            )}
-          </PromptModal>
-        )}
-        {alertModalOpen && (
-          <AlertModal onClose={() => setAlertModalOpen(false)}>
-            {alertType === "success" ? (
-              <BiSolidMessageSquareCheck
-                size={60}
-                style={{ color: "#00296b" }}
-              />
-            ) : (
-              <BiSolidMessageSquareError
-                size={60}
-                style={{ color: "#f57c00" }}
-              />
-            )}
-
-            {alertMessage}
-          </AlertModal>
+        {modal.isOpen ? (
+          modal.type === "alert" ? (
+            <AlertModal onClose={() => closeModal()}>
+              {modal.status === "success" ? (
+                <BiSolidMessageSquareCheck
+                  size={"60px"}
+                  style={{ color: "#00296b" }}
+                />
+              ) : (
+                <BiSolidMessageSquareError
+                  size={"60px"}
+                  style={{ color: "#f57c00" }}
+                />
+              )}
+              <strong>{modal.message}</strong>
+            </AlertModal>
+          ) : (
+            <PromptModal
+              onClose={() => {
+                modal.status === "success" ? location.reload() : closeModal();
+              }}
+            >
+              {modal.type === "view" ? (
+                <DiaryDetailModal
+                  selectedDate={selectedDate}
+                  diaryDetail={diaryDetail}
+                />
+              ) : (
+                <DiaryWriteModal
+                  selectedDate={selectedDate}
+                  newDiaryContent={newDiaryContent}
+                  setNewDiaryContent={setNewDiaryContent}
+                  saveDiaryHandler={saveDiaryHandler}
+                />
+              )}
+            </PromptModal>
+          )
+        ) : (
+          <></>
         )}
       </div>
     </div>

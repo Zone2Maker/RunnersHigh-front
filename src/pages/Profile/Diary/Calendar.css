@@ -96,6 +96,7 @@
   opacity: 0.5;
   cursor: default;
 }
+
 .react-calendar__tile {
   height: 45px;
   position: relative;
@@ -113,6 +114,7 @@
 
   box-sizing: border-box;
 }
+
 .react-calendar__tile:not(.react-calendar__tile--other-month):not(
     .react-calendar__tile--active
   ):hover {
@@ -125,8 +127,19 @@
   color: #e92b2b;
 }
 
+.react-calendar__tile:nth-child(7n + 1):disabled {
+  color: #e92b2b;
+  opacity: 0.6;
+  cursor: default;
+}
+
 .react-calendar__tile:nth-child(7n) {
   color: #2236f3;
+}
+.react-calendar__tile:nth-child(7n):disabled {
+  color: #2236f3;
+  opacity: 0.6;
+  cursor: default;
 }
 
 /* Dot 스타일 추가 - 빨간 dot*/
@@ -146,7 +159,6 @@
 .react-calendar__tile--now {
   font-weight: 600;
   background-color: #eff6ff;
-  color: #fefefe;
 }
 
 .react-calendar__tile--active:enabled:hover,

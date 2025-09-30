@@ -9,7 +9,7 @@ export const container = css`
   align-items: center;
   gap: 8px;
   width: 100%;
-  background-color: #f9f9f9;
+  background-color: #f7f9fa;
 `;
 
 export const date = css`

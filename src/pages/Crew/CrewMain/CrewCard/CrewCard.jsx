@@ -48,8 +48,15 @@ function CrewCard({ crew }) {
   const joinOnClickHandler = () => {
     if (!principal) {
       setErrorMessage("크루에 가입하고 싶다면 로그인을 진행해주세요.");
+      setIsAlertModalOpen(true);
+    }
+
+    if (principal.crewId !== null) {
+      setErrorMessage("이미 함께하는 크루가 있어요!");
+      setIsAlertModalOpen(true);
       return;
     }
+
     joinCrewReq({
       crewId: crewDetail.crewId,
       userId: principal?.userId,

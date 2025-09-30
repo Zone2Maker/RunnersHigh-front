@@ -9,11 +9,16 @@ import { SlPicture } from "react-icons/sl";
 import { CiLocationOn } from "react-icons/ci";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
 import { FaCircleArrowUp } from "react-icons/fa6";
-import { BiSolidMessageSquareError } from "react-icons/bi";
+import {
+  BiSolidMessageSquareCheck,
+  BiSolidMessageSquareError,
+} from "react-icons/bi";
 import { FaTimes } from "react-icons/fa";
 import { getSortedPlacesByDistance } from "../../../utils/locationUtils";
+import { useNavigate } from "react-router-dom";
 
 function FeedRegister() {
+  const navigate = useNavigate();
   const [keywordPs, setKeywordPs] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [places, setPlaces] = useState([]);
@@ -25,14 +30,14 @@ function FeedRegister() {
   });
   const fileInputRef = useRef();
 
-  const [alertModal, setAlertModal] = useState({
+  const [modal, setModal] = useState({
     isOpen: false,
     message: "",
   });
 
   const { principal } = usePrincipalState();
   const { location: currentLocation } = useLocationState();
-  const { uploadFile } = useFirebaseUpload();
+  const { uploadFile, isUploading } = useFirebaseUpload();
 
   //카카오맵 불러오기
   useEffect(() => {
@@ -45,8 +50,12 @@ function FeedRegister() {
     });
   }, []);
 
-  const openModal = (message) => {
-    setAlertModal({ isOpen: true, message });
+  const openModal = (message, status) => {
+    setModal({ isOpen: true, message, status });
+  };
+
+  const closeModal = () => {
+    setModal({ isOpen: false, message: "", status: "" });
   };
 
   //장소 검색 완료 시 호출되는 콜백 함수
@@ -60,7 +69,7 @@ function FeedRegister() {
       const sortedData = getSortedPlacesByDistance(currentLoc, data);
       setPlaces(sortedData);
     } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-      openModal("검색 결과가 없습니다.");
+      openModal("검색 결과가 없습니다.", "fail");
       return;
     }
   };
@@ -70,12 +79,12 @@ function FeedRegister() {
     const keyword = searchKeyword.trim();
 
     if (!keyword) {
-      openModal("검색어를 입력해주세요.");
+      openModal("검색어를 입력해주세요.", "fail");
       return;
     }
 
     if (!keywordPs) {
-      openModal("오류가 발생했습니다. 다시 시도해주세요.");
+      openModal("오류가 발생했습니다. 다시 시도해주세요.", "fail");
       return;
     }
 
@@ -97,7 +106,7 @@ function FeedRegister() {
     if (file.size > MAX_SIZE) {
       e.target.value = "";
       setImageState({ file: null, previewUrl: "" });
-      openModal("5MB이내의 사진만 업로드 가능합니다.");
+      openModal("5MB이내의 사진만 업로드 가능합니다.", "fail");
       return;
     }
 
@@ -107,11 +116,10 @@ function FeedRegister() {
 
   // 공유하기 버튼 클릭 시  - submit 핸들러
   const submitBtnOnClickHandler = async () => {
-    if (!principal) {
-      openModal("로그인 후 피드를 등록할 수 있습니다.");
+    if (!selectedPlace || !imageState.file) {
+      openModal("모든 항목을 작성해주세요.", "fail");
       return;
     }
-    if (isButtonDisabled) return;
 
     try {
       const firebaseUrl = await uploadFile(imageState.file, "feed-img");
@@ -126,7 +134,7 @@ function FeedRegister() {
 
       const response = await addFeedReq(data);
       if (response.data.status === "success") {
-        openModal("피드가 등록되었습니다.");
+        openModal("피드가 등록되었습니다.", "success");
 
         // 입력 초기화
         setImageState({ file: null, previewUrl: "" });
@@ -135,17 +143,15 @@ function FeedRegister() {
       } else {
         openModal(
           response.data.message ||
-            "피드 등록에 실패했습니다. 다시 시도해주세요."
+            "피드 등록에 실패했습니다. 다시 시도해주세요.",
+          "fail"
         );
       }
     } catch (error) {
       console.error(error);
-      openModal("피드 등록 중 시스템 오류가 발생했습니다.");
+      openModal("피드 등록 중 시스템 오류가 발생했습니다.", "fail");
     }
   };
-
-  // 이미지와 장소가 모두 선택되었는지 여부
-  const isButtonDisabled = !imageState.file || !selectedPlace;
 
   return (
     <div css={s.container}>
@@ -218,7 +224,6 @@ function FeedRegister() {
               css={s.previewImage}
             />
           ) : (
-            // 에러 발생 시 보여줄 UI
             <div css={s.feedNoImageBox}>
               <SlPicture />
               <p>오늘의 러닝 인증샷을 공유해보세요!</p>
@@ -232,18 +237,30 @@ function FeedRegister() {
           />
         </div>
         <div css={s.submitButton}>
-          <button disabled={isButtonDisabled} onClick={submitBtnOnClickHandler}>
-            공유하기
+          <button onClick={submitBtnOnClickHandler}>
+            {isUploading ? "업로드 중.." : "공유하기"}
           </button>
         </div>
       </div>
       <div css={s.dummyContainer}></div>
-      {alertModal.isOpen && (
+      {modal.isOpen && (
         <AlertModal
-          onClose={() => setAlertModal({ isOpen: false, message: "" })}
+          onClose={() => {
+            modal.status === "success" ? navigate("/feed") : closeModal();
+          }}
         >
-          <BiSolidMessageSquareError size={60} style={{ fill: "#ff4d4d" }} />
-          <strong>{openModal.modalMessage}</strong>
+          {modal.status === "success" ? (
+            <BiSolidMessageSquareCheck
+              size={"60px"}
+              style={{ color: "#00296b" }}
+            />
+          ) : (
+            <BiSolidMessageSquareError
+              size={"60px"}
+              style={{ color: "#f57c00" }}
+            />
+          )}
+          <span>{modal.message}</span>
         </AlertModal>
       )}
     </div>
