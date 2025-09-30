@@ -7,7 +7,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
-import { BiSolidMessageSquareError } from "react-icons/bi";
+import {
+  BiSolidMessageSquareCheck,
+  BiSolidMessageSquareError,
+} from "react-icons/bi";
 import { FaTimes } from "react-icons/fa";
 
 function CrewMain() {
@@ -15,8 +18,12 @@ function CrewMain() {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [searchProp, setSearchProp] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [errorMessage, setErrerMessage] = useState("");
+  const [modal, setModal] = useState({
+    isOpen: false,
+    message: "",
+    status: "",
+  });
+
   const [isRegionSelected, setisRegionSelected] = useState(false);
   const [regionProp, setRegionProp] = useState("");
   const regionValue = [
@@ -39,6 +46,14 @@ function CrewMain() {
     "제주",
   ];
   const [isDropDownOpen, setIsDropDownOpen] = useState("");
+
+  const openModal = (message, status) => {
+    setModal({ isOpen: true, message, status });
+  };
+
+  const closeModal = () => {
+    setModal({ isOpen: false, message: "", status: "" });
+  };
 
   const searchBtnOnClickHandler = () => {
     setSearchProp(searchValue);
@@ -63,8 +78,7 @@ function CrewMain() {
 
   const newCrewOnClickHandler = () => {
     if (principal?.crewId) {
-      setErrerMessage("이미 함께하는 크루가 있어요!");
-      setIsModalOpen(true);
+      openModal("이미 함께하는 크루가 있어요!", "fail");
       return;
     }
     navigate("/crew/new");
@@ -110,7 +124,6 @@ function CrewMain() {
                 <IoMdArrowDropdown />
               </div>
               {/* 드롭다운 */}
-              {/* <ul css={s.regionList(isDropDownOpen)}> */}
               <ul css={s.regionList(isDropDownOpen)}>
                 {regionValue.map((region, index) => {
                   return (
@@ -130,14 +143,23 @@ function CrewMain() {
         </div>
       </div>
       <CrewContainer searchProp={searchProp} regionProp={regionProp} />
-      {errorMessage && isModalOpen && (
-        <AlertModal onClose={() => setIsModalOpen(false)}>
-          <BiSolidMessageSquareError
-            size={"60px"}
-            style={{ color: "#ff4d4d" }}
-          />
-          <strong>{errorMessage}</strong>
-          <p>기존 크루 탈퇴 후 다시 시도해주세요.</p>
+      {modal.isOpen && (
+        <AlertModal onClose={closeModal}>
+          {modal.status === "success" ? (
+            <BiSolidMessageSquareCheck
+              size={"60px"}
+              style={{ color: "#00296b" }}
+            />
+          ) : (
+            <BiSolidMessageSquareError
+              size={"60px"}
+              style={{ color: "#f57c00" }}
+            />
+          )}
+          <span>{modal.message}</span>
+          {modal.status === "fail" && (
+            <p>기존 크루 탈퇴 후 다시 시도해주세요.</p>
+          )}
         </AlertModal>
       )}
     </div>

@@ -36,8 +36,6 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
   const bottomObserver = useRef(null);
 
   // 웹소켓 연결
-  const [pendingMessageList, setPendingMessageList] = useState([]);
-
   useEffect(() => {
     if (!principal?.crewId) {
       return;

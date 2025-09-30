@@ -40,20 +40,4 @@ export const loginForm = css`
     box-shadow: 0 0 0 1px #0d47a1;
     z-index: 1;
   }
-
-  & > Button {
-    cursor: pointer;
-    background-color: #0d47a1;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background-color: #04327c;
-    }
-
-    &:disabled {
-      background-color: #91a8cdff;
-      color: #f1f1f1;
-      cursor: not-allowed;
-    }
-  }
 `;

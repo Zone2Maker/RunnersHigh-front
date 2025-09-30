@@ -5,19 +5,14 @@ import InputBox from "../../../../components/common/InputBox/InputBox";
 import AuthInput from "../../../../components/common/AuthInput/AuthInput";
 import Button from "../../../../components/common/Button/Button";
 import { useCheckDuplicate } from "../../../../hooks/useCheckDuplicate";
+import { joinReq } from "../../../../services/auth/authApis";
 import { useNavigate } from "react-router-dom";
-import { joinReq } from "../../../../services/auth/AuthApis";
-import AlertModal from "../../../../components/common/AlertModal/AlertModal";
-import { BiSolidMessageSquareError } from "react-icons/bi";
 
-function JoinForm() {
+function JoinForm({ openModal }) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState("");
-  const [isError, setIsError] = useState(false);
-  const navigate = useNavigate();
   const {
     isLoading: isChecking,
     isAvailable: isEmailAvailable,
@@ -63,19 +58,23 @@ function JoinForm() {
 
   // 회원가입 버튼 클릭 시
   const joinOnClickHandler = async () => {
-    setModalContent("");
-    setIsError(false);
+    if (
+      email.length === 0 ||
+      email.trim() === "" ||
+      password.length === 0 ||
+      password.trim() === ""
+    ) {
+      openModal("모든 항목을 입력해주세요.", "fail");
+    }
 
     // 입력값 유효성 검사
     if (errorMessage.email || errorMessage.password || !email || !password) {
-      setModalContent("이메일과 비밀번호를 올바르게 입력해주세요.");
-      setIsModalOpen(true);
+      openModal("이메일과 비밀번호를 올바르게 입력해주세요.", "fail");
       return;
     }
 
     if (isEmailAvailable !== true) {
-      setModalContent("이미 사용중인 이메일입니다.");
-      setIsModalOpen(true);
+      openModal("이미 사용중인 이메일입니다.", "fail");
       return;
     }
 
@@ -83,40 +82,28 @@ function JoinForm() {
       const joinResp = await joinReq({ email: email, password: password });
 
       if (joinResp.data.status === "success") {
-        setModalContent("회원가입 되었습니다. 로그인을 진행해주세요.");
-        setIsModalOpen(true);
+        alert("회원가입 되었습니다. 로그인을 진행해주세요.");
+        navigate("/login");
         setEmail("");
         setPassword("");
       } else if (joinResp.data.status === "failed") {
-        setIsError(true);
-        setModalContent(joinResp.data.message);
-        setIsModalOpen(true);
+        openModal(joinResp.data.message, "fail");
       }
     } catch (error) {
-      setIsError(true);
-      setModalContent(error.message || "오류가 발생했습니다.");
-      setIsModalOpen(true);
+      openModal(error.message || "오류가 발생했습니다.", "fail");
     }
   };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    if (modalContent.includes("회원가입 되었습니다.")) {
-      navigate("/login");
-    }
-  };
-
-  // 버튼 비활성화 조건
-  const isDisabled =
-    isChecking ||
-    email.length === 0 ||
-    password.length === 0 ||
-    Object.keys(errorMessage).length > 0 ||
-    isEmailAvailable === false;
 
   return (
     <div css={s.joinForm}>
-      <div css={s.inputGroup}>
+      <div
+        css={s.inputGroup}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            joinOnClickHandler();
+          }
+        }}
+      >
         <InputBox>
           <AuthInput
             type="email"
@@ -144,28 +131,7 @@ function JoinForm() {
           <p css={isEmailAvailable ? s.check : s.error}>{apiMessage}</p>
         )}
       </div>
-      <Button onClick={joinOnClickHandler} isDisabled={isDisabled}>
-        회원가입
-      </Button>
-      {isModalOpen && (
-        <AlertModal onClose={closeModal}>
-          <div css={s.alertContent}>
-            {isError ? (
-              <BiSolidMessageSquareError
-                size={60}
-                style={{ color: "#ff4d4d" }}
-              />
-            ) : (
-              <BiSolidMessageSquareError
-                size={60}
-                style={{ color: "#2bd65e" }}
-              />
-            )}
-
-            <span>{modalContent}</span>
-          </div>
-        </AlertModal>
-      )}
+      <Button onClick={joinOnClickHandler}>회원가입</Button>
     </div>
   );
 }

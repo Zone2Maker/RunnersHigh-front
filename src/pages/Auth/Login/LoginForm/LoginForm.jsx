@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { loginReq } from "../../../../services/auth/authApis";
 import InputBox from "../../../../components/common/InputBox/InputBox";
 import AuthInput from "../../../../components/common/AuthInput/AuthInput";
@@ -7,29 +6,22 @@ import AuthInput from "../../../../components/common/AuthInput/AuthInput";
 import * as s from "./styles";
 import Button from "../../../../components/common/Button/Button";
 
-function LoginForm() {
-  const navigate = useNavigate();
+function LoginForm({ openModal }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(false);
-
-  useEffect(() => {
-    setIsDisabled(false);
-
-    if (
-      email.trim() === null ||
-      email.length === 0 ||
-      password.trim() === null ||
-      password.length === 0
-    ) {
-      setIsDisabled(true);
-    }
-  }, [email, password]);
 
   const loginOnClickHandler = async () => {
-    setIsLoading(true);
+    if (
+      email.length === "0" ||
+      email.trim() === "" ||
+      password.length === "0" ||
+      password.trim() === ""
+    ) {
+      openModal("모든 항목을 입력해주세요.", "fail");
+    }
 
+    setIsLoading(true);
     try {
       const response = await loginReq({ email, password });
 
@@ -38,7 +30,10 @@ function LoginForm() {
         window.location.replace("/");
       }
     } catch (error) {
-      alert(error.response.data.message || "로그인 중 문제가 발생했습니다.");
+      openModal(
+        error.response.data.message || "로그인 중 문제가 발생했습니다.",
+        "fail"
+      );
       setEmail("");
       setPassword("");
       return;
@@ -48,7 +43,14 @@ function LoginForm() {
   };
 
   return (
-    <div css={s.loginForm}>
+    <div
+      css={s.loginForm}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          loginOnClickHandler();
+        }
+      }}
+    >
       <InputBox>
         <AuthInput
           id="email"
@@ -65,12 +67,7 @@ function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </InputBox>
-      <Button
-        onClick={loginOnClickHandler}
-        isDisabled={isDisabled || isLoading}
-      >
-        로그인
-      </Button>
+      <Button onClick={loginOnClickHandler}>로그인</Button>
     </div>
   );
 }

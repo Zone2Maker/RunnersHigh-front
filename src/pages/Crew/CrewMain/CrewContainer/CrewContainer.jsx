@@ -79,7 +79,7 @@ function CrewContainer({ searchProp, regionProp }) {
           <AlertModal>
             <BiSolidMessageSquareError
               size={"60px"}
-              style={{ color: "#ff4d4d" }}
+              style={{ color: "#f57c00" }}
             />
             <strong>크루 목록을 불러올 수 없습니다.</strong>
             <p>다시 시도해주세요.</p>

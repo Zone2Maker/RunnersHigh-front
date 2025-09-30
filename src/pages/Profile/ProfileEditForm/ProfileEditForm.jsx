@@ -7,17 +7,26 @@ import { useRef, useState } from "react";
 import { queryClient } from "../../../configs/queryClient";
 import { updateUserReq } from "../../../services/user/userApis";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
-import { BiSolidMessageSquareError } from "react-icons/bi";
+import {
+  BiSolidMessageSquareCheck,
+  BiSolidMessageSquareError,
+} from "react-icons/bi";
 
 function ProfileEditForm({ principal, onCancel }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isChanged, setIsChanged] = useState(false); // 닉네임, 프로필 변경 사항이 상태 관리
+  const [isChanged, setIsChanged] = useState(false); // 닉네임, 프로필 변경 사항 상태 관리
 
   const [nickname, setNickname] = useState(principal?.username);
   const [profileImageFile, setProfileImageFile] = useState(null); // 새로 선택한 파일 객체
   const [imagePreview, setImagePreview] = useState(principal?.profileImgUrl); // 미리보기 URL
   const [nicknameError, setNicknameError] = useState("");
   const fileInputRef = useRef(null);
+
+  const [modal, setModal] = useState({
+    isOpen: false,
+    message: "",
+    status: "",
+  });
 
   const {
     isLoading: isChecking,
@@ -39,15 +48,15 @@ function ProfileEditForm({ principal, onCancel }) {
     mutationFn: updateUserReq,
     onSuccess: (resp) => {
       if (resp.data.status === "success") {
-        queryClient.invalidateQueries(["getPrincipal"]); // principal 무효화
-        location.reload(); // 새로고침
+        queryClient.invalidateQueries(["getPrincipal"]);
+        openModal("프로필을 수정했습니다.", "success");
       } else if (resp.data.status === "failed") {
         alert(resp.data.message);
         return;
       }
     },
     onError: (error) => {
-      alert("문제가 발생했습니다. 다시 시도해주세요.");
+      openModal("문제가 발생했습니다. 다시 시도해주세요.", "fail");
       return;
     },
     onSettled: () => {},
@@ -65,7 +74,7 @@ function ProfileEditForm({ principal, onCancel }) {
       const fileSize = file.size;
 
       if (fileSize > maxSize) {
-        setIsModalOpen(true);
+        openModal("5MB이내의 사진만 업로드 가능합니다.", "fail");
         e.target.value = "";
         return;
       }
@@ -121,7 +130,6 @@ function ProfileEditForm({ principal, onCancel }) {
     if (value && value !== principal.username) {
       checkExist("nickname", value);
     } else {
-      // 원래 닉네임으로 되돌아왔을 때, 입력창을 비웠을 때
       reset();
     }
   };
@@ -129,7 +137,7 @@ function ProfileEditForm({ principal, onCancel }) {
   // 저장 버튼 클릭
   const saveBtnOnClickHandler = async () => {
     if (nickname.length === 0 || nickname.trim() === "") {
-      setNicknameError("사용하실 닉네임을 입력해주세요.");
+      openModal("사용하실 닉네임을 입력해주세요.", "fail");
       return;
     }
 
@@ -141,7 +149,10 @@ function ProfileEditForm({ principal, onCancel }) {
         const firebaseUrl = await uploadFile(profileImageFile, "profile-img");
         finalProfileImgUrl = firebaseUrl; // 업로드 성공 시 파이어베이스 URL로 교체
       } catch (error) {
-        alert("이미지 업로드에 실패했습니다.", error);
+        openModal(
+          "서버 오류로 프로필 이미지 업로드에 실패했습니다. 다시 시도해주세요.",
+          "fail"
+        );
         return;
       }
     }
@@ -149,11 +160,19 @@ function ProfileEditForm({ principal, onCancel }) {
     // 요청 객체 생성
     const updatedProfile = {
       userId: principal.userId,
-      nickname: nickname, // 상태값으로 관리하던 최신 닉네임
+      nickname: nickname,
       profileImgUrl: finalProfileImgUrl,
     };
 
     updateUserMutation.mutate(updatedProfile);
+  };
+
+  const openModal = (message, status) => {
+    setModal({ isOpen: true, message, status });
+  };
+
+  const closeModal = () => {
+    setModal({ isOpen: false, message: "", status: "" });
   };
 
   return (
@@ -214,26 +233,35 @@ function ProfileEditForm({ principal, onCancel }) {
           <button
             css={s.saveButton}
             onClick={saveBtnOnClickHandler}
-            // !!: 이중 부정연산자, 어떤 값이든 boolean 값으로 바꾸는 것
-            // nicknameError => true취급. ! -> false, !! -> true
             disabled={
-              isChecking || // 중복 검사 중이거나
-              (nickname !== principal?.username && !isNicknameAvailable) || // 닉네임이 바뀌었을 때만 중복 여부 검사
-              !!nicknameError || // 닉네임 길이에 에러가 있거나
-              !isChanged // 닉네임, 이미지 둘 다 변경사항이 없으면
+              isChecking ||
+              (nickname !== principal?.username && !isNicknameAvailable) ||
+              !!nicknameError ||
+              !isChanged
             }
           >
             {isProfileImgUploading ? "저장중.." : "저장"}
           </button>
         </div>
       </div>
-      {isModalOpen && (
-        <AlertModal onClose={() => setIsModalOpen(false)}>
-          <BiSolidMessageSquareError
-            size={"60px"}
-            style={{ fill: "#ff4d4d" }}
-          />
-          <strong>5MB이내의 사진만 업로드 가능합니다.</strong>
+      {modal.isOpen && (
+        <AlertModal
+          onClose={() => {
+            modal.status === "success" ? location.reload() : closeModal();
+          }}
+        >
+          {modal.status === "success" ? (
+            <BiSolidMessageSquareCheck
+              size={"60px"}
+              style={{ color: "#00296b" }}
+            />
+          ) : (
+            <BiSolidMessageSquareError
+              size={"60px"}
+              style={{ color: "#f57c00" }}
+            />
+          )}
+          <strong>{modal.message}</strong>
         </AlertModal>
       )}
     </>

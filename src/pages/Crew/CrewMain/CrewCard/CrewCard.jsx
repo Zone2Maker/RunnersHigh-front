@@ -48,8 +48,15 @@ function CrewCard({ crew }) {
   const joinOnClickHandler = () => {
     if (!principal) {
       setErrorMessage("크루에 가입하고 싶다면 로그인을 진행해주세요.");
+      setIsAlertModalOpen(true);
+    }
+
+    if (principal.crewId !== null) {
+      setErrorMessage("이미 함께하는 크루가 있어요!");
+      setIsAlertModalOpen(true);
       return;
     }
+
     joinCrewReq({
       crewId: crewDetail.crewId,
       userId: principal?.userId,
@@ -113,13 +120,12 @@ function CrewCard({ crew }) {
           onClose={() => setIsCrewDetailModalOpen(false)}
           onJoinClick={joinOnClickHandler}
         />
-
       )}
       {errorMessage && !principal && (
         <AlertModal onClose={() => navigate("/login")}>
           <BiSolidMessageSquareError
             size={"60px"}
-            style={{ color: "#ff4d4d" }}
+            style={{ color: "#f57c00" }}
           />
           <strong>{errorMessage}</strong>
         </AlertModal>
@@ -128,7 +134,7 @@ function CrewCard({ crew }) {
         <AlertModal onClose={() => setIsAlertModalOpen(false)}>
           <BiSolidMessageSquareError
             size={"60px"}
-            style={{ color: "#ff4d4d" }}
+            style={{ color: "#f57c00" }}
           />
           <strong>{errorMessage}</strong>
         </AlertModal>
@@ -137,7 +143,7 @@ function CrewCard({ crew }) {
         <AlertModal onClose={() => navigate("/")}>
           <BiSolidMessageSquareCheck
             size={"60px"}
-            style={{ color: "#125bc8" }}
+            style={{ color: "#00296b" }}
           />
           <strong>{successMessage}</strong>
           <p>채팅창에 접속하여 크루 활동을 시작하세요.</p>

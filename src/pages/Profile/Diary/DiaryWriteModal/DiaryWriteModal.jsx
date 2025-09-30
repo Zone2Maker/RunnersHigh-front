@@ -5,7 +5,6 @@ import { LuNotebookPen } from "react-icons/lu";
 
 const DiaryWriteModal = ({
   selectedDate,
-  onClose,
   newDiaryContent,
   setNewDiaryContent,
   saveDiaryHandler,
