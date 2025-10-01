@@ -36,8 +36,10 @@ export const navLink = (isActive) => css`
     }
   }
 
-  & :hover {
-    background-color: #efeff2;
+  &:hover {
+    & > svg {
+      fill: #0d47a1;
+    }
   }
 
   transition: all 0.2s ease-in-out;

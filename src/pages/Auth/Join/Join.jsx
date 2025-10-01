@@ -7,8 +7,10 @@ import {
   BiSolidMessageSquareCheck,
   BiSolidMessageSquareError,
 } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 
 function Join() {
+  const navigate = useNavigate();
   const [modal, setModal] = useState({
     isOpen: false,
     message: "",
@@ -20,6 +22,9 @@ function Join() {
   };
 
   const closeModal = () => {
+    if (modal.status === "success") {
+      navigate("/login");
+    }
     setModal({ isOpen: false, message: "", status: "" });
   };
   return (
@@ -39,7 +44,7 @@ function Join() {
               style={{ color: "#f57c00" }}
             />
           )}
-          <span>{modal.message}</span>
+          <strong>{modal.message}</strong>
         </AlertModal>
       )}
     </div>

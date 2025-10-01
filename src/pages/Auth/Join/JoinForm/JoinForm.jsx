@@ -6,10 +6,8 @@ import AuthInput from "../../../../components/common/AuthInput/AuthInput";
 import Button from "../../../../components/common/Button/Button";
 import { useCheckDuplicate } from "../../../../hooks/useCheckDuplicate";
 import { joinReq } from "../../../../services/auth/authApis";
-import { useNavigate } from "react-router-dom";
 
 function JoinForm({ openModal }) {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState({});
@@ -69,7 +67,7 @@ function JoinForm({ openModal }) {
 
     // 입력값 유효성 검사
     if (errorMessage.email || errorMessage.password || !email || !password) {
-      openModal("이메일과 비밀번호를 올바르게 입력해주세요.", "fail");
+      openModal("모든 항목을 작성해주세요.", "fail");
       return;
     }
 
@@ -82,8 +80,7 @@ function JoinForm({ openModal }) {
       const joinResp = await joinReq({ email: email, password: password });
 
       if (joinResp.data.status === "success") {
-        alert("회원가입 되었습니다. 로그인을 진행해주세요.");
-        navigate("/login");
+        openModal("회원가입 되었습니다. 로그인을 진행해주세요.", "success");
         setEmail("");
         setPassword("");
       } else if (joinResp.data.status === "failed") {

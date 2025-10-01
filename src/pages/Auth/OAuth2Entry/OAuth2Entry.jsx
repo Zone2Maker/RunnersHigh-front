@@ -92,7 +92,7 @@ function OAuth2Entry() {
               style={{ color: "#f57c00" }}
             />
           )}
-          <span>{modal.message}</span>
+          <strong>{modal.message}</strong>
         </AlertModal>
       )}
     </div>

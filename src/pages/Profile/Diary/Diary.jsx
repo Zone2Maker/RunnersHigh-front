@@ -26,18 +26,15 @@ function Diary() {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
 
-  const [markedDates, setMarkedDates] = useState([]); //DB 에서 가져온 일지 쓴 날짜리스트
+  const [markedDates, setMarkedDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   //모달 관련 상태
-  const [selectedDate, setSelectedDate] = useState(null); //선택된 날짜
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("view"); //view: 상세보기 / write: 일지 작성
-  const [diaryDetail, setDiaryDetail] = useState(null); // 'view' 모드용 상세 데이터
-  const [newDiaryContent, setNewDiaryContent] = useState(""); // 'write' 모드용 text
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [diaryDetail, setDiaryDetail] = useState(null);
+  const [newDiaryContent, setNewDiaryContent] = useState("");
 
   const { principal } = usePrincipalState();
-  const lastDayOfCurMonth = moment().endOf("month").toDate();
 
   //알림 모달 상태
   const [modal, setModal] = useState({

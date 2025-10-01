@@ -150,7 +150,7 @@ function ProfileEditForm({ principal, onCancel }) {
         finalProfileImgUrl = firebaseUrl; // 업로드 성공 시 파이어베이스 URL로 교체
       } catch (error) {
         openModal(
-          "서버 오류로 프로필 이미지 업로드에 실패했습니다. 다시 시도해주세요.",
+          "프로필 이미지 업로드에 실패했습니다. 다시 시도해주세요.",
           "fail"
         );
         return;
@@ -230,16 +230,7 @@ function ProfileEditForm({ principal, onCancel }) {
           <button css={s.cancelButton} onClick={onCancel}>
             취소
           </button>
-          <button
-            css={s.saveButton}
-            onClick={saveBtnOnClickHandler}
-            disabled={
-              isChecking ||
-              (nickname !== principal?.username && !isNicknameAvailable) ||
-              !!nicknameError ||
-              !isChanged
-            }
-          >
+          <button css={s.saveButton} onClick={saveBtnOnClickHandler}>
             {isProfileImgUploading ? "저장중.." : "저장"}
           </button>
         </div>

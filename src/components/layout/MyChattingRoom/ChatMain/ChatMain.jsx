@@ -12,7 +12,7 @@ import {
 } from "../../../../services/message/messageApis";
 import { connectStomp, disconnectStomp } from "../../../../configs/stompClient";
 
-function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
+function ChatMain({ isLeaveModalOpen, setIsChatOpen, setAlertModal }) {
   const SIZE = 50;
   const SYSTEM_MESSAGE_TYPE = ["ENTER", "LEAVE"];
   const { principal } = usePrincipalState();
@@ -269,7 +269,7 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
   };
 
   return (
-    <div css={s.chatMain(isLeaveConfirmOpen)} ref={chatMainRef}>
+    <div css={s.chatMain(isLeaveModalOpen)} ref={chatMainRef}>
       <div ref={topObserver} css={s.observer} />
       {messages?.map((message) => {
         const isSystem = SYSTEM_MESSAGE_TYPE.includes(message.messageType);
