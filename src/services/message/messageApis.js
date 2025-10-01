@@ -14,7 +14,7 @@ export const getInitialMessageListReq = async (
     });
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -34,7 +34,7 @@ export const getMessageListReq = async (
     });
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -43,7 +43,7 @@ export const getLastReadMessageIdReq = async (crewId) => {
     const response = await instance.get(`/crews/${crewId}/messages/last-read`);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -54,7 +54,7 @@ export const updateLastReadMessageIdReq = async (crewId) => {
     );
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -65,6 +65,6 @@ export const getUnreadMessageCountReq = async (crewId) => {
     );
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };

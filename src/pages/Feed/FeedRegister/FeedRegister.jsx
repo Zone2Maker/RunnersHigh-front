@@ -42,7 +42,6 @@ function FeedRegister() {
   //카카오맵 불러오기
   useEffect(() => {
     if (!window.kakao || !window.kakao.maps) {
-      console.error("카카오 SDK 로드 실패");
       return;
     }
     window.kakao.maps.load(() => {
@@ -148,7 +147,6 @@ function FeedRegister() {
         );
       }
     } catch (error) {
-      console.error(error);
       openModal("피드 등록 중 시스템 오류가 발생했습니다.", "fail");
     }
   };

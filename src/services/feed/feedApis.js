@@ -6,7 +6,7 @@ export const addFeedReq = async (data) => {
     const response = await instance.post("/feed", data);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -23,7 +23,7 @@ export const getFeedListReq = async (targetUserId, cursorFeedId, size) => {
     });
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -35,7 +35,7 @@ export const getILikedFeedListReq = async (cursorFeedId, size) => {
     });
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -45,7 +45,7 @@ export const getFeedDetailReq = async (feedId) => {
     const response = await instance.get(`/feed/${feedId}`);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -57,7 +57,7 @@ export const getWeeklyTopFeedReq = async (startDate, endDate) => {
     });
     return response;
   } catch (error) {
-    console.log(error);
+    throw new Error(error);
   }
 };
 
@@ -69,6 +69,6 @@ export const getFeedMapReq = async (startDate, endDate) => {
     });
     return response;
   } catch (error) {
-    console.log(error);
+    throw new Error(error);
   }
 };

@@ -19,7 +19,7 @@ import { queryClient } from "../../../configs/queryClient.js";
 import { usePrincipalState } from "../../../stores/usePrincipalState.js";
 import { useLocationState } from "../../../stores/useLocationState.js";
 
-function FeedMapView({ onOpenModal }) {
+function FeedMapView() {
   const { principal } = usePrincipalState();
   const { location: currentLocation } = useLocationState();
   const CLUSTERER_VISIBLE_MIN_LEVEL = 8;
@@ -180,7 +180,7 @@ function FeedMapView({ onOpenModal }) {
             >
               <div
                 css={s.markerContainer(level)}
-                onClick={() => onOpenModal(feed.feedId)}
+                onClick={() => openModal(feed.feedId)}
               >
                 <img src={feed.feedImgUrl} css={s.markerImg} />
               </div>
