@@ -50,6 +50,7 @@ function CrewRegister() {
   const [imagePreview, setImagePreview] = useState("");
   const fileInputRef = useRef(null);
   const [isDropDownOpen, setIsDropDownOpen] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState({
     isOpen: false,
     message: "",
@@ -109,7 +110,7 @@ function CrewRegister() {
     if (
       !crewValue.crewName.trim() ||
       !crewValue.crewDetail.trim() ||
-      !crewValue.crewImgUrl ||
+      !imagePreview.trim() ||
       !crewValue.crewRegion ||
       !crewValue.maxMembers.trim()
     ) {
@@ -117,38 +118,45 @@ function CrewRegister() {
       return;
     }
 
-    if (profileImageFile) {
-      const firebaseUrl = await uploadFile(profileImageFile, "profile-img");
-      setCrewValue({ ...crewValue, crewImgUrl: firebaseUrl });
-
-      if (error) {
-        openModal(
-          "이미지 업로드에 실패했습니다. 잠시 후에 다시 시도해주세요.",
-          "fail"
-        );
-        return;
-      }
+    if (isLoading) {
+      return;
     }
 
-    addCrewReq(crewValue)
-      .then((response) => {
-        if (response.data.status === "failed") {
-          openModal(response.data.message, "fail");
+    setIsLoading(true);
 
-          if (
-            response.data.message ===
-            "로그인 정보가 유효하지 않거나 권한이 없습니다."
-          ) {
-            logout();
-          }
-          return;
+    try {
+      let newCrewData = { ...crewValue };
+
+      if (profileImageFile) {
+        const firebaseUrl = await uploadFile(profileImageFile, "profile-img");
+        newCrewData.crewImgUrl = firebaseUrl;
+      }
+
+      const addCrewResp = await addCrewReq(newCrewData);
+
+      if (addCrewResp.data.status === "failed") {
+        openModal(addCrewResp.data.message, "fail");
+
+        if (
+          addCrewResp.data.message ===
+          "로그인 정보가 유효하지 않거나 권한이 없습니다."
+        ) {
+          logout();
         }
-        openModal(response.data.message, "success");
-        queryClient.invalidateQueries(["getPrincipal"]);
-      })
-      .catch((error) => {
-        openModal(error.response?.data?.message, "fail");
-      });
+        return;
+      }
+
+      openModal(addCrewResp.data.message, "success");
+      queryClient.invalidateQueries({ queryKey: ["crewList"], exact: false });
+      queryClient.invalidateQueries(["getPrincipal"]);
+    } catch (error) {
+      openModal(
+        error.response?.data?.message || "요청 중 에러가 발생했습니다.",
+        "fail"
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const openModal = (message, status) => {
@@ -246,8 +254,8 @@ function CrewRegister() {
         </div>
       </div>
       <div css={s.btnContainer} onClick={registerOnClickHandler}>
-        <button css={s.registerBtn} onClick={registerOnClickHandler}>
-          등록하기
+        <button css={s.registerBtn}>
+          {isLoading ? "등록중..." : "등록하기"}
         </button>
       </div>
       {modal.isOpen && (

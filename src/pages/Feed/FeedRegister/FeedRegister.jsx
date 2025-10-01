@@ -164,7 +164,9 @@ function FeedRegister() {
               placeholder="장소 검색"
               onChange={(e) => setSearchKeyword(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") searchBtnOnClickHandler();
+                if (e.key === "Enter") {
+                  searchBtnOnClickHandler();
+                }
               }}
             />
             <FaCircleArrowUp
