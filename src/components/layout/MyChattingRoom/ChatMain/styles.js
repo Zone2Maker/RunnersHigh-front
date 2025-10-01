@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 
-export const chatMain = (isLeaveConfirmOpen) => css`
+export const chatMain = (isLeaveModalOpen) => css`
   width: 100%;
   flex-grow: 1;
   padding: 0 10px;
@@ -10,7 +10,7 @@ export const chatMain = (isLeaveConfirmOpen) => css`
   align-items: center;
   gap: 10px;
 
-  filter: ${isLeaveConfirmOpen && "blur(0.5px)"};
+  filter: ${isLeaveModalOpen && "blur(0.5px)"};
 
   &::-webkit-scrollbar {
     width: 5px;

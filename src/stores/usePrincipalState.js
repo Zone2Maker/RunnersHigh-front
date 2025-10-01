@@ -10,6 +10,7 @@ export const usePrincipalState = create((set) => ({
   logout: () => {
     localStorage.removeItem("accessToken");
     queryClient.removeQueries({ queryKey: ["getPrincipal"], exact: true });
+    queryClient.removeQueries({ queryKey: ["currentLocation"], exact: true });
     queryClient.clear(); //캐시 제거
     set({ isAuthenticated: false, principal: null });
     window.location.href = "/login";
