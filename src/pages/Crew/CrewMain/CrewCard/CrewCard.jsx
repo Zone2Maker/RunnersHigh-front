@@ -33,7 +33,6 @@ function CrewCard({ crew }) {
     getCrewByCrewReq(crew.crewId).then((reponse) => {
       if (reponse.data.status === "failed") {
         setErrorMessage(reponse.data.message);
-        console.log(reponse.data.message);
       }
 
       setCrewDetail(reponse.data.data);

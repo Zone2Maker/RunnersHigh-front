@@ -39,10 +39,7 @@ function Diary() {
   const { principal } = usePrincipalState();
   const lastDayOfCurMonth = moment().endOf("month").toDate();
 
-  console.log(new Date(principal.createDt.split("T")[0]));
-
   //알림 모달 상태
-  console.log(principal);
   const [modal, setModal] = useState({
     isOpen: false,
     type: "",

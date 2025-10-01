@@ -5,7 +5,7 @@ export const joinOAuth2UserReq = async (data) => {
     const response = await instance.post("/oauth2/join", data);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -14,6 +14,6 @@ export const mergeOAuth2UserReq = async (data) => {
     const response = await instance.post("/oauth2/merge", data);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };

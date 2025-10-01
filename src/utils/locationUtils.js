@@ -20,7 +20,6 @@ const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
 export const getSortedPlacesByDistance = (currentLoc, placeList) => {
   const userLat = currentLoc.latitude;
   const userLng = currentLoc.longitude;
-  console.log(placeList);
 
   // 검색 결과 리스트가 없거나 사용자 위치가 없다면 정렬하지 않고 반환
   if (!placeList || placeList.length === 0 || !userLat || !userLng) {

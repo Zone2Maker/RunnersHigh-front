@@ -120,8 +120,7 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
         // 5. 초기 세팅 끝!
         setIsInitialized(true);
       } catch (error) {
-        console.error("채팅 목록 불러오기 실패", error);
-        setIsChatOpen();
+        setIsChatOpen(false);
         setAlertModal(true, "채팅 데이터 로드에 실패했습니다.", "fail");
       }
     };
@@ -130,9 +129,7 @@ function ChatMain({ isLeaveConfirmOpen, setIsChatOpen, setAlertModal }) {
 
     // 클린업 함수, 채팅방 언마운트시 마지막으로 읽은 메시지ID 업데이트
     return () => {
-      updateLastReadMessageIdReq(principal.crewId).then((response) =>
-        console.log(response)
-      );
+      updateLastReadMessageIdReq(principal.crewId);
     };
   }, []);
 

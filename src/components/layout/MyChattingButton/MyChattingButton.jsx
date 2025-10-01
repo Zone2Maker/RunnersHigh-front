@@ -3,25 +3,18 @@ import { useState } from "react";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import * as s from "./styles";
 import { getCrewByCrewReq } from "../../../services/crew/crewApis";
-import { MdCircle } from "react-icons/md";
 import AlertModal from "../../common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
 import MyChattingRoom from "../MyChattingRoom/MyChattingRoom";
 import { HiOutlineChatBubbleOvalLeftEllipsis } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
 
-function MyChattingButton({}) {
+function MyChattingButton() {
   const { principal } = usePrincipalState();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [crewInfo, setCrewInfo] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [unreadMessageCnt, setUnreadMessageCnt] = useState(0);
-
-  // getUnreadMessageCountReq(principal?.crewId).then((response) => {
-  //   console.log(response.data.data);
-  //   setUnreadMessageCnt(response.data.data);
-  // });
 
   const chatBtnOnClickHandler = () => {
     getCrewByCrewReq(principal.crewId).then((response) => {

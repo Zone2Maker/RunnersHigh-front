@@ -6,7 +6,7 @@ export const addDiaryReq = async (diaryData) => {
     const response = await instance.post("/diary", diaryData);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -18,7 +18,7 @@ export const getActiveListByDateReq = async (year, month) => {
     );
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -28,6 +28,6 @@ export const getDiaryDetailByDateReq = async (date) => {
     const response = await instance.get(`/diary?date=${date}`);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };

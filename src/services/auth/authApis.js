@@ -8,7 +8,7 @@ export const joinReq = async (data) => {
     const response = await instance.post("/auth/join", data);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -18,7 +18,7 @@ export const loginReq = async (data) => {
     const response = await instance.post("/auth/login", data);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -37,7 +37,6 @@ export const getPrincipalReq = async () => {
     const response = await instance.get("/auth/principal");
     return response;
   } catch (error) {
-    console.error("Principal 정보 조회 중 오류 발생:", error);
-    return error.response;
+    throw new Error(error);
   }
 };

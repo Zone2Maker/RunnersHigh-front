@@ -44,7 +44,6 @@ export const useFirebaseUpload = () => {
           setProgress(currentProgress);
         },
         (error) => {
-          console.error("파일 업로드 실패", error);
           setError(error);
           setIsUploading(false);
           // 실패 시 에러 반환

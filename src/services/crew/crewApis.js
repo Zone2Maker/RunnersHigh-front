@@ -5,7 +5,7 @@ export const addCrewReq = async (data) => {
     const response = await instance.post("/crew", data);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -21,7 +21,7 @@ export const getCrewListReq = async (cursorCrewId, size, search, region) => {
     });
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -30,27 +30,22 @@ export const getCrewByCrewReq = async (crewId) => {
     const response = await instance.get(`/crew/${crewId}`);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
 export const getWeeklyTopCrewsReq = async (startDate, endDate) => {
-  try {
-    const response = await instance.get("/crew/weekly-top", {
-      params: {
-        startDate,
-        endDate,
-      },
-    });
-    if (response.data.status === "failed") {
-      throw new Error(response.data.message);
-    }
-
-    return response;
-  } catch (error) {
-    console.log(error);
-    throw error; // 리액트 쿼리가 isError를 true로 만듦
+  const response = await instance.get("/crew/weekly-top", {
+    params: {
+      startDate,
+      endDate,
+    },
+  });
+  if (response.data.status === "failed") {
+    throw new Error(response.data.message); // 리액트 쿼리가 isError를 true로 만듦
   }
+
+  return response;
 };
 
 export const joinCrewReq = async (data) => {
@@ -58,7 +53,7 @@ export const joinCrewReq = async (data) => {
     const response = await instance.post("/crew/join", data);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -67,6 +62,6 @@ export const leaveCrewReq = async (data) => {
     const response = await instance.post("/crew/leave", data);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };

@@ -52,7 +52,7 @@ function FeedContainer({ feeds, isLoading }) {
         setModal({
           isOpen: true,
           type: "alert",
-          message: "서버 오류가 발생했습니다. 잠시후 다시 시도해주세요.",
+          message: "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
           data: {},
         });
         return;
@@ -89,31 +89,64 @@ function FeedContainer({ feeds, isLoading }) {
   const closeModal = async () => {
     const { feedDetail, newLike, originLike } = modal.data;
 
+    if (newLike === originLike) {
+      setModal({
+        isOpen: false,
+        type: "",
+        message: "",
+        data: {
+          feedDetail: null,
+          originLike: null,
+          newLike: null,
+          likeCount: 0,
+        },
+      });
+      return;
+    }
+
     if (newLike !== originLike) {
       try {
         const requestData = {
           feedId: feedDetail.feedId,
           userId: principal.userId,
         };
-        if (newLike) {
-          await addLikeReq(requestData);
-        } else {
-          await removeLikeReq(requestData);
+
+        const response = newLike
+          ? await addLikeReq(requestData)
+          : await removeLikeReq(requestData);
+        if (response.data.status === "failed") {
+          setModal({
+            isOpen: true,
+            type: "alert",
+            message: response.data.message,
+            data: {},
+          });
+          return;
         }
+        setModal({
+          isOpen: false,
+          type: "",
+          message: "",
+          data: {
+            feedDetail: null,
+            originLike: null,
+            newLike: null,
+            likeCount: 0,
+          },
+        });
       } catch (error) {
-        console.error("좋아요 상태 변경 실패:", error);
+        setModal({
+          isOpen: true,
+          type: "alert",
+          message:
+            "서버 오류로 좋아요 상태 변경에 실패했습니다. 다시 시도해주세요.",
+          data: {},
+        });
+        return;
       } finally {
         queryClient.invalidateQueries({ queryKey: ["feeds"], exact: false });
       }
     }
-
-    // 모달을 초기 상태로 리셋
-    setModal({
-      isOpen: false,
-      type: "",
-      message: "",
-      data: { feedDetail: null, originLike: null, newLike: null, likeCount: 0 },
-    });
   };
 
   return (

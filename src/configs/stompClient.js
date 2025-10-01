@@ -32,9 +32,6 @@ export const connectStomp = (crewId, onSubscribeCallback) => {
         if (payload) onSubscribeCallback(payload);
       });
     },
-    // onStompError: (frame) => {
-    //   console.error("STOMP 에러:", frame.headers["message"], frame.body);
-    // },
   });
 
   client.activate();

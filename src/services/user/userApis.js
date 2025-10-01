@@ -11,7 +11,7 @@ export const getUserInfoReq = async (userId, email, nickname) => {
     });
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -25,7 +25,7 @@ export const checkUserExistReq = async (email, nickname) => {
     });
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
 
@@ -34,6 +34,6 @@ export const updateUserReq = async (data) => {
     const response = await instance.post("/user/update", data);
     return response;
   } catch (error) {
-    return error.response;
+    throw new Error(error);
   }
 };
