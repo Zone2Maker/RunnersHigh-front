@@ -7,19 +7,16 @@ import { getCrewListReq } from "../../../../services/crew/crewApis";
 import AlertModal from "../../../../components/common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
 
-function CrewContainer({ searchProp, regionProp }) {
-  const size = 12;
-  const [search, setSearch] = useState(null);
-  const [region, setRegion] = useState(null);
+function CrewContainer({ search, region }) {
+  const SIZE = 12;
   const [crewList, setCrewList] = useState([]);
   const observerTarget = useRef(null);
 
   const { data, isError, isLoading, hasNextPage, fetchNextPage } =
     useInfiniteQuery({
-      queryKey: ["crewList", size, search, region],
-      queryFn: ({ pageParam = null, queryKey }) => {
-        const [, size, search, region] = queryKey;
-        return getCrewListReq(pageParam, size, search, region);
+      queryKey: ["crewList", SIZE, search, region],
+      queryFn: ({ pageParam = null }) => {
+        return getCrewListReq(pageParam, SIZE, search, region);
       },
       getNextPageParam: (lastPage) =>
         lastPage?.data?.data?.nextCursorCrewId ?? undefined,
@@ -29,26 +26,11 @@ function CrewContainer({ searchProp, regionProp }) {
     });
 
   useEffect(() => {
-    if (searchProp.trim().length === 0) {
-      return;
-    }
-    setCrewList([]);
-    setSearch(searchProp);
-  }, [searchProp]);
-
-  useEffect(() => {
-    if (regionProp.trim().length === 0) {
-      return;
-    }
-    setCrewList([]);
-    setRegion(regionProp);
-  }, [regionProp]);
-
-  useEffect(() => {
     if (isLoading || isError) return;
 
-    const crewList = data?.pages[data.pages.length - 1]?.data?.data?.crewList;
-    setCrewList((prev) => [...prev, ...crewList]);
+    const crewList =
+      data?.pages.flatMap((page) => page?.data?.data?.crewList) ?? [];
+    setCrewList(crewList);
   }, [data, isError, isLoading]);
 
   useEffect(() => {

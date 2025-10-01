@@ -1,10 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { FaCheck, FaCircleArrowUp, FaPlus } from "react-icons/fa6";
+import {
+  FaCheck,
+  FaCircleArrowLeft,
+  FaCircleArrowUp,
+  FaPlus,
+} from "react-icons/fa6";
 import CrewContainer from "./CrewContainer/CrewContainer";
 import * as s from "./styles";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
 import {
@@ -16,13 +21,16 @@ import { FaTimes } from "react-icons/fa";
 function CrewMain() {
   const { principal } = usePrincipalState();
   const navigate = useNavigate();
-  const [searchValue, setSearchValue] = useState("");
-  const [searchProp, setSearchProp] = useState("");
   const [modal, setModal] = useState({
     isOpen: false,
     message: "",
     status: "",
   });
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentSearch = searchParams.get("search") || "";
+  const currentRegion = searchParams.get("region") || "";
+  const [searchValue, setSearchValue] = useState(currentSearch);
 
   const [isRegionSelected, setisRegionSelected] = useState(false);
   const [regionProp, setRegionProp] = useState("");
@@ -56,7 +64,11 @@ function CrewMain() {
   };
 
   const searchBtnOnClickHandler = () => {
-    setSearchProp(searchValue);
+    if (currentRegion !== "") {
+      navigate(`/crew?search=${searchValue}&region=${currentRegion}`);
+    } else {
+      navigate(`/crew?search=${searchValue}`);
+    }
     window.scrollTo(0, 0);
   };
 
@@ -71,8 +83,7 @@ function CrewMain() {
   };
 
   const regionOnClickHandler = (region) => {
-    setRegionProp(region);
-    setisRegionSelected(true);
+    navigate(`/crew?search=${searchValue}&region=${region}`);
     setIsDropDownOpen(!isDropDownOpen);
   };
 
@@ -87,6 +98,9 @@ function CrewMain() {
     <div css={s.container}>
       <div css={s.header}>
         <div css={s.searchContainer}>
+          <div css={s.backBtn} onClick={() => navigate(-1)}>
+            <FaCircleArrowLeft />
+          </div>
           <input
             type="text"
             value={searchValue}
@@ -99,13 +113,19 @@ function CrewMain() {
             <FaCircleArrowUp />
           </div>
         </div>
-        <div css={s.filterContainer(isRegionSelected)}>
-          {regionProp && (
+        <div css={s.filterContainer(!!currentRegion)}>
+          {currentRegion && (
             <div
               css={s.selectedRegion}
-              onClick={() => (window.location.href = "/crew")}
+              onClick={() => {
+                if (currentSearch !== "") {
+                  navigate(`/crew?search=${currentSearch}`);
+                } else {
+                  navigate("/crew");
+                }
+              }}
             >
-              <span>{regionProp}</span>
+              <span>{currentRegion}</span>
               <FaTimes />
             </div>
           )}
@@ -129,11 +149,11 @@ function CrewMain() {
                   return (
                     <li
                       key={index}
-                      css={s.regionItem(region === regionProp)}
+                      css={s.regionItem(region === currentRegion)}
                       onClick={() => regionOnClickHandler(region)}
                     >
                       <span>{region}</span>
-                      {region === regionProp && <FaCheck />}
+                      {region === currentRegion && <FaCheck />}
                     </li>
                   );
                 })}
@@ -142,7 +162,7 @@ function CrewMain() {
           </div>
         </div>
       </div>
-      <CrewContainer searchProp={searchProp} regionProp={regionProp} />
+      <CrewContainer search={currentSearch} region={currentRegion} />
       {modal.isOpen && (
         <AlertModal onClose={closeModal}>
           {modal.status === "success" ? (

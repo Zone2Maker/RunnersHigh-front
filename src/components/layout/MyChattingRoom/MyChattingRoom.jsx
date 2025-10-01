@@ -47,7 +47,7 @@ function MyChattingRoom({
           "fail"
         );
       });
-    isChatOpen(false);
+    setIsChatOpen();
   };
 
   return (
@@ -95,9 +95,9 @@ function MyChattingRoom({
           }}
         >
           {alertModal.status === "success" ? (
-            <BiSolidMessageSquareCheck size={60} style={{ color: "#125bc8" }} />
+            <BiSolidMessageSquareCheck size={60} style={{ color: "#00296b" }} />
           ) : (
-            <BiSolidMessageSquareError size={60} style={{ color: "#ff4d4d" }} />
+            <BiSolidMessageSquareError size={60} style={{ color: "#f57c00" }} />
           )}
           <strong>{alertModal.message}</strong>
         </AlertModal>

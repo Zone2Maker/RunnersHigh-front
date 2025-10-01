@@ -28,6 +28,43 @@ export const searchContainer = css`
   width: 100%;
   display: flex;
   align-items: center;
+  gap: 10px;
+
+  & div {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    & > svg {
+      font-size: 32px;
+      color: #04327c;
+      transition: all 0.2s;
+
+      &:hover {
+        color: #f57c00;
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+`;
+
+export const searchInput = css`
+  flex-grow: 1;
+  height: 48px;
+  padding: 0 60px 0 20px;
+  border: none;
+  background-color: none;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  outline: none;
   border-radius: 50px;
   outline: 2px solid #cdcdcd;
   background-color: #f8f9fa;
@@ -40,19 +77,6 @@ export const searchContainer = css`
     outline-color: #0d47a1;
     background-color: #efefef;
   }
-`;
-
-export const searchInput = css`
-  width: 100%;
-  height: 48px;
-  padding: 0 60px 0 20px;
-  box-sizing: border-box;
-  border: none;
-  background-color: none;
-  font-family: inherit;
-  font-size: 18px;
-  font-weight: 500;
-  outline: none;
 
   &::placeholder {
     font-weight: 400;
@@ -63,27 +87,6 @@ export const searchBtn = css`
   position: absolute;
   right: 12px;
   top: 17%;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-
-  & > svg {
-    font-size: 32px;
-    color: #04327c;
-    transition: all 0.2s;
-
-    &:hover {
-      color: #f57c00;
-    }
-
-    &:active {
-      transform: scale(0.95);
-    }
-  }
 `;
 
 export const selectedRegion = css`
