@@ -46,7 +46,7 @@ function ChatMain({ isLeaveModalOpen, setIsChatOpen, setAlertModal }) {
       const isAtBottom = isUserAtBottom();
 
       // 내가 보낸 메시지
-      const isMyMessage = payload.data.userId === principal.userId;
+      const isMyMessage = payload?.data?.userId === principal?.userId;
 
       // 내가 보낸 메시지이거나, 내가 이미 맨 아래에 있을 때 자동으로 스크롤
       if (isMyMessage || isAtBottom) {

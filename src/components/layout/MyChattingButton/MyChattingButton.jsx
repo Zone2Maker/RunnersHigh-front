@@ -3,7 +3,6 @@ import { useState } from "react";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import * as s from "./styles";
 import { getCrewByCrewReq } from "../../../services/crew/crewApis";
-import { MdCircle } from "react-icons/md";
 import AlertModal from "../../common/AlertModal/AlertModal";
 import { BiSolidMessageSquareError } from "react-icons/bi";
 import MyChattingRoom from "../MyChattingRoom/MyChattingRoom";
@@ -45,7 +44,7 @@ function MyChattingButton({}) {
           // setPendingMessageList={setPendingMessageList}
           crewInfo={crewInfo}
           isChatOpen={isChatOpen}
-          setIsChatOpen={setIsChatOpen}
+          setIsChatOpen={() => setIsChatOpen(false)}
         />
       )}
       <div css={s.btn(isChatOpen)} onClick={chatBtnOnClickHandler}>
@@ -64,7 +63,7 @@ function MyChattingButton({}) {
         <AlertModal onClose={() => setIsModalOpen(false)}>
           <BiSolidMessageSquareError
             size={"60px"}
-            style={{ color: "#ff4d4d" }}
+            style={{ color: "#f57c00" }}
           />
           <strong>{errorMessage}</strong>
         </AlertModal>
