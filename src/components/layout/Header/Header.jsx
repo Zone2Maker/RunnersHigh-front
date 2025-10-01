@@ -6,7 +6,7 @@ function Header() {
   const navigate = useNavigate();
   return (
     <div css={s.container} onClick={() => navigate("/")}>
-      <span>LOGO</span>
+      <span>RunnersHigh</span>
     </div>
   );
 }
