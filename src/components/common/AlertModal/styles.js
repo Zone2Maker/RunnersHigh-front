@@ -56,7 +56,8 @@ export const closeButton = css`
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  font-size: 16px;
+  font-size: 20px;
+  transform: translateY(2px);
   cursor: pointer;
   display: flex;
   justify-content: center;

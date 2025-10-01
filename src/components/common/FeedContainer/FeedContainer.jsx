@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 import { FaHeart } from "react-icons/fa";
-import PromptModal from "../PromptModal/PromptModal";
 import { useState } from "react";
 import { getFeedDetailReq } from "../../../services/feed/feedApis";
 import { SlPicture } from "react-icons/sl";

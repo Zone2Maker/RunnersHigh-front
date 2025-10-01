@@ -55,7 +55,7 @@ function MyChattingRoom({
       <ChatHeader
         crewInfo={crewInfo}
         isLeaveModalOpen={isLeaveModalOpen}
-        setIsLeaveModalOpen={() => isLeaveModalOpen(true)}
+        setIsLeaveModalOpen={() => setIsLeaveModalOpen(true)}
       />
       <ChatMain
         isLeaveModalOpen={isLeaveModalOpen}

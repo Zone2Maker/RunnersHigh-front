@@ -4,6 +4,10 @@ import OAuth2MergeForm from "./OAuth2MergeForm/OAuth2MergeForm";
 import * as s from "./styles";
 import { useState } from "react";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
+import {
+  BiSolidMessageSquareCheck,
+  BiSolidMessageSquareError,
+} from "react-icons/bi";
 
 function OAuth2Merge() {
   const navigate = useNavigate();
