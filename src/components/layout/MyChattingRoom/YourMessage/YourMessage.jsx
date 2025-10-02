@@ -8,10 +8,7 @@ function YourMessage({ message }, ref) {
       <img src={message.profileImgUrl} alt="유저 프로필사진" />
       <div>
         <span>{message.nickname}</span>
-        <div css={s.messageBox}>
-          {message.messageId}
-          {message.message}
-        </div>
+        <div css={s.messageBox}>{message.message}</div>
       </div>
       <div css={s.timeBox}>
         <p>
