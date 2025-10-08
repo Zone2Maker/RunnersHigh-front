@@ -32,10 +32,7 @@ function LoginForm({ openModal }) {
         openModal(response.data.message, "fail");
       }
     } catch (error) {
-      openModal(
-        error.response.data.message || "로그인 중 문제가 발생했습니다.",
-        "fail"
-      );
+      openModal("로그인 중 문제가 발생했습니다.", "fail");
       setEmail("");
       setPassword("");
       return;
