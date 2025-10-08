@@ -1,7 +1,7 @@
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
-const SOCKET_URL = "http://localhost:8080/ws"; //WebSocket 연결 엔드포인트
+const SOCKET_URL = import.meta.env.VITE_API_BASE_URL + "/ws"; //WebSocket 연결 엔드포인트
 const PUB_ENDPOINT = "/pub/crew/"; // 메시지를 전송하기 위한 엔드포인트
 const SUB_ENDPOINT = "/sub/crew/"; // 메시지를 수신하기 위한 엔드포인트
 

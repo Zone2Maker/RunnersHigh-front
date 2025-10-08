@@ -32,8 +32,6 @@ function CrewMain() {
   const currentRegion = searchParams.get("region") || "";
   const [searchValue, setSearchValue] = useState(currentSearch);
 
-  const [isRegionSelected, setisRegionSelected] = useState(false);
-  const [regionProp, setRegionProp] = useState("");
   const regionValue = [
     "서울",
     "부산",

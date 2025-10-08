@@ -39,19 +39,25 @@ function Login() {
 
       <div css={s.socialSection}>
         <a
-          href="http://localhost:8080/oauth2/authorization/google"
+          href={`${
+            import.meta.env.VITE_API_BASE_URL
+          }/oauth2/authorization/google`}
           css={[s.socialButton, s.google]}
         >
           <FcGoogle css={s.google} />
         </a>
         <a
-          href="http://localhost:8080/oauth2/authorization/kakao"
+          href={`${
+            import.meta.env.VITE_API_BASE_URL
+          }/oauth2/authorization/kakao`}
           css={[s.socialButton, s.kakao]}
         >
           <RiKakaoTalkFill css={s.kakao} />
         </a>
         <a
-          href="http://localhost:8080/oauth2/authorization/naver"
+          href={`${
+            import.meta.env.VITE_API_BASE_URL
+          }/oauth2/authorization/naver`}
           css={[s.socialButton, s.naver]}
         >
           <SiNaver css={s.naver} />
