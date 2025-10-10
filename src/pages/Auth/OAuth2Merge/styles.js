@@ -11,24 +11,15 @@ export const container = css`
   box-sizing: border-box;
 `;
 
-export const titleContainer = css`
-  margin: 0;
-  padding: 0;
-  margin-bottom: 20px;
-
-  & > p {
-    margin-top: 10px;
-    margin-bottom: 20px;
-    color: #b6b6b6;
-  }
-`;
-
 export const title = css`
   margin: 0;
-  padding: 0;
   text-align: center;
   font-size: 46px;
   font-weight: 600;
-  color: #6e6e6e;
-  margin-top: 20px;
+`;
+
+export const subTitle = css`
+  margin: 10px 0 24px 0;
+  color: #888;
+  font-size: 14px;
 `;

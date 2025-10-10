@@ -94,7 +94,6 @@ function JoinForm({ openModal }) {
   return (
     <div css={s.joinForm}>
       <div
-        css={s.inputGroup}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             joinOnClickHandler();
@@ -119,13 +118,17 @@ function JoinForm({ openModal }) {
       </div>
       <div css={s.messageBox}>
         {/* 정규식 에러 메시지 */}
-        {errorMessage.email && <p css={s.error}>{errorMessage.email}</p>}
+        {errorMessage.email && (
+          <p css={s.message("#f81717ff")}>{errorMessage.email}</p>
+        )}
         {errorMessage.password && !errorMessage.email && (
-          <p css={s.error}>{errorMessage.password}</p>
+          <p css={s.message("#f81717ff")}>{errorMessage.password}</p>
         )}
         {/* 정규식 에러 없을 때만 중복 체크 */}
         {!errorMessage.email && !errorMessage.password && apiMessage && (
-          <p css={isEmailAvailable ? s.check : s.error}>{apiMessage}</p>
+          <p css={s.message(isEmailAvailable ? "#13b343ff" : "#f81717ff")}>
+            {apiMessage}
+          </p>
         )}
       </div>
       <Button onClick={joinOnClickHandler}>회원가입</Button>

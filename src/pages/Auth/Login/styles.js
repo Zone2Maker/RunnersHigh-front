@@ -14,7 +14,6 @@ export const container = css`
 
 export const title = css`
   margin: 0;
-  padding: 0;
   text-align: center;
   font-size: 46px;
   font-weight: 600;
@@ -34,7 +33,6 @@ export const joinButton = css`
   a {
     color: #444;
     text-decoration: none;
-
     transition: all 0.2s;
 
     &:hover {

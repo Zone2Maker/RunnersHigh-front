@@ -12,7 +12,7 @@ function AuthInput({
 }) {
   return (
     <input
-      css={s.input}
+      css={s.input(disabled)}
       type={type}
       placeholder={placeholder}
       value={value}
