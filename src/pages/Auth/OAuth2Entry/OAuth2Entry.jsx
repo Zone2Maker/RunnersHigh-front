@@ -55,10 +55,8 @@ function OAuth2Entry() {
 
   return (
     <div css={s.container}>
-      <div css={s.titleContainer}>
-        <h1 css={s.title}>Welcome</h1>
-        <div css={s.subTitle}>소셜 계정 연동 / 회원가입 하기</div>
-      </div>
+      <h1 css={s.title}>Welcome</h1>
+      <div css={s.subTitle}>소셜 계정 연동 / 회원가입 하기</div>
       <div css={s.btnContainer}>
         <Button
           onClick={() => {

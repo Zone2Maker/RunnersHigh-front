@@ -31,10 +31,8 @@ function OAuth2Merge() {
 
   return (
     <div css={s.container}>
-      <div css={s.titleContainer}>
-        <h1 css={s.title}>Welcome</h1>
-        <p>소셜로 간편 로그인 정보 불러오기</p>
-      </div>
+      <h1 css={s.title}>Welcome</h1>
+      <p css={s.subTitle}>소셜로 간편 로그인 정보 불러오기</p>
       <OAuth2MergeForm openModal={openModal} />
       {modal.isOpen && (
         <AlertModal onClose={closeModal}>

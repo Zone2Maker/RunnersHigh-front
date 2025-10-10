@@ -9,23 +9,17 @@ export const container = css`
   align-items: center;
   padding: 0 80px;
   box-sizing: border-box;
-  gap: 15px;
-`;
-
-export const titleContainer = css`
-  width: 100%;
-  text-align: center;
 `;
 
 export const title = css`
   margin: 0;
-  padding: 0;
   font-size: 46px;
   font-weight: 600;
   color: #333;
 `;
 
 export const subTitle = css`
+  margin: 10px 0 24px 0;
   color: #888;
   font-size: 14px;
 `;
@@ -35,10 +29,6 @@ export const btnContainer = css`
   display: flex;
   flex-direction: column;
   gap: 10px;
-
-  & > button {
-    cursor: pointer;
-  }
 `;
 
 export const comment = css`
@@ -47,16 +37,4 @@ export const comment = css`
 
 export const subComment = css`
   font-size: 13px;
-`;
-
-export const alertContent = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-
-  & > span {
-    font-weight: 600;
-    font-size: 18px;
-  }
 `;
