@@ -66,25 +66,39 @@ export const textarea = css`
   }
 `;
 
-export const updateBtn = css`
+export const btnContainer = css`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  gap: 10px;
   margin-top: 8px;
+`;
 
-  & > button {
-    font-size: 14px;
-    font-weight: 600;
-    color: #eeeeee;
-    background-color: #00296b;
-    padding: 7px 26px;
-    outline: none;
-    border: none;
-    border-radius: 23px;
-    transition: all 0.2s;
-    cursor: pointer;
+export const btn = css`
+  font-size: 14px;
+  font-weight: 600;
+  padding: 7px 26px;
+  outline: none;
+  border: none;
+  border-radius: 23px;
+  transition: all 0.2s;
+  cursor: pointer;
+`;
 
-    &:hover {
-      background-color: #f57c00;
-    }
+export const cancelBtn = css`
+  background-color: #dadadaff;
+  color: #666;
+
+  &:hover {
+    color: #fefefe;
+    background-color: #f57c00;
+  }
+`;
+
+export const updateBtn = css`
+  color: #eeeeee;
+  background-color: #00296b;
+
+  &:hover {
+    background-color: #f57c00;
   }
 `;

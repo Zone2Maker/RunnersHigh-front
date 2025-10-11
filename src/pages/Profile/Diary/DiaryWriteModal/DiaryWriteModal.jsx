@@ -16,24 +16,24 @@ function DiaryWriteModal({ selectedDate, onSaveSuccess, openModal }) {
       return;
     }
 
-    //추가할 데이터
-    const diaryData = {
+    const data = {
       userId: principal.userId,
       diaryContent: diaryContent,
       diaryDate: selectedDate,
     };
 
-    try {
-      const resp = await addDiaryReq(diaryData);
-      if (resp.data.status === "success") {
-        onSaveSuccess(selectedDate, resp.data.message);
-      } else {
-        openModal(resp.data.message, "다시 시도해주세요.", "fail");
-        return;
-      }
-    } catch (error) {
-      openModal("서버에 오류가 발생했습니다.", "다시 시도해주세요.", "fail");
-    }
+    addDiaryReq(data)
+      .then((resp) => {
+        if (resp.data.status === "success") {
+          onSaveSuccess(selectedDate, resp.data.message);
+        } else {
+          openModal(resp.data.message, "다시 시도해주세요.", "fail");
+          return;
+        }
+      })
+      .catch((error) => {
+        openModal("서버에 오류가 발생했습니다.", "다시 시도해주세요.", "fail");
+      });
   };
 
   return (
@@ -52,7 +52,7 @@ function DiaryWriteModal({ selectedDate, onSaveSuccess, openModal }) {
         />
       </div>
       <div css={s.saveBtn}>
-        <button onClick={saveBtnOnClickHandler}>저장하기</button>
+        <button onClick={saveBtnOnClickHandler}>저장</button>
       </div>
     </div>
   );

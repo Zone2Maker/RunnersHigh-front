@@ -18,6 +18,15 @@ export const updateDiaryReq = async (data) => {
   }
 };
 
+export const deleteDiaryReq = async (data) => {
+  try {
+    const response = await instance.post("/diary/delete", data);
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const getActiveListByDateReq = async (year, month) => {
   try {
     const response = await instance.get(

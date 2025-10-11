@@ -9,7 +9,12 @@ import moment from "moment";
 import * as s from "./styles";
 import { LuNotebookPen } from "react-icons/lu";
 
-function DiaryUpdateModal({ selectedDate, onUpdateSuccess, openModal }) {
+function DiaryUpdateModal({
+  selectedDate,
+  setPromptModal,
+  onUpdateSuccess,
+  openModal,
+}) {
   const { principal } = usePrincipalState();
   const [diaryDetail, setDiaryDetail] = useState({});
   const [newDiaryContent, setNewDiaryContent] = useState();
@@ -37,24 +42,24 @@ function DiaryUpdateModal({ selectedDate, onUpdateSuccess, openModal }) {
       return;
     }
 
-    //추가할 데이터
-    const diaryData = {
+    const data = {
       diaryId: diaryDetail.diaryId,
       userId: principal.userId,
       diaryContent: newDiaryContent,
     };
 
-    try {
-      const resp = await updateDiaryReq(diaryData);
-      if (resp.data.status === "success") {
-        onUpdateSuccess(selectedDate, resp.data.message);
-      } else {
-        openModal(resp.data.message, "다시 시도해주세요.", "fail");
-        return;
-      }
-    } catch (error) {
-      openModal("서버에 오류가 발생했습니다.", "다시 시도해주세요.", "fail");
-    }
+    updateDiaryReq(data)
+      .then((resp) => {
+        if (resp.data.status === "success") {
+          onUpdateSuccess(selectedDate, resp.data.message);
+        } else {
+          openModal(resp.data.message, "다시 시도해주세요.", "fail");
+          return;
+        }
+      })
+      .catch((error) => {
+        openModal("서버에 오류가 발생했습니다.", "다시 시도해주세요.", "fail");
+      });
   };
 
   return (
@@ -72,8 +77,21 @@ function DiaryUpdateModal({ selectedDate, onUpdateSuccess, openModal }) {
           onChange={(e) => setNewDiaryContent(e.target.value)}
         />
       </div>
-      <div css={s.updateBtn}>
-        <button onClick={updateBtnOnClickHandler}>저장하기</button>
+      <div css={s.btnContainer}>
+        <button
+          css={[s.btn, s.cancelBtn]}
+          onClick={() => {
+            setPromptModal((prev) => ({
+              ...prev,
+              type: "detail",
+            }));
+          }}
+        >
+          취소
+        </button>
+        <button css={[s.btn, s.updateBtn]} onClick={updateBtnOnClickHandler}>
+          저장
+        </button>
       </div>
     </div>
   );

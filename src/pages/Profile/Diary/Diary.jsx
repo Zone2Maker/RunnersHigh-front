@@ -88,6 +88,12 @@ function Diary() {
     setPromptModal({ isOpen: true, date: date, type: "detail" });
   };
 
+  const deleteSuccessHandler = (date, message) => {
+    openModal(message, "", "success");
+    setMarkedDates((prev) => prev.filter((markedDate) => markedDate !== date));
+    setPromptModal({ isOpen: false, date: "", type: "" });
+  };
+
   const addDot = ({ date, view }) => {
     if (view === "month") {
       const compareDates = moment(date).format("YYYY-MM-DD");
@@ -134,6 +140,7 @@ function Diary() {
               <DiaryDetailModal
                 selectedDate={promptModal.date}
                 setPromptModal={setPromptModal}
+                onDeleteSuccess={deleteSuccessHandler}
                 openModal={openModal}
               />
             ) : promptModal.type === "write" ? (
@@ -145,6 +152,7 @@ function Diary() {
             ) : (
               <DiaryUpdateModal
                 selectedDate={promptModal.date}
+                setPromptModal={setPromptModal}
                 onUpdateSuccess={updateSuccessHandler}
                 openModal={openModal}
               />
