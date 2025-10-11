@@ -7,7 +7,7 @@ export const container = css`
   align-items: flex-start;
   width: 100%;
   box-sizing: border-box;
-  background-color: #f7f9fa;
+  background-color: #fefefe;
 `;
 
 // 닫기 버튼 (X)

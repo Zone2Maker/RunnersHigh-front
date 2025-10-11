@@ -6,6 +6,7 @@ export const container = css`
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  background-color: #fefefe;
 `;
 
 export const feed = css`

@@ -11,15 +11,15 @@ export const backdrop = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 2000;
 `;
 
 // 실제 모달 컨텐츠 영역
 export const modalContent = css`
   position: relative;
   width: 90%;
-  max-width: 420px;
-  height: 30%;
+  max-width: 390px;
+  padding: 60px 40px 40px;
   max-height: 700px;
   background-color: white;
   border-radius: 24px;
