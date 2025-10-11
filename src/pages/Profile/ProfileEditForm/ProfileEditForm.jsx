@@ -5,15 +5,17 @@ import { useFirebaseUpload } from "../../../hooks/useFirebaseUpload";
 import * as s from "./styles";
 import { useRef, useState } from "react";
 import { queryClient } from "../../../configs/queryClient";
-import { updateUserReq } from "../../../services/user/userApis";
+import { deleteUserReq, updateUserReq } from "../../../services/user/userApis";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
+import { useNavigate } from "react-router-dom";
 
 function ProfileEditForm({ principal, onCancel }) {
-  const [isChanged, setIsChanged] = useState(false); // 닉네임, 프로필 변경 사항 상태 관리
+  const navigate = useNavigate();
+  const [isChanged, setIsChanged] = useState(false);
 
   const [nickname, setNickname] = useState(principal?.username);
-  const [profileImageFile, setProfileImageFile] = useState(null); // 새로 선택한 파일 객체
-  const [imagePreview, setImagePreview] = useState(principal?.profileImgUrl); // 미리보기 URL
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(principal?.profileImgUrl);
   const [nicknameError, setNicknameError] = useState("");
   const fileInputRef = useRef(null);
 
@@ -33,7 +35,6 @@ function ProfileEditForm({ principal, onCancel }) {
   } = useCheckDuplicate();
 
   const {
-    progress: imgUploadingProgress,
     error: imgUploadingError,
     isUploading: isProfileImgUploading,
     uploadFile,
@@ -45,7 +46,7 @@ function ProfileEditForm({ principal, onCancel }) {
     onSuccess: (resp) => {
       if (resp.data.status === "success") {
         queryClient.invalidateQueries(["getPrincipal"]);
-        openModal(resp.data.message, "", "success");
+        openModal(resp.data.message, "", "update");
       } else if (resp.data.status === "failed") {
         openModal(resp.data.message, "다시 시도해주세요.", "fail");
         return;
@@ -56,6 +57,22 @@ function ProfileEditForm({ principal, onCancel }) {
       return;
     },
     onSettled: () => {},
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationKey: "deleteUser",
+    mutationFn: deleteUserReq,
+    onSuccess: (resp) => {
+      if (resp.data.status === "success") {
+        localStorage.removeItem("accessToken");
+        queryClient.invalidateQueries(["getPrincipal"]);
+        openModal(resp.data.message, "", "delete");
+      }
+    },
+    onError: (error) => {
+      openModal("문제가 발생했습니다.", "다시 시도해주세요.", "fail");
+      return;
+    },
   });
 
   const imageChangeOnClickHandler = () => {
@@ -118,7 +135,6 @@ function ProfileEditForm({ principal, onCancel }) {
     }
   };
 
-  // onBlur 이벤트가 발생했을 때 실행될 함수
   const nicknameOnBlurHandler = (e) => {
     const value = e.target.value;
 
@@ -128,6 +144,12 @@ function ProfileEditForm({ principal, onCancel }) {
     } else {
       reset();
     }
+  };
+
+  const withdrawBtnOnClickHandler = async () => {
+    deleteUserMutation.mutate({
+      userId: principal.userId,
+    });
   };
 
   // 저장 버튼 클릭
@@ -227,20 +249,32 @@ function ProfileEditForm({ principal, onCancel }) {
           )}
         </div>
 
-        <div css={s.buttonContainer}>
-          <button css={s.cancelButton} onClick={onCancel}>
-            취소
+        <div css={s.btnContainer}>
+          <button
+            css={[s.btn, s.withdrawBtn]}
+            onClick={withdrawBtnOnClickHandler}
+          >
+            탈퇴
           </button>
-          <button css={s.saveButton} onClick={saveBtnOnClickHandler}>
-            {isProfileImgUploading ? "저장중.." : "저장"}
-          </button>
+          <div>
+            <button css={[s.btn, s.cancelBtn]} onClick={onCancel}>
+              취소
+            </button>
+            <button css={[s.btn, s.saveBtn]} onClick={saveBtnOnClickHandler}>
+              {isProfileImgUploading ? "저장중.." : "저장"}
+            </button>
+          </div>
         </div>
       </div>
       {alertModal.isOpen && (
         <AlertModal
           alertModal={alertModal}
           onClose={() => {
-            alertModal.status === "success" ? location.reload() : closeModal();
+            alertModal.status === "update"
+              ? location.reload()
+              : alertModal.status === "delete"
+              ? window.location.replace("/")
+              : closeModal();
           }}
         />
       )}

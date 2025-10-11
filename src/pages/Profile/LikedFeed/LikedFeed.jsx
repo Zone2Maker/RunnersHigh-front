@@ -5,29 +5,34 @@ import AlertModal from "../../../components/common/AlertModal/AlertModal";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import { getILikedFeedListReq } from "../../../services/feed/feedApis";
-import { AiOutlinePicture } from "react-icons/ai";
 import FeedContainer from "../../../components/common/FeedContainer/FeedContainer";
 import { queryClient } from "../../../configs/queryClient";
 
 function LikedFeed() {
-  const size = 12;
+  const SIZE = 12;
   const [feedList, setFeedList] = useState([]);
   const observerTarget = useRef(null);
   const { principal } = usePrincipalState();
 
-  const { data, isError, isLoading, hasNextPage, fetchNextPage } =
-    useInfiniteQuery({
-      queryKey: ["feeds", "liked", principal?.userId, size],
-      queryFn: ({ pageParam = null, queryKey }) => {
-        const [, , , size] = queryKey;
-        return getILikedFeedListReq(pageParam, size);
-      },
-      getNextPageParam: (lastPage) =>
-        lastPage?.data?.data?.nextCursorFeedId ?? undefined,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: true,
-    });
+  const {
+    data,
+    isError,
+    isLoading,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["feeds", "liked", principal?.userId, SIZE],
+    queryFn: ({ pageParam = null, queryKey }) => {
+      const [, , , SIZE] = queryKey;
+      return getILikedFeedListReq(pageParam, SIZE);
+    },
+    getNextPageParam: (lastPage) =>
+      lastPage?.data?.data?.nextCursorFeedId ?? undefined,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: true,
+  });
 
   useEffect(() => {
     if (isLoading || isError) return;
@@ -67,9 +72,10 @@ function LikedFeed() {
   }, []);
 
   return (
-    <>
-      <div css={s.container}>
-        {isError ? (
+    <div css={s.container}>
+      <div css={s.feedContainer}>
+        <FeedContainer feeds={feedList} isLoading={isLoading} />
+        {isError && (
           <AlertModal
             alertModal={{
               isOpen: false,
@@ -79,22 +85,12 @@ function LikedFeed() {
             }}
             onClose={() => window.location.reload()}
           />
-        ) : feedList && feedList.length > 0 ? (
-          <div css={s.feedContainer}>
-            <FeedContainer feeds={feedList} isLoading={isLoading} />
-          </div>
-        ) : (
-          <div css={s.empty}>
-            <AiOutlinePicture />
-            <div>게시물 없음</div>
-          </div>
         )}
       </div>
-      <div ref={observerTarget} style={{ height: "80px" }}></div>
-      {isLoading && (
-        <p style={{ textAlign: "center", margin: 10 }}>로딩 중...</p>
-      )}
-    </>
+      <div ref={observerTarget} css={s.observer}>
+        {(isLoading || isFetchingNextPage) && <p>로딩 중...</p>}
+      </div>
+    </div>
   );
 }
 

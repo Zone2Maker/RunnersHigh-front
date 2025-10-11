@@ -76,6 +76,6 @@ export const empty = css`
   }
 
   > h2 {
-    margin: 0px 0px 10px 10px;
+    margin: 10px 0px 10px 10px;
   }
 `;

@@ -155,7 +155,7 @@ function Diary() {
           locale="ko-KR" // 요일/월 한국어로
           onChange={dateOnClickHandler}
           value={today}
-          minDate={new Date(principal.createDt.split("T")[0])}
+          minDate={new Date(principal?.createDt.split("T")[0])}
           maxDate={today}
           view="month" // 월별, 연도별 보기 year, month
           calendarType="hebrew" // 주의 시작 월요일

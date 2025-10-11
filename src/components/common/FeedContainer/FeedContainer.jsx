@@ -29,45 +29,35 @@ function FeedContainer({ feeds, isLoading }) {
 
   return (
     <div css={s.container}>
-      {!isLoading && (
-        <>
-          {feeds.length > 0 ? (
-            feeds?.map((feed) => (
-              <div
-                css={s.feedItem}
-                key={feed.feedId}
-                onClick={() => openModal(feed.feedId)}
-              >
-                {imageErrors.has(feed.feedId) ? (
-                  <div css={s.feedNoImageBox}>
-                    <SlPicture />
-                    <p>이미지를 불러올 수 없습니다</p>
-                  </div>
-                ) : (
-                  <>
-                    <img
-                      src={feed.feedImgUrl}
-                      css={s.feedImage}
-                      onError={() => {
-                        imageErrorHandler(feed.feedId);
-                      }}
-                    />
-                    <div css={s.likeInfo}>
-                      <FaHeart css={s.heartIcon(feed?.isLikedByUser)} />
-                      <p css={s.likeCount}>{feed.likeCount}</p>
-                    </div>
-                  </>
-                )}
+      {!isLoading &&
+        feeds?.map((feed) => (
+          <div
+            css={s.feedItem}
+            key={feed.feedId}
+            onClick={() => openModal(feed.feedId)}
+          >
+            {imageErrors.has(feed.feedId) ? (
+              <div css={s.feedNoImageBox}>
+                <SlPicture />
+                <p>이미지를 불러올 수 없습니다</p>
               </div>
-            ))
-          ) : (
-            <div css={s.empty}>
-              <h2>아직 등록된 피드가 없습니다.</h2>
-              <p>러너들에게 일상을 공유해보세요!</p>
-            </div>
-          )}
-        </>
-      )}
+            ) : (
+              <>
+                <img
+                  src={feed.feedImgUrl}
+                  css={s.feedImage}
+                  onError={() => {
+                    imageErrorHandler(feed.feedId);
+                  }}
+                />
+                <div css={s.likeInfo}>
+                  <FaHeart css={s.heartIcon(feed?.isLikedByUser)} />
+                  <p css={s.likeCount}>{feed.likeCount}</p>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
       {isModalOpen && (
         <FeedDetailModal
           isOpen={isModalOpen}

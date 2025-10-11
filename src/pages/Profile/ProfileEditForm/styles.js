@@ -97,16 +97,18 @@ export const errorMessage = (isAvailable) => css`
   align-self: flex-end;
 `;
 
-export const buttonContainer = css`
+export const btnContainer = css`
   width: 100%;
   display: flex;
-  gap: 10px;
-  justify-content: flex-end;
+  justify-content: space-between;
+
+  & > div {
+    display: flex;
+    gap: 5px;
+  }
 `;
 
-export const cancelButton = css`
-  background-color: #f0f0f0;
-  color: #666;
+export const btn = css`
   border: none;
   border-radius: 15px;
   padding: 6px 16px;
@@ -115,36 +117,40 @@ export const cancelButton = css`
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
+export const withdrawBtn = css`
+  background-color: #f0f0f0;
+  color: #777;
+
+  &:hover {
+    background-color: #e0e6f3;
+  }
+`;
+
+export const cancelBtn = css`
+  background-color: #f0f0f0;
+  color: #666;
+
   &:hover {
     background-color: #e0e6f3;
     color: #1a4d8c;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
+
   &:active {
-    transform: scale(0.95);
     background-color: #c9d2e7;
   }
 `;
 
-export const saveButton = css`
+export const saveBtn = css`
   background-color: #04327c;
   color: #fefefe;
-  border: none;
-  border-radius: 14px;
-  padding: 6px 16px;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
 
   &:hover {
     background-color: #f57c00;
-  }
-  &:active {
-    transform: scale(0.95);
-  }
-  &:disabled {
-    background-color: #b0c4de;
-    cursor: default;
   }
 `;

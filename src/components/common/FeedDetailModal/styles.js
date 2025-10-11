@@ -48,6 +48,7 @@ export const userLocation = css`
   font-size: 14px;
   font-weight: 500;
   display: flex;
+  gap: 2px;
 
   & > svg {
     font-size: 15px;

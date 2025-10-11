@@ -37,3 +37,12 @@ export const updateUserReq = async (data) => {
     throw new Error(error);
   }
 };
+
+export const deleteUserReq = async (data) => {
+  try {
+    const response = await instance.post("/user/delete", data);
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
