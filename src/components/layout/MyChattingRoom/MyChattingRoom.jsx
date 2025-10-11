@@ -21,32 +21,37 @@ function MyChattingRoom({
   const [alertModal, setAlertModal] = useState({
     isOpen: false,
     message: "",
-    status: null,
+    subMessage: "",
+    status: "",
   });
 
   const leaveBtnOnClickHandler = () => {
-    setAlertModal({ isOpen: false, message: null, status: null });
+    closeModal();
     // 탈퇴 API
     leaveCrewReq({ crewId: crewInfo.crewId, userId: principal.userId })
       .then((resp) => {
         if (resp.data.status === "success") {
-          setAlertModal(true, "크루를 탈퇴했습니다.", "success");
+          openModal("크루를 탈퇴했습니다.", "", "success");
 
           // 사용자 정보 무효화
           queryClient.invalidateQueries("principal");
         } else {
           // 탈퇴 실패 모달 띄우기
-          setAlertModal(true, resp.data.message, "fail");
+          openModal(resp.data.message, "다시 시도해주세요.", "fail");
         }
       })
       .catch((error) => {
-        setAlertModal(
-          true,
-          "서버에 오류가 발생했습니다. 다시 시도해주세요.",
-          "fail"
-        );
+        openModal("서버에 오류가 발생했습니다.", "다시 시도해주세요.", "fail");
       });
     setIsChatOpen();
+  };
+
+  const openModal = (message, subMessage, status) => {
+    setAlertModal({ isOpen: true, message, subMessage, status });
+  };
+
+  const closeModal = () => {
+    setAlertModal({ isOpen: false, message: "", subMessage: "", status: "" });
   };
 
   return (
@@ -86,20 +91,8 @@ function MyChattingRoom({
           </div>
         </div>
       )}
-
       {alertModal.isOpen && (
-        <AlertModal
-          onClose={() => {
-            setAlertModal({});
-          }}
-        >
-          {alertModal.status === "success" ? (
-            <BiSolidMessageSquareCheck size={60} style={{ color: "#00296b" }} />
-          ) : (
-            <BiSolidMessageSquareError size={60} style={{ color: "#f57c00" }} />
-          )}
-          <strong>{alertModal.message}</strong>
-        </AlertModal>
+        <AlertModal alertModal={alertModal} onClose={closeModal} />
       )}
     </div>
   );

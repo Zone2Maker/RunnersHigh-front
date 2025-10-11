@@ -31,7 +31,7 @@ function OAuth2MergeForm({ openModal }) {
 
   const mergeOnClickHandler = async () => {
     if (password.trim().length === 0) {
-      openModal("비밀번호를 입력해주세요.", "fail");
+      openModal("비밀번호를 입력해주세요.", "", "fail");
     }
 
     setIsLoading(true);
@@ -49,14 +49,15 @@ function OAuth2MergeForm({ openModal }) {
         const accessToken = response.data.data;
         localStorage.setItem("accessToken", accessToken);
 
-        openModal(response.data.message, "success");
+        openModal(response.data.message, "", "success");
       } else if (response?.data?.status === "failed") {
-        openModal(response.data.message, "fail");
+        openModal(response.data.message, "다시 시도해주세요.", "fail");
         setPassword("");
       }
     } catch (error) {
       openModal(
-        "연동 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        "연동 중 문제가 발생했습니다.",
+        "다시 시도해주세요.",
         "success"
       );
       setPassword("");

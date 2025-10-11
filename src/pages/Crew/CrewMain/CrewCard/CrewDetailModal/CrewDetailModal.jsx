@@ -1,7 +1,6 @@
 import { useState } from "react";
 import * as s from "./styles";
 import { IoPeopleOutline } from "react-icons/io5";
-import { FiMapPin } from "react-icons/fi";
 import { FiCalendar } from "react-icons/fi";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { SlPicture } from "react-icons/sl";

@@ -18,7 +18,7 @@ function LoginForm({ openModal }) {
       password.length === "0" ||
       password.trim() === ""
     ) {
-      openModal("모든 항목을 입력해주세요.", "fail");
+      openModal("모든 항목을 입력해주세요.", "", "fail");
     }
 
     setIsLoading(true);
@@ -29,10 +29,10 @@ function LoginForm({ openModal }) {
         localStorage.setItem("accessToken", response.data.data);
         window.location.replace("/");
       } else if (response.data.status === "failed") {
-        openModal(response.data.message, "fail");
+        openModal(response.data.message, "다시 시도해주세요.", "fail");
       }
     } catch (error) {
-      openModal("로그인 중 문제가 발생했습니다.", "fail");
+      openModal("로그인 중 문제가 발생했습니다.", "다시 시도해주세요.", "fail");
       setEmail("");
       setPassword("");
       return;

@@ -4,7 +4,6 @@ import { usePrincipalState } from "../../../stores/usePrincipalState";
 import * as s from "./styles";
 import { getCrewByCrewReq } from "../../../services/crew/crewApis";
 import AlertModal from "../../common/AlertModal/AlertModal";
-import { BiSolidMessageSquareError } from "react-icons/bi";
 import MyChattingRoom from "../MyChattingRoom/MyChattingRoom";
 import { HiOutlineChatBubbleOvalLeftEllipsis } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
@@ -13,21 +12,35 @@ function MyChattingButton() {
   const { principal } = usePrincipalState();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [crewInfo, setCrewInfo] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+
+  const [alertModal, setAlertModal] = useState({
+    isOpen: false,
+    message: "",
+    subMessage: "",
+    status: "",
+  });
 
   const chatBtnOnClickHandler = () => {
-    getCrewByCrewReq(principal.crewId).then((response) => {
-      if (response.data.status === "failed") {
-        setErrorMessage(response.data.message);
-        setIsModalOpen(true);
-        setIsChatOpen(false);
-        return;
-      }
-      setCrewInfo(response.data.data);
-    });
+    getCrewByCrewReq(principal.crewId)
+      .then((response) => {
+        if (response.data.status === "failed") {
+          openModal(response.data.message, "다시 시도해주세요.", "fail");
+          return;
+        }
+        setCrewInfo(response.data.data);
+        setIsChatOpen(!isChatOpen);
+      })
+      .catch((error) => {
+        openModal("서버에 오류가 발생했습니다.", "다시 시도해주세요.", "fail");
+      });
+  };
 
-    setIsChatOpen(!isChatOpen);
+  const openModal = (message, subMessage, status) => {
+    setAlertModal({ isOpen: true, message, subMessage, status });
+  };
+
+  const closeModal = () => {
+    setAlertModal({ isOpen: false, message: "", subMessage: "", status: "" });
   };
 
   return (
@@ -53,14 +66,8 @@ function MyChattingButton() {
           </div>
         )}
       </div>
-      {errorMessage && isModalOpen && (
-        <AlertModal onClose={() => setIsModalOpen(false)}>
-          <BiSolidMessageSquareError
-            size={"60px"}
-            style={{ color: "#f57c00" }}
-          />
-          <strong>{errorMessage}</strong>
-        </AlertModal>
+      {alertModal.isOpen && (
+        <AlertModal alertModal={alertModal} onClose={closeModal} />
       )}
     </>
   );

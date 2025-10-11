@@ -1,7 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import AlertModal from "../AlertModal/AlertModal";
-import { BiSolidMessageSquareError } from "react-icons/bi";
 
 function ProtectedRoutes({ children }) {
   const queryClient = useQueryClient();
@@ -10,10 +9,15 @@ function ProtectedRoutes({ children }) {
 
   if (principalData === undefined) {
     return (
-      <AlertModal onClose={() => navigate("/login")}>
-        <BiSolidMessageSquareError size={"60px"} style={{ color: "#ff4d4d" }} />
-        <strong>로그인 후 이용 가능한 서비스입니다.</strong>
-      </AlertModal>
+      <AlertModal
+        alertModal={{
+          isOpen: false,
+          message: "로그인 후 이용 가능한 서비스입니다.",
+          subMessage: "",
+          status: "fail",
+        }}
+        onClose={() => navigate("/login")}
+      />
     );
   }
 

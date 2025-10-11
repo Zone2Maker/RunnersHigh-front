@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as s from "./styles";
 import AlertModal from "../../components/common/AlertModal/AlertModal";
-import { BiSolidMessageSquareError } from "react-icons/bi";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getFeedListReq } from "../../services/feed/feedApis";
 import { AiOutlinePicture } from "react-icons/ai";
@@ -88,14 +87,15 @@ function FeedMain() {
               )}
 
               {isError && (
-                <AlertModal onClose={() => window.location.reload()}>
-                  <BiSolidMessageSquareError
-                    size="60px"
-                    style={{ color: "#f57c00" }}
-                  />
-                  <strong>피드 목록을 불러올 수 없습니다.</strong>
-                  <p>다시 시도해주세요.</p>
-                </AlertModal>
+                <AlertModal
+                  alertModal={{
+                    isOpen: false,
+                    message: "피드 목록을 불러올 수 없습니다.",
+                    subMessage: "",
+                    status: "fail",
+                  }}
+                  onClose={() => window.location.reload()}
+                />
               )}
 
               <div ref={observerTarget} style={{ height: "40px" }}>
