@@ -9,7 +9,7 @@ export const container = css`
   align-items: center;
   gap: 8px;
   width: 100%;
-  background-color: #f9f9f9;
+  background-color: #f7f9fa;
 `;
 
 export const date = css`
@@ -35,24 +35,34 @@ export const title = css`
   & > svg {
     font-size: 21px;
     color: #00296b;
+    stroke-width: 2.3;
+    transform: translateY(1px);
   }
 `;
 
-export const content = css`
+export const text = css`
+  width: 100%;
+  height: 100%;
+  background-color: #eeeeee;
+  border-radius: 12px;
+  padding: 20px;
+`;
+
+export const textarea = css`
   width: 100%;
   height: 100%;
   font-size: 17px;
-  font-weight: 500;
-  margin: 0;
-  padding: 20px;
-  background-color: #eeeeee;
-  border-radius: 12px;
+  font-family: inherit;
+  white-space: pre-wrap;
+  line-height: 1.4;
   text-align: left;
+  border: none;
+  resize: none;
+  outline: none;
+  background-color: transparent;
 
-  & > p {
-    margin: 0;
-    white-space: pre-wrap;
-    line-height: 1.4;
+  &::placeholder {
+    color: #888;
   }
 `;
 
@@ -74,7 +84,7 @@ export const btn = css`
   cursor: pointer;
 `;
 
-export const deleteBtn = css`
+export const cancelBtn = css`
   background-color: #dadadaff;
   color: #666;
 
@@ -84,7 +94,7 @@ export const deleteBtn = css`
   }
 `;
 
-export const modifyBtn = css`
+export const updateBtn = css`
   color: #eeeeee;
   background-color: #00296b;
 

@@ -1,22 +1,23 @@
-/** @jsxImportSource @emotion/react */
-import * as s from "./styles";
-import moment from "moment";
 import { useEffect, useState } from "react";
-import { GiFootprint } from "react-icons/gi";
-import {
-  deleteDiaryReq,
-  getDiaryDetailByDateReq,
-} from "../../../../services/diary/diaryApis";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
+import {
+  getDiaryDetailByDateReq,
+  updateDiaryReq,
+} from "../../../../services/diary/diaryApis";
+/** @jsxImportSource @emotion/react */
+import moment from "moment";
+import * as s from "./styles";
+import { LuNotebookPen } from "react-icons/lu";
 
-const DiaryDetailModal = ({
+function DiaryUpdateModal({
   selectedDate,
-  onDeleteSuccess,
   setPromptModal,
+  onUpdateSuccess,
   openModal,
-}) => {
+}) {
   const { principal } = usePrincipalState();
   const [diaryDetail, setDiaryDetail] = useState({});
+  const [newDiaryContent, setNewDiaryContent] = useState();
 
   useEffect(() => {
     const fetchDiaryDetail = async () => {
@@ -25,6 +26,7 @@ const DiaryDetailModal = ({
 
         if (resp.data.status === "success") {
           setDiaryDetail(resp.data.data);
+          setNewDiaryContent(resp.data.data.diaryContent);
         }
       } catch (error) {
         openModal("일지 조회에 실패했습니다.", " 다시 시도해주세요.", "fail");
@@ -34,16 +36,22 @@ const DiaryDetailModal = ({
     fetchDiaryDetail();
   }, []);
 
-  const deleteBtnOnClickHandler = async () => {
+  const updateBtnOnClickHandler = async () => {
+    if (!newDiaryContent.trim()) {
+      openModal("일지를 작성해주세요.", "", "fail");
+      return;
+    }
+
     const data = {
       diaryId: diaryDetail.diaryId,
       userId: principal.userId,
+      diaryContent: newDiaryContent,
     };
 
-    deleteDiaryReq(data)
+    updateDiaryReq(data)
       .then((resp) => {
         if (resp.data.status === "success") {
-          onDeleteSuccess(selectedDate, resp.data.message);
+          onUpdateSuccess(selectedDate, resp.data.message);
         } else {
           openModal(resp.data.message, "다시 시도해주세요.", "fail");
           return;
@@ -58,32 +66,35 @@ const DiaryDetailModal = ({
     <div css={s.container}>
       <div css={s.date}>{moment(selectedDate).format("YYYY-MM-DD")}</div>
       <div css={s.title}>
-        <span>나의 러닝 기록</span>
-        <GiFootprint />
+        <span>일지 수정하기</span>
+        <LuNotebookPen />
       </div>
-
-      <div css={s.content}>
-        <p>{diaryDetail.diaryContent}</p>
+      <div css={s.text}>
+        <textarea
+          css={s.textarea}
+          placeholder="일지를 작성해주세요."
+          value={newDiaryContent}
+          onChange={(e) => setNewDiaryContent(e.target.value)}
+        />
       </div>
       <div css={s.btnContainer}>
-        <button css={[s.btn, s.deleteBtn]} onClick={deleteBtnOnClickHandler}>
-          삭제
-        </button>
         <button
-          css={[s.btn, s.modifyBtn]}
+          css={[s.btn, s.cancelBtn]}
           onClick={() => {
-            setPromptModal({
-              isOpen: true,
-              date: selectedDate,
-              type: "modify",
-            });
+            setPromptModal((prev) => ({
+              ...prev,
+              type: "detail",
+            }));
           }}
         >
-          수정
+          취소
+        </button>
+        <button css={[s.btn, s.updateBtn]} onClick={updateBtnOnClickHandler}>
+          저장
         </button>
       </div>
     </div>
   );
-};
+}
 
-export default DiaryDetailModal;
+export default DiaryUpdateModal;

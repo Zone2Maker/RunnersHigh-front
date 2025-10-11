@@ -1,16 +1,32 @@
 import { instance } from "../instance/instance";
 
-// 일지 추가
-export const addDiaryReq = async (diaryData) => {
+export const addDiaryReq = async (data) => {
   try {
-    const response = await instance.post("/diary", diaryData);
+    const response = await instance.post("/diary", data);
     return response;
   } catch (error) {
     throw new Error(error);
   }
 };
 
-//월별 일지 등록 여부 조회
+export const updateDiaryReq = async (data) => {
+  try {
+    const response = await instance.post("/diary/update", data);
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const deleteDiaryReq = async (data) => {
+  try {
+    const response = await instance.post("/diary/delete", data);
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const getActiveListByDateReq = async (year, month) => {
   try {
     const response = await instance.get(
@@ -22,7 +38,6 @@ export const getActiveListByDateReq = async (year, month) => {
   }
 };
 
-//일지 상세조회
 export const getDiaryDetailByDateReq = async (date) => {
   try {
     const response = await instance.get(`/diary?date=${date}`);

@@ -6,18 +6,7 @@ export const container = css`
   display: flex;
   justify-content: center;
   align-items: flex-start;
-`;
-
-export const feed = css`
-  aspect-ratio: 1;
-  background-color: #f7f9fa;
-
-  & > img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-  }
+  margin-bottom: 60px;
 `;
 
 export const feedContainer = css`
@@ -28,19 +17,11 @@ export const feedContainer = css`
   align-items: flex-start;
 `;
 
-export const empty = css`
-  width: 100%;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+export const observer = css`
+  height: 60px;
 
-  color: #888;
-  opacity: 0.8;
-  font-size: 20px;
-
-  & > svg {
-    font-size: 60px;
+  & > p {
+    text-align: center;
+    margin: 10px;
   }
 `;
