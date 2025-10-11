@@ -8,10 +8,6 @@ import {
   joinCrewReq,
 } from "../../../../services/crew/crewApis";
 import AlertModal from "../../../../components/common/AlertModal/AlertModal";
-import {
-  BiSolidMessageSquareCheck,
-  BiSolidMessageSquareError,
-} from "react-icons/bi";
 import { SlPicture } from "react-icons/sl";
 import { queryClient } from "../../../../configs/queryClient";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
@@ -22,17 +18,21 @@ function CrewCard({ crew }) {
   const { principal } = usePrincipalState();
   const isFull = crew.currentMembers === crew.maxMembers;
   const [isCrewDetailModalOpen, setIsCrewDetailModalOpen] = useState(false);
-  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
   const [crewDetail, setCrewDetail] = useState({});
-  const [errorMessage, setErrorMessage] = useState("");
   const [imageErrors, setImageErrors] = useState(new Set());
   const navigate = useNavigate();
 
-  const handleOpenModal = () => {
+  const [alertModal, setAlertModal] = useState({
+    isOpen: false,
+    message: "",
+    subMessage: "",
+    status: "",
+  });
+
+  const cardOnClickHandler = () => {
     getCrewByCrewReq(crew.crewId).then((reponse) => {
       if (reponse.data.status === "failed") {
-        setErrorMessage(reponse.data.message);
+        openModal(reponse.data.message, "", "fail");
       }
 
       setCrewDetail(reponse.data.data);
@@ -46,13 +46,15 @@ function CrewCard({ crew }) {
 
   const joinOnClickHandler = () => {
     if (!principal) {
-      setErrorMessage("크루에 가입하고 싶다면 로그인을 진행해주세요.");
-      setIsAlertModalOpen(true);
+      openModal("크루에 가입하고 싶다면 로그인을 진행해주세요.", "", "fail");
     }
 
     if (principal.crewId !== null) {
-      setErrorMessage("이미 함께하는 크루가 있어요!");
-      setIsAlertModalOpen(true);
+      openModal(
+        "이미 함께하는 크루가 있어요!",
+        "한 러너는 오직 하나의 크루에만 소속될 수 있습니다.",
+        "fail"
+      );
       return;
     }
 
@@ -62,22 +64,29 @@ function CrewCard({ crew }) {
     })
       .then((response) => {
         if (response.data.status === "failed") {
-          setErrorMessage(response.data.message);
-          setIsAlertModalOpen(true);
+          openModal(response.data.message, "다시 시도해주세요.", "fail");
           return;
         }
-        setSuccessMessage(response.data.message);
+
+        openModal(response.data.message, "", "success");
         queryClient.invalidateQueries(["getPrincipal"]);
       })
       .catch((error) => {
-        setErrorMessage(error.response?.data?.message);
-        setIsAlertModalOpen(true);
+        openModal(error.response?.data?.message, "다시 시도해주세요.", "fail");
       });
+  };
+
+  const openModal = (message, subMessage, status) => {
+    setAlertModal({ isOpen: true, message, subMessage, status });
+  };
+
+  const closeModal = () => {
+    setAlertModal({ isOpen: false, message: "", subMessage: "", status: "" });
   };
 
   return (
     <>
-      <div css={s.card(isFull)} onClick={handleOpenModal}>
+      <div css={s.card(isFull)} onClick={cardOnClickHandler}>
         {imageErrors.has(crew.crewId) ? (
           <div css={s.noImgBox}>
             <SlPicture />
@@ -112,7 +121,7 @@ function CrewCard({ crew }) {
           <div css={s.crewDetail}>{crew.crewDetail}</div>
         </div>
       </div>
-      {!errorMessage && isCrewDetailModalOpen && (
+      {!alertModal.isOpen && isCrewDetailModalOpen && (
         <CrewDetailModal
           crew={crewDetail}
           isOpen={isCrewDetailModalOpen}
@@ -120,33 +129,19 @@ function CrewCard({ crew }) {
           onJoinClick={joinOnClickHandler}
         />
       )}
-      {errorMessage && !principal && (
-        <AlertModal onClose={() => navigate("/login")}>
-          <BiSolidMessageSquareError
-            size={"60px"}
-            style={{ color: "#f57c00" }}
-          />
-          <strong>{errorMessage}</strong>
-        </AlertModal>
-      )}
-      {errorMessage && isAlertModalOpen && (
-        <AlertModal onClose={() => setIsAlertModalOpen(false)}>
-          <BiSolidMessageSquareError
-            size={"60px"}
-            style={{ color: "#f57c00" }}
-          />
-          <strong>{errorMessage}</strong>
-        </AlertModal>
-      )}
-      {successMessage && (
-        <AlertModal onClose={() => navigate("/")}>
-          <BiSolidMessageSquareCheck
-            size={"60px"}
-            style={{ color: "#00296b" }}
-          />
-          <strong>{successMessage}</strong>
-          <p>채팅창에 접속하여 크루 활동을 시작하세요.</p>
-        </AlertModal>
+      {alertModal.isOpen && (
+        <AlertModal
+          alertModal={alertModal}
+          onClose={() => {
+            if (!principal) {
+              navigate("/login");
+            } else if (alertModal.status === "success") {
+              navigate("/");
+            } else {
+              closeModal();
+            }
+          }}
+        />
       )}
     </>
   );

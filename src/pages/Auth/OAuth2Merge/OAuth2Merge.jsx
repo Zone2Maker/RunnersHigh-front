@@ -4,29 +4,26 @@ import OAuth2MergeForm from "./OAuth2MergeForm/OAuth2MergeForm";
 import * as s from "./styles";
 import { useState } from "react";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
-import {
-  BiSolidMessageSquareCheck,
-  BiSolidMessageSquareError,
-} from "react-icons/bi";
 
 function OAuth2Merge() {
   const navigate = useNavigate();
-  const [modal, setModal] = useState({
+  const [alertModal, setAlertModal] = useState({
     isOpen: false,
     message: "",
+    subMessage: "",
     status: "",
   });
 
-  const openModal = (message, status) => {
-    setModal({ isOpen: true, message, status });
+  const openModal = (message, subMessage, status) => {
+    setAlertModal({ isOpen: true, message, subMessage, status });
   };
 
   const closeModal = () => {
-    if (modal.status === "success") {
+    if (alertModal.status === "success") {
       navigate("/");
       return;
     }
-    setModal({ isOpen: false, message: "", status: "" });
+    setAlertModal({ isOpen: false, message: "", subMessage: "", status: "" });
   };
 
   return (
@@ -34,21 +31,8 @@ function OAuth2Merge() {
       <h1 css={s.title}>Welcome</h1>
       <p css={s.subTitle}>소셜로 간편 로그인 정보 불러오기</p>
       <OAuth2MergeForm openModal={openModal} />
-      {modal.isOpen && (
-        <AlertModal onClose={closeModal}>
-          {modal.status === "success" ? (
-            <BiSolidMessageSquareCheck
-              size={"60px"}
-              style={{ color: "#00296b" }}
-            />
-          ) : (
-            <BiSolidMessageSquareError
-              size={"60px"}
-              style={{ color: "#f57c00" }}
-            />
-          )}
-          <span>{modal.message}</span>
-        </AlertModal>
+      {alertModal.isOpen && (
+        <AlertModal alertModal={alertModal} onClose={closeModal} />
       )}
     </div>
   );

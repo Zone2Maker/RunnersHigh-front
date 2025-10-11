@@ -9,10 +9,6 @@ import { SlPicture } from "react-icons/sl";
 import { CiLocationOn } from "react-icons/ci";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
 import { FaCircleArrowUp } from "react-icons/fa6";
-import {
-  BiSolidMessageSquareCheck,
-  BiSolidMessageSquareError,
-} from "react-icons/bi";
 import { FaTimes } from "react-icons/fa";
 import { getSortedPlacesByDistance } from "../../../utils/locationUtils";
 import { useNavigate } from "react-router-dom";
@@ -30,9 +26,11 @@ function FeedRegister() {
   });
   const fileInputRef = useRef();
 
-  const [modal, setModal] = useState({
+  const [alertModal, setAlertModal] = useState({
     isOpen: false,
     message: "",
+    subMessage: "",
+    status: "",
   });
 
   const { principal } = usePrincipalState();
@@ -49,12 +47,12 @@ function FeedRegister() {
     });
   }, []);
 
-  const openModal = (message, status) => {
-    setModal({ isOpen: true, message, status });
+  const openModal = (message, subMessage, status) => {
+    setAlertModal({ isOpen: true, message, subMessage, status });
   };
 
   const closeModal = () => {
-    setModal({ isOpen: false, message: "", status: "" });
+    setAlertModal({ isOpen: false, message: "", subMessage: "", status: "" });
   };
 
   //장소 검색 완료 시 호출되는 콜백 함수
@@ -68,7 +66,11 @@ function FeedRegister() {
       const sortedData = getSortedPlacesByDistance(currentLoc, data);
       setPlaces(sortedData);
     } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-      openModal("검색 결과가 없습니다.", "fail");
+      openModal(
+        "검색 결과가 없습니다.",
+        "다른 위치나 이름으로 다시 검색해보세요.",
+        "fail"
+      );
       return;
     }
   };
@@ -78,12 +80,12 @@ function FeedRegister() {
     const keyword = searchKeyword.trim();
 
     if (!keyword) {
-      openModal("검색어를 입력해주세요.", "fail");
+      openModal("검색어를 입력해주세요.", "", "fail");
       return;
     }
 
     if (!keywordPs) {
-      openModal("오류가 발생했습니다. 다시 시도해주세요.", "fail");
+      openModal("오류가 발생했습니다.", "다시 시도해주세요.", "fail");
       return;
     }
 
@@ -105,7 +107,7 @@ function FeedRegister() {
     if (file.size > MAX_SIZE) {
       e.target.value = "";
       setImageState({ file: null, previewUrl: "" });
-      openModal("5MB이내의 사진만 업로드 가능합니다.", "fail");
+      openModal("5MB이내의 사진만 업로드 가능합니다.", "", "fail");
       return;
     }
 
@@ -116,7 +118,7 @@ function FeedRegister() {
   // 공유하기 버튼 클릭 시  - submit 핸들러
   const submitBtnOnClickHandler = async () => {
     if (!selectedPlace || !imageState.file) {
-      openModal("모든 항목을 작성해주세요.", "fail");
+      openModal("모든 항목을 작성해주세요.", "", "fail");
       return;
     }
 
@@ -133,7 +135,7 @@ function FeedRegister() {
 
       const response = await addFeedReq(data);
       if (response.data.status === "success") {
-        openModal("피드가 등록되었습니다.", "success");
+        openModal("피드가 등록되었습니다.", "", "success");
 
         // 입력 초기화
         setImageState({ file: null, previewUrl: "" });
@@ -141,13 +143,17 @@ function FeedRegister() {
         setSearchKeyword("");
       } else {
         openModal(
-          response.data.message ||
-            "피드 등록에 실패했습니다. 다시 시도해주세요.",
+          response.data.message || "피드 등록에 실패했습니다.",
+          " 다시 시도해주세요.",
           "fail"
         );
       }
     } catch (error) {
-      openModal("피드 등록 중 시스템 오류가 발생했습니다.", "fail");
+      openModal(
+        "피드 등록 중 시스템 오류가 발생했습니다.",
+        "다시 시도해주세요.",
+        "fail"
+      );
     }
   };
 
@@ -243,25 +249,13 @@ function FeedRegister() {
         </div>
       </div>
       <div css={s.dummyContainer}></div>
-      {modal.isOpen && (
+      {alertModal.isOpen && (
         <AlertModal
+          alertModal={alertModal}
           onClose={() => {
-            modal.status === "success" ? navigate("/feed") : closeModal();
+            alertModal.status === "success" ? navigate("/feed") : closeModal();
           }}
-        >
-          {modal.status === "success" ? (
-            <BiSolidMessageSquareCheck
-              size={"60px"}
-              style={{ color: "#00296b" }}
-            />
-          ) : (
-            <BiSolidMessageSquareError
-              size={"60px"}
-              style={{ color: "#f57c00" }}
-            />
-          )}
-          <strong>{modal.message}</strong>
-        </AlertModal>
+        />
       )}
     </div>
   );

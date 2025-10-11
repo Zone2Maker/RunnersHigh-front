@@ -62,17 +62,17 @@ function JoinForm({ openModal }) {
       password.length === 0 ||
       password.trim() === ""
     ) {
-      openModal("모든 항목을 입력해주세요.", "fail");
+      openModal("모든 항목을 입력해주세요.", "", "fail");
     }
 
     // 입력값 유효성 검사
     if (errorMessage.email || errorMessage.password || !email || !password) {
-      openModal("모든 항목을 작성해주세요.", "fail");
+      openModal("모든 항목을 작성해주세요.", "", "fail");
       return;
     }
 
     if (isEmailAvailable !== true) {
-      openModal("이미 사용중인 이메일입니다.", "fail");
+      openModal("이미 사용중인 이메일입니다.", "", "fail");
       return;
     }
 
@@ -80,14 +80,18 @@ function JoinForm({ openModal }) {
       const joinResp = await joinReq({ email: email, password: password });
 
       if (joinResp.data.status === "success") {
-        openModal("회원가입 되었습니다. 로그인을 진행해주세요.", "success");
+        openModal("회원가입 되었습니다.", "로그인을 진행해주세요.", "success");
         setEmail("");
         setPassword("");
       } else if (joinResp.data.status === "failed") {
-        openModal(joinResp.data.message, "fail");
+        openModal(joinResp.data.message, "다시 시도해주세요.", "fail");
       }
     } catch (error) {
-      openModal(error.message || "오류가 발생했습니다.", "fail");
+      openModal(
+        error.message || "오류가 발생했습니다.",
+        "다시 시도해주세요.",
+        "fail"
+      );
     }
   };
 

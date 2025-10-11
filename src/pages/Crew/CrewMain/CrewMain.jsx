@@ -12,18 +12,15 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
-import {
-  BiSolidMessageSquareCheck,
-  BiSolidMessageSquareError,
-} from "react-icons/bi";
 import { FaTimes } from "react-icons/fa";
 
 function CrewMain() {
   const { principal } = usePrincipalState();
   const navigate = useNavigate();
-  const [modal, setModal] = useState({
+  const [alertModal, setAlertModal] = useState({
     isOpen: false,
     message: "",
+    subMessage: "",
     status: "",
   });
 
@@ -53,14 +50,6 @@ function CrewMain() {
   ];
   const [isDropDownOpen, setIsDropDownOpen] = useState("");
 
-  const openModal = (message, status) => {
-    setModal({ isOpen: true, message, status });
-  };
-
-  const closeModal = () => {
-    setModal({ isOpen: false, message: "", status: "" });
-  };
-
   const searchBtnOnClickHandler = () => {
     if (currentRegion !== "") {
       navigate(`/crew?search=${searchValue}&region=${currentRegion}`);
@@ -87,11 +76,24 @@ function CrewMain() {
 
   const newCrewOnClickHandler = () => {
     if (principal?.crewId) {
-      openModal("이미 함께하는 크루가 있어요!", "fail");
+      openModal(
+        "이미 함께하는 크루가 있어요!",
+        "한 러너는 오직 하나의 크루에만 소속될 수 있습니다.",
+        "fail"
+      );
       return;
     }
     navigate("/crew/new");
   };
+
+  const openModal = (message, subMessage, status) => {
+    setAlertModal({ isOpen: true, message, subMessage, status });
+  };
+
+  const closeModal = () => {
+    setAlertModal({ isOpen: false, message: "", subMessage: "", status: "" });
+  };
+
   return (
     <div css={s.container}>
       <div css={s.header}>
@@ -161,24 +163,8 @@ function CrewMain() {
         </div>
       </div>
       <CrewContainer search={currentSearch} region={currentRegion} />
-      {modal.isOpen && (
-        <AlertModal onClose={closeModal}>
-          {modal.status === "success" ? (
-            <BiSolidMessageSquareCheck
-              size={"60px"}
-              style={{ color: "#00296b" }}
-            />
-          ) : (
-            <BiSolidMessageSquareError
-              size={"60px"}
-              style={{ color: "#f57c00" }}
-            />
-          )}
-          <span>{modal.message}</span>
-          {modal.status === "fail" && (
-            <p>기존 크루 탈퇴 후 다시 시도해주세요.</p>
-          )}
-        </AlertModal>
+      {alertModal.isOpen && (
+        <AlertModal alertModal={alertModal} onClose={closeModal} />
       )}
     </div>
   );

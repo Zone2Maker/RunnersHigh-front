@@ -5,10 +5,6 @@ import { CiCirclePlus } from "react-icons/ci";
 import { useRef, useState } from "react";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
-import {
-  BiSolidMessageSquareCheck,
-  BiSolidMessageSquareError,
-} from "react-icons/bi";
 import { useFirebaseUpload } from "../../../hooks/useFirebaseUpload";
 import { addCrewReq } from "../../../services/crew/crewApis";
 import { useNavigate } from "react-router-dom";
@@ -51,9 +47,10 @@ function CrewRegister() {
   const fileInputRef = useRef(null);
   const [isDropDownOpen, setIsDropDownOpen] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [modal, setModal] = useState({
+  const [alertModal, setAlertModal] = useState({
     isOpen: false,
     message: "",
+    subMessage: "",
     status: "",
   });
 
@@ -78,7 +75,7 @@ function CrewRegister() {
       const fileSize = file.size;
 
       if (fileSize > maxSize) {
-        openModal("5MB이내의 사진만 업로드 가능합니다.", "fail");
+        openModal("5MB이내의 사진만 업로드 가능합니다.", "", "fail");
         e.target.value = "";
         return;
       }
@@ -114,7 +111,7 @@ function CrewRegister() {
       !crewValue.crewRegion ||
       !crewValue.maxMembers.trim()
     ) {
-      openModal("모든 항목을 입력해주세요.", "fail");
+      openModal("모든 항목을 입력해주세요.", "", "fail");
       return;
     }
 
@@ -135,7 +132,7 @@ function CrewRegister() {
       const addCrewResp = await addCrewReq(newCrewData);
 
       if (addCrewResp.data.status === "failed") {
-        openModal(addCrewResp.data.message, "fail");
+        openModal(addCrewResp.data.message, "", "fail");
 
         if (
           addCrewResp.data.message ===
@@ -146,12 +143,17 @@ function CrewRegister() {
         return;
       }
 
-      openModal(addCrewResp.data.message, "success");
+      openModal(
+        addCrewResp.data.message,
+        "채팅창에 접속하여 크루 활동을 시작하세요.",
+        "success"
+      );
       queryClient.invalidateQueries({ queryKey: ["crewList"], exact: false });
       queryClient.invalidateQueries(["getPrincipal"]);
     } catch (error) {
       openModal(
         error.response?.data?.message || "요청 중 에러가 발생했습니다.",
+        "다시 시도해주세요.",
         "fail"
       );
     } finally {
@@ -159,12 +161,12 @@ function CrewRegister() {
     }
   };
 
-  const openModal = (message, status) => {
-    setModal({ isOpen: true, message, status });
+  const openModal = (message, subMessage, status) => {
+    setAlertModal({ isOpen: true, message, subMessage, status });
   };
 
   const closeModal = () => {
-    setModal({ isOpen: false, message: "", status: "" });
+    setAlertModal({ isOpen: false, message: "", subMessage: "", status: "" });
   };
 
   return (
@@ -258,34 +260,19 @@ function CrewRegister() {
           {isLoading ? "등록중..." : "등록하기"}
         </button>
       </div>
-      {modal.isOpen && (
+      {alertModal.isOpen && (
         <AlertModal
+          alertModal={alertModal}
           onClose={() => {
-            if (modal.status === "success") {
+            if (alertModal.status === "success") {
               navigate("/crew");
-            } else if (modal.status === "loginRequired") {
+            } else if (alertModal.status === "loginRequired") {
               navigate("/login");
             } else {
               closeModal();
             }
           }}
-        >
-          {modal.status === "success" ? (
-            <BiSolidMessageSquareCheck
-              size={"60px"}
-              style={{ color: "#00296b" }}
-            />
-          ) : (
-            <BiSolidMessageSquareError
-              size={"60px"}
-              style={{ color: "#f57c00" }}
-            />
-          )}
-          <strong>{modal.message}</strong>
-          {modal.status === "success" && (
-            <p>채팅창에 접속하여 크루 활동을 시작하세요.</p>
-          )}
-        </AlertModal>
+        />
       )}
     </div>
   );

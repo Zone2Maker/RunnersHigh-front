@@ -82,6 +82,7 @@ function FeedMapView() {
     setLikeCount(0);
   };
 
+  //
   const openModal = (feedId) => {
     setFeedDetail(null); // 상태 초기화
     setOriginLike(null);

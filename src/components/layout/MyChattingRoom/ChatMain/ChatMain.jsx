@@ -121,7 +121,12 @@ function ChatMain({ isLeaveModalOpen, setIsChatOpen, setAlertModal }) {
         setIsInitialized(true);
       } catch (error) {
         setIsChatOpen(false);
-        setAlertModal(true, "채팅 데이터 로드에 실패했습니다.", "fail");
+        setAlertModal({
+          isOpen: true,
+          message: "채팅 데이터 로드에 실패했습니다.",
+          subMessage: "다시 시도해주세요",
+          status: "fail",
+        });
       }
     };
 
@@ -161,7 +166,12 @@ function ChatMain({ isLeaveModalOpen, setIsChatOpen, setAlertModal }) {
             .then((response) => {
               if (response.data.status === "failed") {
                 setIsChatOpen();
-                setAlertModal(true, response.data.message, "fail");
+                setAlertModal({
+                  isOpen: true,
+                  message: response.data.message,
+                  subMessage: "",
+                  status: "fail",
+                });
               }
               setPrevCursorId(response.data.data.newCursorId);
               const newMessages = response.data.data.messages;
@@ -200,7 +210,12 @@ function ChatMain({ isLeaveModalOpen, setIsChatOpen, setAlertModal }) {
           ).then((response) => {
             if (response.data.status === "failed") {
               setIsChatOpen(false);
-              setAlertModal(true, response.data.message, "fail");
+              setAlertModal({
+                isOpen: true,
+                message: response.data.message,
+                subMessage: "",
+                status: "fail",
+              });
             }
 
             setNextCursorId(response.data.data.newCursorId);

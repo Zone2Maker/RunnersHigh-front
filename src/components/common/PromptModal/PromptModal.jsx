@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 

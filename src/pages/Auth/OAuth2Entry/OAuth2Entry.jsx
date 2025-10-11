@@ -1,34 +1,31 @@
 /** @jsxImportSource @emotion/react */
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../../components/common/Button/Button";
 import * as s from "./styles";
 import { joinOAuth2UserReq } from "../../../services/oAuth2/oAuth2Apis";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
 import { useState } from "react";
-import {
-  BiSolidMessageSquareCheck,
-  BiSolidMessageSquareError,
-} from "react-icons/bi";
 
 function OAuth2Entry() {
   const navigate = useNavigate();
   const [searchParam] = useSearchParams();
-  const [modal, setModal] = useState({
+  const [alertModal, setAlertModal] = useState({
     isOpen: false,
     message: "",
+    subMessage: "",
     status: "",
   });
 
-  const openModal = (message, status) => {
-    setModal({ isOpen: true, message, status });
+  const openModal = (message, subMessage, status) => {
+    setAlertModal({ isOpen: true, message, subMessage, status });
   };
 
   const closeModal = () => {
-    if (modal.message.includes("로그인")) {
+    if (alertModal.message.includes("로그인")) {
       navigate("/login");
       return;
     }
-    setModal({ isOpen: false, message: "", status: "" });
+    setAlertModal({ isOpen: false, message: "", subMessage: "", status: "" });
   };
 
   const joinOnClickHandler = async () => {
@@ -42,14 +39,18 @@ function OAuth2Entry() {
     try {
       const resp = await joinOAuth2UserReq(params);
       if (resp.data.status === "success") {
-        openModal("회원가입 되었습니다. 로그인을 진행해주세요.", "success");
+        openModal(resp.data.message, "로그인을 진행해주세요.", "success");
         return;
       } else if (resp.data.status === "failed") {
-        openModal(resp.data.message, "fail");
+        openModal(resp.data.message, "다시 시도해주세요.", "fail");
         return;
       }
     } catch (error) {
-      openModal(error.message || "회원가입 중 문제가 발생했습니다.", "fail");
+      openModal(
+        error.message || "회원가입 중 문제가 발생했습니다.",
+        "다시 시도해주세요.",
+        "fail"
+      );
     }
   };
 
@@ -77,21 +78,8 @@ function OAuth2Entry() {
           <div css={s.comment}>소셜 가입하기</div>
         </Button>
       </div>
-      {modal.isOpen && (
-        <AlertModal onClose={closeModal}>
-          {modal.status === "success" ? (
-            <BiSolidMessageSquareCheck
-              size={"60px"}
-              style={{ color: "#00296b" }}
-            />
-          ) : (
-            <BiSolidMessageSquareError
-              size={"60px"}
-              style={{ color: "#f57c00" }}
-            />
-          )}
-          <strong>{modal.message}</strong>
-        </AlertModal>
+      {alertModal.isOpen && (
+        <AlertModal alertModal={alertModal} onClose={closeModal} />
       )}
     </div>
   );

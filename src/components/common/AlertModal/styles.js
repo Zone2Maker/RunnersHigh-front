@@ -35,10 +35,6 @@ export const modalContent = css`
     font-size: 17px;
   }
 
-  > span {
-    font: 14px;
-  }
-
   > p {
     margin: 0;
     font-size: 14px;

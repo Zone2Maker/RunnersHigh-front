@@ -5,7 +5,6 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import CrewCard from "../CrewCard/CrewCard";
 import { getCrewListReq } from "../../../../services/crew/crewApis";
 import AlertModal from "../../../../components/common/AlertModal/AlertModal";
-import { BiSolidMessageSquareError } from "react-icons/bi";
 
 function CrewContainer({ search, region }) {
   const SIZE = 12;
@@ -48,9 +47,7 @@ function CrewContainer({ search, region }) {
     observer.observe(observerTarget.current);
 
     return () => {
-      if (observerTarget.current) {
-        observer.disconnect();
-      }
+      observer.disconnect();
     };
   }, [fetchNextPage, hasNextPage, isLoading]);
 
@@ -58,14 +55,15 @@ function CrewContainer({ search, region }) {
     <>
       <div css={s.container}>
         {isError ? (
-          <AlertModal>
-            <BiSolidMessageSquareError
-              size={"60px"}
-              style={{ color: "#f57c00" }}
-            />
-            <strong>크루 목록을 불러올 수 없습니다.</strong>
-            <p>다시 시도해주세요.</p>
-          </AlertModal>
+          <AlertModal
+            alertModal={{
+              isOpen: false,
+              message: "크루 목록을 불러올 수 없습니다.",
+              subMessage: "",
+              status: "fail",
+            }}
+            onClose={() => window.location.reload()}
+          />
         ) : crewList && crewList.length > 0 ? (
           crewList.map((crew) =>
             crew.crewStatus === "ACTIVE" ? (

@@ -7,24 +7,21 @@ import { RiKakaoTalkFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
-import {
-  BiSolidMessageSquareCheck,
-  BiSolidMessageSquareError,
-} from "react-icons/bi";
 
 function Login() {
-  const [modal, setModal] = useState({
+  const [alertModal, setAlertModal] = useState({
     isOpen: false,
     message: "",
+    subMessage: "",
     status: "",
   });
 
-  const openModal = (message, status) => {
-    setModal({ isOpen: true, message, status });
+  const openModal = (message, subMessage, status) => {
+    setAlertModal({ isOpen: true, message, subMessage, status });
   };
 
   const closeModal = () => {
-    setModal({ isOpen: false, message: "", status: "" });
+    setAlertModal({ isOpen: false, message: "", subMessage: "", status: "" });
   };
 
   return (
@@ -63,21 +60,8 @@ function Login() {
           <SiNaver css={s.naver} />
         </a>
       </div>
-      {modal.isOpen && (
-        <AlertModal onClose={closeModal}>
-          {modal.status === "success" ? (
-            <BiSolidMessageSquareCheck
-              size={"60px"}
-              style={{ color: "#00296b" }}
-            />
-          ) : (
-            <BiSolidMessageSquareError
-              size={"60px"}
-              style={{ color: "#f57c00" }}
-            />
-          )}
-          <strong>{modal.message}</strong>
-        </AlertModal>
+      {alertModal.isOpen && (
+        <AlertModal alertModal={alertModal} onClose={closeModal}/>
       )}
     </div>
   );

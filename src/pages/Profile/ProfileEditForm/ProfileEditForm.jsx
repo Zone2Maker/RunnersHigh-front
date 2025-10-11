@@ -7,13 +7,8 @@ import { useRef, useState } from "react";
 import { queryClient } from "../../../configs/queryClient";
 import { updateUserReq } from "../../../services/user/userApis";
 import AlertModal from "../../../components/common/AlertModal/AlertModal";
-import {
-  BiSolidMessageSquareCheck,
-  BiSolidMessageSquareError,
-} from "react-icons/bi";
 
 function ProfileEditForm({ principal, onCancel }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChanged, setIsChanged] = useState(false); // 닉네임, 프로필 변경 사항 상태 관리
 
   const [nickname, setNickname] = useState(principal?.username);
@@ -22,9 +17,10 @@ function ProfileEditForm({ principal, onCancel }) {
   const [nicknameError, setNicknameError] = useState("");
   const fileInputRef = useRef(null);
 
-  const [modal, setModal] = useState({
+  const [alertModal, setAlertModal] = useState({
     isOpen: false,
     message: "",
+    subMessage: "",
     status: "",
   });
 
@@ -49,14 +45,14 @@ function ProfileEditForm({ principal, onCancel }) {
     onSuccess: (resp) => {
       if (resp.data.status === "success") {
         queryClient.invalidateQueries(["getPrincipal"]);
-        openModal("프로필을 수정했습니다.", "success");
+        openModal(resp.data.message, "", "success");
       } else if (resp.data.status === "failed") {
-        alert(resp.data.message);
+        openModal(resp.data.message, "다시 시도해주세요.", "fail");
         return;
       }
     },
     onError: (error) => {
-      openModal("문제가 발생했습니다. 다시 시도해주세요.", "fail");
+      openModal("문제가 발생했습니다.", "다시 시도해주세요.", "fail");
       return;
     },
     onSettled: () => {},
@@ -74,7 +70,7 @@ function ProfileEditForm({ principal, onCancel }) {
       const fileSize = file.size;
 
       if (fileSize > maxSize) {
-        openModal("5MB이내의 사진만 업로드 가능합니다.", "fail");
+        openModal("5MB이내의 사진만 업로드 가능합니다.", "", "fail");
         e.target.value = "";
         return;
       }
@@ -136,8 +132,12 @@ function ProfileEditForm({ principal, onCancel }) {
 
   // 저장 버튼 클릭
   const saveBtnOnClickHandler = async () => {
+    if (!isChanged) {
+      location.reload();
+      return;
+    }
     if (nickname.length === 0 || nickname.trim() === "") {
-      openModal("사용하실 닉네임을 입력해주세요.", "fail");
+      openModal("사용하실 닉네임을 입력해주세요.", "", "fail");
       return;
     }
 
@@ -150,7 +150,8 @@ function ProfileEditForm({ principal, onCancel }) {
         finalProfileImgUrl = firebaseUrl; // 업로드 성공 시 파이어베이스 URL로 교체
       } catch (error) {
         openModal(
-          "프로필 이미지 업로드에 실패했습니다. 다시 시도해주세요.",
+          "프로필 이미지 업로드에 실패했습니다. ",
+          "다시 시도해주세요.",
           "fail"
         );
         return;
@@ -167,12 +168,12 @@ function ProfileEditForm({ principal, onCancel }) {
     updateUserMutation.mutate(updatedProfile);
   };
 
-  const openModal = (message, status) => {
-    setModal({ isOpen: true, message, status });
+  const openModal = (message, subMessage, status) => {
+    setAlertModal({ isOpen: true, message, subMessage, status });
   };
 
   const closeModal = () => {
-    setModal({ isOpen: false, message: "", status: "" });
+    setAlertModal({ isOpen: false, message: "", subMessage: "", status: "" });
   };
 
   return (
@@ -235,25 +236,13 @@ function ProfileEditForm({ principal, onCancel }) {
           </button>
         </div>
       </div>
-      {modal.isOpen && (
+      {alertModal.isOpen && (
         <AlertModal
+          alertModal={alertModal}
           onClose={() => {
-            modal.status === "success" ? location.reload() : closeModal();
+            alertModal.status === "success" ? location.reload() : closeModal();
           }}
-        >
-          {modal.status === "success" ? (
-            <BiSolidMessageSquareCheck
-              size={"60px"}
-              style={{ color: "#00296b" }}
-            />
-          ) : (
-            <BiSolidMessageSquareError
-              size={"60px"}
-              style={{ color: "#f57c00" }}
-            />
-          )}
-          <strong>{modal.message}</strong>
-        </AlertModal>
+        />
       )}
     </>
   );
