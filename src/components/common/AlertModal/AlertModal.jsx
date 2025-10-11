@@ -1,7 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { useRef } from "react";
 import * as s from "./styles";
-import { BiSolidMessageSquareCheck, BiSolidMessageSquareError } from "react-icons/bi";
+import {
+  BiSolidMessageSquareCheck,
+  BiSolidMessageSquareError,
+} from "react-icons/bi";
 
 function AlertModal({ alertModal, onClose }) {
   const modalBackground = useRef();

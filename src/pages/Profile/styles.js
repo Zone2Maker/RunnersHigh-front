@@ -10,7 +10,7 @@ export const container = css`
   justify-content: center;
   align-items: center;
   position: relative;
-  background-color: #f7f9fa;
+  background-color: #fefefe;
 `;
 
 export const stickyContainer = css`
@@ -37,7 +37,7 @@ export const profileMain = css`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background-color: #f7f9fa;
+  background-color: #fefefe;
   box-shadow: 0px 0px 2px 2px rgba(209, 209, 209, 0.25);
   border: 1px solid #e6e6e6ff;
 `;

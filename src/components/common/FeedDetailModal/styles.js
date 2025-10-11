@@ -47,20 +47,22 @@ export const username = css`
 export const userLocation = css`
   font-size: 14px;
   font-weight: 500;
+  display: flex;
+
+  & > svg {
+    font-size: 15px;
+    color: #04327c;
+    stroke-width: 1.5px;
+    transform: translateY(1px);
+  }
 `;
 
 export const photoContainer = css`
-  position: relative;
   width: 100%;
-  aspect-ratio: 1;
 `;
 
 export const feedPhotoDetail = css`
   width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  object-fit: cover;
   background-color: #fefefe;
 `;
 

@@ -9,28 +9,20 @@ import {
 } from "react-kakao-maps-sdk";
 import { getLast7Days } from "../../../utils/dateUtils.js";
 import moment from "moment/moment.js";
-import {
-  getFeedDetailReq,
-  getFeedMapReq,
-} from "../../../services/feed/feedApis.js";
+import { getFeedMapReq } from "../../../services/feed/feedApis.js";
 import FeedDetailModal from "../../../components/common/FeedDetailModal/FeedDetailModal.jsx";
-import { addLikeReq, removeLikeReq } from "../../../services/like/likeApis.js";
 import { queryClient } from "../../../configs/queryClient.js";
-import { usePrincipalState } from "../../../stores/usePrincipalState.js";
 import { useLocationState } from "../../../stores/useLocationState.js";
 
 function FeedMapView() {
-  const { principal } = usePrincipalState();
   const { location: currentLocation } = useLocationState();
   const CLUSTERER_VISIBLE_MIN_LEVEL = 8;
   const [level, setLevel] = useState(11);
   const [center, setCenter] = useState({ lat: 35.57, lng: 128.15 });
+  const [isFetching, setIsFetching] = useState(true);
   const [mapFeeds, setMapFeeds] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [feedDetail, setFeedDetail] = useState(null);
-  const [newLike, setNewLike] = useState(null);
-  const [originLike, setOriginLike] = useState(null);
-  const [likeCount, setLikeCount] = useState(0);
+  const [selectedFeedId, setSelectedFeedId] = useState(null);
 
   // 내 위치 기준으로 지도 센터 잡기
   useEffect(() => {
@@ -40,85 +32,29 @@ function FeedMapView() {
     };
 
     setCenter(newCenter);
-  }, []);
+  }, [currentLocation]);
 
-  // 피드 데이터 가져오기
   useEffect(() => {
     const fetchMapFeeds = async () => {
       const { start, end } = getLast7Days(moment());
       const res = await getFeedMapReq(start, end);
+      console.log(res);
       setMapFeeds(res.data.data);
     };
+
     fetchMapFeeds();
+    setIsFetching(false);
   }, []);
 
-  const closeModal = async () => {
-    if (newLike !== originLike) {
-      try {
-        if (newLike === true) {
-          // 좋아요 추가 API 호출
-          await addLikeReq({
-            feedId: feedDetail.feedId,
-            userId: principal.userId,
-          });
-        } else {
-          // 좋아요 삭제 API 호출
-          await removeLikeReq({
-            feedId: feedDetail.feedId,
-            userId: principal.userId,
-          });
-        }
-      } catch (error) {
-        console.error("좋아요 상태 변경 실패:", error);
-      } finally {
-        queryClient.invalidateQueries({ queryKey: ["feeds"], exact: false });
-      }
-    }
-
-    setFeedDetail(null);
-    setIsModalOpen(false);
-    setOriginLike(null);
-    setNewLike(null);
-    setLikeCount(0);
-  };
-
-  //
   const openModal = (feedId) => {
-    setFeedDetail(null); // 상태 초기화
-    setOriginLike(null);
-    setNewLike(null);
-    setLikeCount(0);
-
-    getFeedDetailReq(feedId)
-      .then((resp) => {
-        if (resp.data.status === "success") {
-          const data = resp.data.data;
-          setFeedDetail(data);
-          setOriginLike(data.isLikedByUser);
-          setNewLike(data.isLikedByUser);
-          setLikeCount(data.likeCount);
-          setIsModalOpen(true);
-        } else if (resp.data.status === "failed") {
-          console.log(resp.data.message);
-        }
-      })
-      .catch((error) => {
-        alert("서버 오류가 발생했습니다. 잠시후 다시 시도해주세요.");
-        return;
-      });
+    setSelectedFeedId(feedId);
+    setIsModalOpen(true);
   };
 
-  const heartOnClickHandler = () => {
-    if (newLike === true) {
-      // 좋아요였던 상태
-      // 좋아요 취소하면 -1
-      setLikeCount((prev) => prev - 1);
-    } else {
-      // 좋아요가 아니었던 상태
-      // 좋아요 누르면 +1
-      setLikeCount((prev) => prev + 1);
-    }
-    setNewLike(!newLike);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedFeedId(null);
+    queryClient.invalidateQueries({ queryKey: ["feeds"], exact: false });
   };
 
   const centerOnChangeHandler = (map) => {
@@ -148,56 +84,61 @@ function FeedMapView() {
         onZoomChanged={(map) => setLevel(map.getLevel())}
         onCenterChanged={centerOnChangeHandler}
       >
-        {mapFeeds.length > 0 && level >= CLUSTERER_VISIBLE_MIN_LEVEL ? (
-          <MarkerClusterer
-            averageCenter={true}
-            minLevel={CLUSTERER_VISIBLE_MIN_LEVEL}
-            calculator={customClusterCalculator}
-            styles={s.customClusterStyles}
-            gridSize={120}
-          >
-            {mapFeeds.map((feed) => (
-              <CustomOverlayMap
-                key={feed.feedId}
-                position={{ lat: feed.feedLatitude, lng: feed.feedLongitude }}
+        {isFetching === false ? (
+          <>
+            {level >= CLUSTERER_VISIBLE_MIN_LEVEL ? (
+              <MarkerClusterer
+                averageCenter={true}
+                minLevel={CLUSTERER_VISIBLE_MIN_LEVEL}
+                calculator={customClusterCalculator}
+                styles={s.customClusterStyles}
+                gridSize={120}
               >
-                <div
-                  css={s.markerContainer(level)}
-                  onClick={() => openModal(feed.feedId)} // feedId만 전달
+                {mapFeeds?.map((feed) => (
+                  <CustomOverlayMap
+                    key={feed.feedId}
+                    position={{
+                      lat: feed.feedLatitude,
+                      lng: feed.feedLongitude,
+                    }}
+                  >
+                    <div
+                      css={s.markerContainer(level)}
+                      onClick={() => openModal(feed.feedId)}
+                    >
+                      <img src={feed.feedImgUrl} css={s.markerImg} />
+                    </div>
+                  </CustomOverlayMap>
+                ))}
+              </MarkerClusterer>
+            ) : (
+              mapFeeds.map((feed) => (
+                <CustomOverlayMap
+                  key={feed.feedId}
+                  position={{
+                    lat: feed.feedLatitude,
+                    lng: feed.feedLongitude,
+                  }}
                 >
-                  <img src={feed.feedImgUrl} css={s.markerImg} />
-                </div>
-              </CustomOverlayMap>
-            ))}
-          </MarkerClusterer>
+                  <div
+                    css={s.markerContainer(level)}
+                    onClick={() => openModal(feed.feedId)}
+                  >
+                    <img src={feed.feedImgUrl} css={s.markerImg} />
+                  </div>
+                </CustomOverlayMap>
+              ))
+            )}
+          </>
         ) : (
-          mapFeeds.map((feed) => (
-            <CustomOverlayMap
-              key={feed.feedId}
-              position={{
-                lat: feed.feedLatitude,
-                lng: feed.feedLongitude,
-              }}
-            >
-              <div
-                css={s.markerContainer(level)}
-                onClick={() => openModal(feed.feedId)}
-              >
-                <img src={feed.feedImgUrl} css={s.markerImg} />
-              </div>
-            </CustomOverlayMap>
-          ))
+          <></>
         )}
         <ZoomControl />
       </Map>
       <FeedDetailModal
         isOpen={isModalOpen}
-        feedDetail={feedDetail}
-        newLike={newLike}
-        likeCount={likeCount}
-        imageErrors={new Set()}
+        feedId={selectedFeedId}
         onClose={closeModal}
-        onHeartClick={heartOnClickHandler}
       />
     </div>
   );

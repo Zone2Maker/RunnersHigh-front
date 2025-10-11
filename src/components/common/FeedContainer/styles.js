@@ -2,7 +2,6 @@ import { css } from "@emotion/react";
 
 export const container = css`
   width: 100%;
-  min-height: 300px;
   align-content: flex-start;
   flex-grow: 1;
   display: grid;
@@ -19,11 +18,9 @@ export const feedItem = css`
   cursor: pointer;
 `;
 
-// 피드 사진 스타일
 export const feedImage = css`
   width: 100%;
   height: 100%;
-  /* 이미지 비율 유지하며 잘리는 부분생겨도 꽉 채움 - 인스타 스타일 */
   object-fit: cover;
   display: block;
 `;
@@ -69,4 +66,16 @@ export const heartIcon = (liked) => css`
 
 export const likeCount = css`
   margin: 0;
+`;
+
+export const empty = css`
+  position: fixed;
+
+  p {
+    margin-left: 10px;
+  }
+
+  > h2 {
+    margin: 0px 0px 10px 10px;
+  }
 `;
