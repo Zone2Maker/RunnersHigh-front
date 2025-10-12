@@ -4,8 +4,9 @@ import * as s from "./styles";
 import { publishStomp } from "../../../../configs/stompClient";
 import { VscSend } from "react-icons/vsc";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
+import { crewInfo } from "../ChatHeader/styles";
 
-function ChatFooter({ crewId, isLeaveModalOpen }) {
+function ChatFooter({ crewStatus, isLeaveModalOpen, isDeleteModalOpen }) {
   const { principal } = usePrincipalState();
   const textareaRef = useRef();
   const [sendMessageValue, setSendMessageValue] = useState("");
@@ -38,10 +39,14 @@ function ChatFooter({ crewId, isLeaveModalOpen }) {
   };
 
   return (
-    <div css={s.chatFooter(isLeaveModalOpen)}>
+    <div css={s.chatFooter(isLeaveModalOpen, isDeleteModalOpen)}>
       <textarea
         css={s.textarea}
-        placeholder="메세지를 입력해주세요."
+        placeholder={
+          crewStatus === "INACTIVE"
+            ? "메세지를 입력할 수 없습니다."
+            : "메세지를 입력해주세요."
+        }
         value={sendMessageValue}
         onChange={(e) => setSendMessageValue(e.target.value)}
         onKeyUp={(e) => {
@@ -59,6 +64,7 @@ function ChatFooter({ crewId, isLeaveModalOpen }) {
           }
         }}
         ref={textareaRef}
+        disabled={crewStatus === "INACTIVE" && true}
       />
       <button
         css={s.sendBtn}
