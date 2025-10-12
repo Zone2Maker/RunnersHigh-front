@@ -23,7 +23,17 @@ export const messageContainer = css`
     }
   }
 `;
+export const box = css`
+  display: flex;
+  align-items: end;
+  gap: 5px;
 
+  > p {
+    margin: 0;
+    font-size: 10px;
+    color: #555;
+  }
+`;
 export const messageBox = css`
   width: fit-content;
   background-color: #f0f0f0;
@@ -37,16 +47,4 @@ export const messageBox = css`
   font-size: 15px;
   line-height: 19px;
   font-weight: 500;
-`;
-
-export const timeBox = css`
-  height: 100%;
-  display: flex;
-  justify-content: end;
-
-  > p {
-    margin: 0;
-    font-size: 10px;
-    color: #555;
-  }
 `;

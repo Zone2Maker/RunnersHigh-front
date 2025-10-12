@@ -65,3 +65,12 @@ export const leaveCrewReq = async (data) => {
     throw new Error(error);
   }
 };
+
+export const deactivateCrewReq = async (data) => {
+  try {
+    const response = await instance.post("/crew/deactivate", data);
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};

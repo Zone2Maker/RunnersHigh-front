@@ -1,10 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { IoExitOutline, IoPeopleOutline } from "react-icons/io5";
 import * as s from "./styles";
+import { usePrincipalState } from "../../../../stores/usePrincipalState";
 
-function ChatHeader({ crewInfo, isLeaveModalOpen, setIsLeaveModalOpen }) {
+function ChatHeader({ crewInfo, isLeaveModalOpen, setIsLeaveModalOpen ,isDeleteModalOpen, setIsDeleteModalOpen }) {
+  const { principal } = usePrincipalState();
+
   return (
-    <div css={s.chatHeader(isLeaveModalOpen)}>
+    <div css={s.chatHeader(isLeaveModalOpen, isDeleteModalOpen)}>
       <div css={s.crewProfile}>
         <img src={crewInfo.crewImgUrl} alt="크루 대표사진" />
         <div css={s.crewInfo}>
@@ -14,7 +17,11 @@ function ChatHeader({ crewInfo, isLeaveModalOpen, setIsLeaveModalOpen }) {
           </span>
         </div>
       </div>
-      <IoExitOutline onClick={setIsLeaveModalOpen} />
+      {principal.userId === crewInfo.userId ? (
+        <IoExitOutline onClick={setIsDeleteModalOpen} />
+      ) : (
+        <IoExitOutline onClick={setIsLeaveModalOpen} />
+      )}
     </div>
   );
 }

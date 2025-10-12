@@ -265,7 +265,7 @@ function CrewRegister() {
           alertModal={alertModal}
           onClose={() => {
             if (alertModal.status === "success") {
-              navigate("/crew");
+              window.location.href= "/crew";
             } else if (alertModal.status === "loginRequired") {
               navigate("/login");
             } else {
